@@ -20,10 +20,10 @@ export interface CreateSetOptions {
     song_ids?: string;
 }
 
-// Given a dictionary parsed from a url (presumably via processHash()), create
-// a new set and go to it.
+// Given a dictionary parsed from a url's search parameters, create a new set
+// and go to it.
 let last_set_add = 0;
-export async function create_goto_set(opts: CreateSetOptions): Promise<number> {
+export async function create_set_from_url(opts: CreateSetOptions): Promise<number> {
     // Debounce any open/paste type events so we only add one set
     if (Date.now() - last_set_add < 100) throw new Error('Debounced');
 
@@ -43,6 +43,5 @@ export async function create_goto_set(opts: CreateSetOptions): Promise<number> {
         await SET_DB.add_songs_to_set(set_id, song_details);
     }
 
-    $.mobile.changePage(`#page-set-view?set_id=${set_id}`, { translation: 'none' });
     return set_id;
 }

@@ -3,19 +3,18 @@
 
 import './splash.scss';
 
+import worship_leader_text_data from '../langpack/worship-leader.json';
 import { get_app_languages } from './langdetect.es5';
 
-const img = document.getElementById('splash-img') as HTMLImageElement;
+const worship_leader_text = worship_leader_text_data as Record<string, string>;
+const elem = document.getElementById('splash-text');
 
 // Try to load localized version of the splashscreen, otherwise default to english.
-let splash_imgs = ['en', 'tr', 'ru', 'mn', 'kk', 'ug-CN', 'kk-CN', 'ar', 'kmr', 'sk', 'cs', 'pt', 'az', 'ky', 'bg', 'es', 'de'];
-let to_try = get_app_languages();
-for (const splash_lang of to_try) {
-    if (splash_imgs.indexOf(splash_lang) >= 0) {
-        img.src = 'splashscreens/' + splash_lang + '.jpg';
+const to_try = get_app_languages();
+for (const lang of to_try) {
+    const text = worship_leader_text[lang];
+    if (text && elem) {
+        elem.innerHTML = text;
         break;
     }
 }
-
-// Fade in image nicely on load
-img.onload = () => (img.className += 'img-loaded');

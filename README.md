@@ -1,9 +1,6 @@
 This is the source code of the frontend app for [Worship Leader](https://worshipleaderapp.com).
 
-It's written in Typescript (AI ported from javascript, for the most part) and the main branch uses very legacy JQuery
-Mobile. See History below for how the project got to this state.
-
-The in-progress https://github.com/mzealey/worship-leader-frontend/pull/1 is a rewrite to use React and Material UI.
+It uses Typescript, modern React and Material UI.
 
 From this code-base we produce builds supporting:
 - Web (including very old web browsers)

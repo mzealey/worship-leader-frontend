@@ -1,118 +1,120 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-vi.mock('../src/jqm-util', () => ({
-    current_page: vi.fn(() => ({ trigger: vi.fn() })),
+// Mock dependencies - need to be set up before imports
+const mockUpdateSourceFilter = vi.fn();
+const mockResetSourceFilter = vi.fn();
+let mockSources = {};
+
+vi.mock('../src/db-search', async () => {
+    const actual = (await vi.importActual('../src/db-search')) as Record<string, unknown>;
+    return {
+        ...actual,
+        useSearchStore: {
+            getState: () => ({
+                sources: mockSources,
+                updateSourceFilter: mockUpdateSourceFilter,
+                resetSourceFilter: mockResetSourceFilter,
+            }),
+            setState: vi.fn(),
+            subscribe: vi.fn(),
+        },
+    };
+});
+
+vi.mock('../src/persistent-storage.es5', () => ({
+    persistentStorage: {
+        setObj: vi.fn(),
+        getObj: vi.fn(),
+        get: vi.fn(),
+        set: vi.fn(),
+    },
 }));
 
-import { clear_filter_source, filter_sources, toggle_filter_source } from '../src/filter-sources';
+// Import after mocks are set up
+import { toggle_filter_source } from '../src/filter-sources';
 
-describe('filter-sources functions', function () {
-    beforeEach(() => {
-        // Clear the filter_sources object before each test
-        Object.keys(filter_sources).forEach((key) => delete filter_sources[key]);
+describe('filter-sources', function () {
+    beforeEach(async function () {
         vi.clearAllMocks();
-    });
-
-    describe('filter_sources object', function () {
-        it('starts as empty object', function () {
-            expect(Object.keys(filter_sources)).toEqual([]);
-        });
-
-        it('can be modified directly', function () {
-            filter_sources['source1'] = 1;
-            expect(filter_sources['source1']).toBe(1);
-            expect(Object.keys(filter_sources)).toEqual(['source1']);
-        });
-    });
-
-    describe('clear_filter_source', function () {
-        it('removes all properties from filter_sources', function () {
-            filter_sources['source1'] = 1;
-            filter_sources['source2'] = 1;
-            filter_sources['source3'] = 1;
-
-            clear_filter_source();
-
-            expect(Object.keys(filter_sources)).toEqual([]);
-        });
-
-        it('handles already empty filter_sources', function () {
-            clear_filter_source();
-            expect(Object.keys(filter_sources)).toEqual([]);
-        });
+        mockSources = {};
     });
 
     describe('toggle_filter_source', function () {
-        it('adds source when state is true', function () {
-            toggle_filter_source('source1', true);
-            expect(filter_sources['source1']).toBe(1);
+        it('toggles source on when not present', function () {
+            mockSources = {};
+
+            toggle_filter_source(123);
+
+            expect(mockUpdateSourceFilter).toHaveBeenCalledWith({
+                123: 1,
+            });
         });
 
-        it('removes source when state is false', function () {
-            filter_sources['source1'] = 1;
-            toggle_filter_source('source1', false);
-            expect(filter_sources['source1']).toBeUndefined();
+        it('toggles source off when present', function () {
+            mockSources = { 123: 1 };
+
+            toggle_filter_source(123);
+
+            expect(mockUpdateSourceFilter).toHaveBeenCalledWith({
+                123: undefined,
+            });
         });
 
-        it('toggles source when no state provided (not in filter)', function () {
-            toggle_filter_source('source1');
-            expect(filter_sources['source1']).toBe(1);
+        it('can explicitly set state to true', function () {
+            mockSources = {};
+
+            toggle_filter_source(123, false, true);
+
+            expect(mockUpdateSourceFilter).toHaveBeenCalledWith({
+                123: 1,
+            });
         });
 
-        it('toggles source when no state provided (already in filter)', function () {
-            filter_sources['source1'] = 1;
-            toggle_filter_source('source1');
-            expect(filter_sources['source1']).toBeUndefined();
+        it('can explicitly set state to false', function () {
+            mockSources = { 123: 1 };
+
+            toggle_filter_source(123, false, false);
+
+            expect(mockUpdateSourceFilter).toHaveBeenCalledWith({
+                123: undefined,
+            });
         });
 
-        it('handles multiple sources', function () {
-            toggle_filter_source('source1', true);
-            toggle_filter_source('source2', true);
-            toggle_filter_source('source3', false);
+        it('resets all sources when with_reset is true', function () {
+            mockSources = { 100: 1, 200: 1 };
 
-            expect(filter_sources['source1']).toBe(1);
-            expect(filter_sources['source2']).toBe(1);
-            expect(filter_sources['source3']).toBeUndefined();
+            toggle_filter_source(123, true, true);
+
+            expect(mockResetSourceFilter).toHaveBeenCalledTimes(1);
+            expect(mockUpdateSourceFilter).toHaveBeenCalledWith({
+                123: 1,
+            });
         });
 
-        it('handles numeric and string source IDs', function () {
-            toggle_filter_source(123, true);
-            toggle_filter_source('string_id', true);
+        it('does not reset when with_reset is false', function () {
+            mockSources = {};
 
-            expect(filter_sources[123]).toBe(1);
-            expect(filter_sources['string_id']).toBe(1);
-        });
-    });
+            toggle_filter_source(123, false);
 
-    describe('integration behavior', function () {
-        it('filter_sources state persists between function calls', function () {
-            toggle_filter_source('source1', true);
-            toggle_filter_source('source2', true);
-
-            expect(Object.keys(filter_sources)).toEqual(['source1', 'source2']);
-
-            clear_filter_source();
-            expect(Object.keys(filter_sources)).toEqual([]);
+            expect(mockResetSourceFilter).not.toHaveBeenCalled();
+            expect(mockUpdateSourceFilter).toHaveBeenCalledWith({
+                123: 1,
+            });
         });
 
-        it('handles complex toggle sequences', function () {
-            // Add some sources
-            toggle_filter_source('a', true);
-            toggle_filter_source('b', true);
-            toggle_filter_source('c', true);
-            expect(Object.keys(filter_sources).sort()).toEqual(['a', 'b', 'c']);
+        it('handles multiple different sources', function () {
+            mockSources = {};
 
-            // Remove one
-            toggle_filter_source('b', false);
-            expect(Object.keys(filter_sources).sort()).toEqual(['a', 'c']);
+            toggle_filter_source(100);
+            toggle_filter_source(200);
 
-            // Toggle (should add back)
-            toggle_filter_source('b');
-            expect(Object.keys(filter_sources).sort()).toEqual(['a', 'b', 'c']);
-
-            // Toggle again (should remove)
-            toggle_filter_source('b');
-            expect(Object.keys(filter_sources).sort()).toEqual(['a', 'c']);
+            expect(mockUpdateSourceFilter).toHaveBeenCalledTimes(2);
+            expect(mockUpdateSourceFilter).toHaveBeenNthCalledWith(1, {
+                100: 1,
+            });
+            expect(mockUpdateSourceFilter).toHaveBeenNthCalledWith(2, {
+                200: 1,
+            });
         });
     });
 });

@@ -1,4 +1,3 @@
-import { spinner } from './component/spinner';
 import { get_db_path } from './globals';
 import { get_app_languages } from './langdetect.es5';
 import { persistentStorage } from './persistent-storage.es5';
@@ -24,7 +23,7 @@ interface SongLanguage {
 
 // Return a list of song languages available on the server, with their
 // translations.
-export function refresh_song_languages(with_spinner = false): Promise<Record<string, SongLanguage>> {
+export function refresh_song_languages(): Promise<Record<string, SongLanguage>> {
     // Don't continually hit the server, but refetch when the app has been
     // restarted if requested via this method
     if (_song_languages_last_load && _song_languages_last_load - Date.now() < 3600 * 1000 && _song_languages_last_promise) return _song_languages_last_promise;
@@ -37,10 +36,7 @@ export function refresh_song_languages(with_spinner = false): Promise<Record<str
         if (elem) _song_languages_last_promise = Promise.resolve(JSON.parse(elem.innerHTML));
     }
 
-    if (!_song_languages_last_promise) {
-        _song_languages_last_promise = fetch_json(`${get_db_path()}.index.json`, { cache: 'no-store' });
-        if (with_spinner) _song_languages_last_promise = spinner(_song_languages_last_promise);
-    }
+    if (!_song_languages_last_promise) _song_languages_last_promise = fetch_json(`${get_db_path()}.index.json`, { cache: 'no-store' });
 
     _song_languages_last_promise = _song_languages_last_promise.then((song_languages: Record<string, SongLanguage>) => {
         _song_language_translations = song_languages;

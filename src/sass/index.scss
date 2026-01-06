@@ -1,70 +1,20 @@
-// The point at which we may show a sidebar
-$sidebar-breakpoint: 700px;
-
 // At this size move song info to the rhs
 $song-info-rhs-breakpoint: 1000px;
+
+$background-color: #f8f8f8;
+$text-color: #7e7e7e;
+$theme-base-color: #948df0;
+$theme-inactive-color: rgba($theme-base-color, 80%);
 
 @import './font-importer';
 @import './language-fonts';
 @import './app-fonts';
-@import './basics';
 @import './rtl-ui';
-@import './jqm-fixes';
 @import './vertical-langs';
 
-@import './audio-player';
 @import './presentation';
 @import './dual-present';
-@import './spinner';
-@import './lock-screen';
-@import './helptext';
 @import './responsive';
-@import './rating';
-@import './chord-fingering';
-@import './pager';
-@import './collapsable-sections';
-@import './tristate';
-@import './jq-color-picker';
-@import './songlist';
-@import './no-header-text';
-@import './sidebar';
-@import './icons';
-@import './sortable';
-@import './secondary-song';
-@import './song-info';
-@import './search';
-@import './song-view';
-@import './set-view';
 @import './chorddisplay';
 
 @import './print';
-
-.ui-body-c .textarea {
-    min-height: 150px;
-    height: 50%;
-    width: 100%;
-    /*font-family:Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New, monospace;*/
-}
-
-.tablet .content-primary {
-    width: 60%;
-    float: right;
-}
-
-.setview .listview-only,
-.listview .setview-only {
-    display: none !important;
-}
-
-// disable anything that required offline database
-.db-offline .online-db-only,
-.db-online .offline-db-only,
-html:not(.supports-offline) .if-supports-offline {
-    display: none !important;
-}
-
-#setting-info {
-    overflow-wrap: break-word;
-    // Old ie alias but supported by almost all browsers
-    word-wrap: break-word;
-}

@@ -40,8 +40,6 @@ interface SetDBData {
     sets: Record<number, SetEntry>;
 }
 
-type AdjacentSongIds = { prev_id?: number; next_id?: number };
-
 export class SetDB {
     _data: SetDBData;
     _watchers: Record<string, number>;
@@ -171,21 +169,6 @@ export class SetDB {
         const set = this._create_set(name);
         this._save_sets();
         return set.id;
-    }
-
-    async find_adjacent_songids_in_set(set_id: number, song_id: number): Promise<AdjacentSongIds> {
-        let ret: AdjacentSongIds = {};
-
-        let details = this.find_song_position_in_set(set_id, song_id);
-        if (details) {
-            let set = details.set;
-
-            if (details.position > 0) ret.prev_id = set.songs[details.position - 1].song_id;
-
-            if (details.position + 1 < set.songs.length) ret.next_id = set.songs[details.position + 1].song_id;
-        }
-
-        return ret;
     }
 
     async get_song_set_details(set_id: number, song_id: number) {

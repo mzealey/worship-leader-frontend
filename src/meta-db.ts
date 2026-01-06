@@ -1,4 +1,3 @@
-import { spinner } from './component/spinner';
 import { get_db_path } from './globals';
 import { persistentStorage } from './persistent-storage.es5';
 import { fetch_json } from './util';
@@ -21,15 +20,14 @@ export type MetaDb = {
 let _meta_last_load: number | undefined;
 let _meta_last_promise: Promise<MetaDb> | undefined;
 
-/* Return contents of the meta db from the server (tags, albums etc). Don't
- * really want to show a spinner on startup
+/* Return contents of the meta db from the server (tags, albums etc).
  *
  * As we may not have an internet connection, try updating in the
  * background until we get a successful hit. This means that the first
  * request(s) via get_meta_db() will get an old version but after that
  * hopefully new versions
  */
-export async function refresh_meta_db(with_spinner = false): Promise<MetaDb> {
+export async function refresh_meta_db(): Promise<MetaDb> {
     // Don't continually hit the server, only at most every hour even when forced refresh happens
     if (_meta_last_load && Date.now() - _meta_last_load < 3600 * 1000 && _meta_last_promise) return _meta_last_promise;
 
@@ -42,8 +40,6 @@ export async function refresh_meta_db(with_spinner = false): Promise<MetaDb> {
     }
 
     if (!loading_meta_promise) loading_meta_promise = fetch_json<MetaDb>(`${get_db_path()}.smeta.json`, { cache: 'no-store' });
-
-    if (with_spinner) loading_meta_promise = spinner(loading_meta_promise);
 
     loading_meta_promise = loading_meta_promise.then((meta: MetaDb) => {
         _meta_last_load = Date.now();

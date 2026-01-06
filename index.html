@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html class="show-splash">
+<html class="show-splash splash-available">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, shrink-to-fit=no, maximum-scale=1, user-scalable=no">
 
 <!-- A build type of 'live' is served when run from the perl script ie an old approach at server-side rendering -->
 <% if( htmlWebpackPlugin.options.build == 'live' || htmlWebpackPlugin.options.build == 'www' ) { %>
@@ -22,10 +22,10 @@
 
     <!-- windows webapp stuff -->
     <meta name="msapplication-TileImage" content="apple-touch-icon.png">
-    <meta name="msapplication-TileColor" content="#000000">
+    <meta name="msapplication-TileColor" content="#ffffff">
 
     <!-- chrome/android webapp stuff -->
-    <meta name="theme-color" content="#000000">
+    <meta name="theme-color" content="#ffffff">
 
     <link rel="icon" type="image/png" href="img/worshipleader.png">
 
@@ -68,8 +68,6 @@
     <title>[% song.title | html %] - [% langpack.item('worship-leader') %]</title>
 <% } %>
 
-<!-- TODO: inline the style for initial splash screen and base js too when available -->
-<script src="src/splash.es5.js" type="module"></script>
 </head>
 <body>
 
@@ -81,10 +79,81 @@
 
 <!-- splashscreen -->
 <div id="load-splash-screen">
+    <div class="bg">
+        <svg id="botright" width="631.08" height="695.53" fill="none" version="1.1" viewBox="0 0 631.08 695.53" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+         <path d="m356.06 12.589c-112.11-42.806-218.28 33.69-261.59 78.138-97.956 86.631-151.18 369.46 0 501.95 304.07 266.49 569.05-57.754 533.38-155.43s-197.04-47.562-205.54-122.3c-8.493-74.741 17.224-124.65 22.932-149.48 16.987-73.892-15.174-124.62-89.18-152.88z" fill="url(#paint0_linear)" fill-opacity=".8"/>
+         <defs>
+          <linearGradient id="paint0_linear" x1="239.47" x2=".95199" y1="51.729" y2="531.87" gradientTransform="translate(180.18 -.759)" gradientUnits="userSpaceOnUse">
+           <stop stop-color="#B68EF3" offset="0"/>
+           <stop stop-color="#8EEAD9" offset="1"/>
+          </linearGradient>
+         </defs>
+        </svg>
+
+        <svg id="dot1" width="108" height="109" viewBox="0 0 108 109" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M83.5462 68.5622C79.3605 46.5104 130.885 28.9804 93.4146 6.75492C58.5625 -13.8753 1.62358 17.8808 1.00052 45.8282C0.422254 72.7369 20.1724 94.9721 44.4169 105.672C64.1361 114.337 87.6369 104.259 83.5462 68.5622Z" fill="url(#paint1_linear)" fill-opacity="0.8"/>
+        <defs>
+        <linearGradient id="paint1_linear" x1="28.2672" y1="92.9563" x2="133.06" y2="-26.3684" gradientUnits="userSpaceOnUse">
+        <stop stop-color="#9CBDF4"/>
+        <stop offset="1" stop-color="#85FFD3"/>
+        </linearGradient>
+        </defs>
+        </svg>
+
+        <svg id="dot2" width="44" height="47" viewBox="0 0 44 47" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M23.9588 0.0975831C35.6827 0.960375 47.5588 19.1298 41.5193 32.7822C35.5812 46.3331 14.4174 50.4441 5.48495 42.0192C-2.48319 34.4571 0.764952 18.4192 8.02256 9.33452C9.54514 7.40593 15.8892 -0.460694 23.9588 0.0975831Z" fill="url(#paint5_linear)" fill-opacity="0.8"/>
+        <defs>
+        <linearGradient id="paint5_linear" x1="5.06522" y1="41.5477" x2="37.8975" y2="8.71536" gradientUnits="userSpaceOnUse">
+        <stop stop-color="#B6B0F1"/>
+        <stop offset="1" stop-color="#C1A3F3"/>
+        </linearGradient>
+        </defs>
+        </svg>
+
+
+        <svg id="right" width="595.53" height="1067.2" fill="none" version="1.1" viewBox="0 0 595.53 1067.2" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+         <path d="m279.31 98.85c49.026 193.97 346.66 444.64 71.189 505.08-249.39 29.842-495.91 427.92-246.76 459.65 334.65 42.631 528.45-301.53 485.99-417.78s-54.044-188.33-124.98-312.48c-58.399-102.22-97.173-260.47-114.26-285.53-63.947-93.788-92.914-34.894-71.189 51.061z" fill="url(#paint2_linear)" fill-opacity=".8"/>
+         <defs>
+          <linearGradient id="paint2_linear" x1="64.493" x2="404.11" y1="828.11" y2="-30.701" gradientTransform="translate(-.87543 239.11)" gradientUnits="userSpaceOnUse">
+           <stop stop-color="#8EEAD9" offset="0"/>
+           <stop stop-color="#AC6FF4" offset="1"/>
+          </linearGradient>
+         </defs>
+        </svg>
+
+        <svg id="rightdot" width="70" height="76" viewBox="0 0 70 76" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path opacity="0.8" d="M37.9586 0.358917C56.9521 1.75671 76.1924 31.1925 66.4079 53.3105C56.7878 75.2641 22.5008 81.9242 8.02951 68.2752C-4.87951 56.0239 0.382731 30.0414 12.1406 15.3235C14.6073 12.199 24.8852 -0.545536 37.9586 0.358917Z" fill="url(#paint3_linear)"/>
+        <defs>
+        <linearGradient id="paint3_linear" x1="7.3495" y1="67.5113" x2="60.5404" y2="14.3204" gradientUnits="userSpaceOnUse">
+        <stop stop-color="#B88CF3"/>
+        <stop offset="1" stop-color="#97B1EF"/>
+        </linearGradient>
+        </defs>
+        </svg>
+
+        <svg id="top" width="990.25" height="748.49" fill="none" version="1.1" viewBox="0 0 990.25 748.49" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="none">
+         <path d="m889.55 0.14013c-217.87 15.269-285.6 202.14-367.76 220.18-165.61 27.092-577.43 129.93-515.51 333.06 88.337 289.76 196.27 202.31 323.75 84.589 127.49-117.73 170.87-24.345 276.05-103.21 105.18-78.866 110.27-28.064 322.73-219.27 112.33-101.09 53.358-321.85-39.268-315.35z" fill="url(#paint4_linear)" fill-opacity=".8"/>
+         <defs>
+          <linearGradient id="paint4_linear" x1="590.91" x2="150.23" y1="-30.7" y2="-248.91" gradientTransform="translate(-.48121 551.44)" gradientUnits="userSpaceOnUse">
+           <stop stop-color="#AC6FF4" offset="1e-4"/>
+           <stop stop-color="#8EEAD9" offset="1"/>
+          </linearGradient>
+         </defs>
+        </svg>
+    </div>
+
     <div class="splash-contain">
-        <img id="splash-img">
+        <svg width="137" height="66" viewBox="0 0 137 66" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M0.690552 12.8374L55.7558 65.1506L69.927 52.0092L14.4875 0.0400391L0.690552 12.8374Z" fill="#B392F2"/>
+            <path d="M136.706 13.4063L82.9248 65.9631L69.9271 52.0092L123.851 0.0400391L136.706 13.4063Z" fill="#B392F2"/>
+            <path d="M45.8949 12.7928L56.5111 2.92297L69.4024 16.6712L82.8416 4.17216L93.5014 15.6592L69.4104 38.123L45.8949 12.7928Z" fill="#B392F2"/>
+        </svg>
+        <div id="splash-text"></div>
     </div>
 </div>
+
+<!-- TODO: inline the style for initial splash screen and base js too when available -->
+<script type="module" src="src/splash.es5.ts"></script>
 
 <% if( htmlWebpackPlugin.options.build == 'live' ) { %>
     [%# to speed up loading embed various json details in the page %]
@@ -99,926 +168,49 @@
     [% IF song_lang_db_raw %]
         <script id="json-song_lang_db" type="application/json">[% song_lang_db_raw %]</script>
     [% END %]
-
-    [% FILTER parse_localize(langpack) %]
 <% } %>
-<div data-role="page" id="page-list" data-localize-title="songsearch">
-    <div data-role="header" data-position="fixed" data-tap-toggle="false" data-theme="b">
-            <a class="ui-btn-left ui-btn ui-btn-inline ui-btn-icon-left ui-icon-bullets" href="#page-set-list" data-localize="set_list"></a>
-            <h1 data-localize="search"></h1>
-            <a href="#page-settings" data-localize="settings" class="ui-btn-right ui-btn ui-btn-inline ui-btn-icon-left ui-icon-gear"></a>
+<div id="app">
+    <h1 class="songtitle" lang="<%= htmlWebpackPlugin.options.build == 'live' ? '[% html_lang %]' : '' %>">
+        <% if( htmlWebpackPlugin.options.build == 'live' ) { %>
+            [% song.title | html %]
+        <% } %>
+    </h1>
+    <div class="songalttitles" lang="<%= htmlWebpackPlugin.options.build == 'live' ? '[% html_lang %]' : '' %>">
+        <% if( htmlWebpackPlugin.options.build == 'live' ) { %>
+            [% alt_titles = [];
+            FOR t IN song.alternative_titles;
+                t = t | html;
+                alt_titles.push( '<span class="subtitle">' _ t _ '</span>' );
+            END;
+            alt_titles = alt_titles.join('');
+            %]
 
-            <div>
-                <div class="btn-right">
-                    <button class="dropdown ui-btn ui-corner-all ui-icon-carat-d ui-btn-icon-notext" data-localize="more_search_options"></button>
-                    <input type="search" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" class="search" data-placeholder-localize="search_placeholder" data-title-localize="search_placeholder">
-                </div>
-                <div class="extra">
-                    <div class="ui-grid-a ui-responsive">
-                        <div class="ui-block-a">
-                            <select class="order-by" data-mini="true" data-title-localize="sort_default">
-                                <option value="default" data-localize="sort_default"></option>
-                                <option value="real_song_usage desc" data-localize="sort_popular"></option>
-                                <option value="sort_title asc" data-localize="sort_title"></option>
-                                <option value="sort_title desc" data-localize="sort_title_back"></option>
-                                <option value="rating desc" data-localize="sort_rated"></option>
-                                <option value="songs.id desc" data-localize="sort_added"></option>
-                                <option value="song_ts desc" data-localize="sort_updated"></option>
-                                <option value="song_source.number asc" data-localize="sort_song_number"></option>
-                                <option value="year desc" data-localize="year_written"></option>
-                                <option class="offline-db-only" value="usage_stat.last_view desc" data-localize="sort_last_viewed"></option>
-                                <option class="offline-db-only" value="usage_stat.total_views desc" data-localize="sort_most_viewed"></option>
-                            </select>
-                        </div>
-                        <div class="ui-block-b">
-                            <select class="filter-language" data-mini="true" data-title-localize="button-choose-song-languages">
-                                <option value="all" data-localize="filter_lang_all"></option>
-                                <option value="more" data-localize="filter_lang_select_more"></option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div class="ui-grid-a ui-responsive">
-                        <div class="ui-block-a">
-                            <div class="ui-mini">
-                                <a class="clear-filter-tags ui-btn ui-btn-icon-notext ui-corner-all ui-icon-delete left-icon"></a>
-                                <a class="filter-tags ui-btn ui-btn-icon-right ui-icon-carat-d block" href="#page-tag-select" data-rel="dialog" data-localize="tag_str"></a>
-                            </div>
-
-                        </div>
-                        <div class="ui-block-b">
-                            <div class="ui-mini">
-                                <a class="clear-filter-sources ui-btn ui-btn-icon-notext ui-corner-all ui-icon-delete left-icon"></a>
-                                <a class="filter-sources ui-btn ui-btn-icon-right ui-icon-carat-d block" href="#page-source-select" data-rel="dialog" data-localize="source_str"></a>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="ui-grid-a ui-responsive">
-                        <div class="ui-block-a">
-                            <div class="ui-mini">
-                                <input type="search" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" class="songkey" data-placeholder-localize="key_text" data-title-localize="key_text">
-                            </div>
-                        </div>
-                        <div class="ui-block-b">
-                            <div class="ui-mini">
-                                <button class="filter-mp3 ui-btn ui-corner-all tristate" type="button">
-                                    <span data-localize="listen_words"></span> <span class="symbols">&#x266B;</span>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="ui-grid-a ui-responsive">
-                        <div class="ui-block-a">
-                            <div class="ui-mini">
-                                <button class="filter-chord ui-btn ui-corner-all tristate" type="button">
-                                    <span data-localize="edit_chords"></span> <span class="symbols">&#x266F;&#x266D;</span>
-                                </button>
-                            </div>
-                        </div>
-
-                        <div class="ui-block-b">
-                            <div class="ui-mini">
-                                <button class="filter-sheet ui-btn ui-corner-all tristate" type="button">
-                                    <span data-localize="has_sheet"></span> <span class="symbols">&#xF0F6;</span>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="ui-grid-a ui-responsive">
-                        <div class="ui-block-a">
-                            <div class="ui-mini">
-                                <button class="filter-original ui-btn ui-corner-all tristate" type="button">
-                                    <span data-localize="untranslated_song"></span> <span class="symbols">&#x2605;</span>
-                                </button>
-                            </div>
-                        </div>
-                        <div class="ui-block-b offline-db-only">
-                            <div class="ui-mini">
-                                <button class="filter-favourites ui-btn ui-corner-all tristate" type="button">
-                                    <span data-localize="favourite-filter"></span> <span class="symbols">&#x2665;</span>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
+            [% alt_titles %]
+        <% } %>
     </div>
-
-    <div class="pager">
-            <a class="ui-btn pager-prev ui-icon-arrow-l ui-btn-icon-notext ui-btn-inline ui-corner-all" data-localize="pager_prev"></a>
-            <a class="ui-btn pager-next ui-icon-arrow-r ui-btn-icon-notext ui-btn-inline ui-corner-all" data-localize="pager_next"></a>
-            <span class="pager-total"></span>
-    </div>
-
-    <div class="ui-content">
-        <div class="content-primary">
-            <p data-localize="noresults" style="font-weight: bold; display: none" class="noresults"></p>
-            <ul class="songlist" data-role="listview">
-            </ul>
-        </div>
-    </div>
-
-    <div class="pager">
-            <a class="ui-btn pager-prev ui-icon-arrow-l ui-btn-icon-notext ui-btn-inline ui-corner-all" data-localize="pager_prev"></a>
-            <a class="ui-btn pager-next ui-icon-arrow-r ui-btn-icon-notext ui-btn-inline ui-corner-all" data-localize="pager_next"></a>
-            <span class="pager-total"></span>
-    </div>
-
-    <div class="helptext">
-        <p data-localize="help_page_list" data-title-localize="help_page_list"></p>
+    <div class="songxml" lang="<%= htmlWebpackPlugin.options.build == 'live' ? '[% html_lang %]' : '' %>">
+        <% if( htmlWebpackPlugin.options.build == 'live' ) { %>
+            <pre>[% song.songxml.to_lyrics | html %]</pre>
+            [%# Add some links to other songs for seo purposes %]
+            [% FOREACH other_song IN get_random_rows(c, 10) %]
+                <a href="https://songs.worshipleaderapp.com/[% other_song.pretty_path() %]">[% other_song.title | html %]</a>
+            [% END %]
+        <% } %>
     </div>
 </div>
-
-<div data-role="page" id="page-initializing" data-localize-title="initializing">
-    <div data-role="header" data-theme="b" class="full-width">
-        <h1 data-localize="initializing">Initializing...</h1>
-    </div>
-</div>
-
-<div data-role="page" id="page-dbload-failed" data-localize-title="dbload-failed-title">
-    <div data-role="header" data-theme="b" class="full-width">
-        <h1 data-localize="dbload-failed-title"></h1>
-    </div>
-
-    <div class="ui-content">
-        <div class="content-primary">
-            <p data-localize="dbload-failed"></p>
-        </div>
-    </div>
-
-    <div data-role="footer" data-position="fixed" data-tap-toggle="false" class="bottom-btn">
-        <a class="ui-btn ui-btn-icon-left ui-icon-refresh" data-localize="retry"></a>
-    </div>
-</div>
-
-
-<div data-role="page" id="firsttime-welcome" data-localize-title="firsttime_welcome_title">
-    <div data-role="header" data-theme="b" class="full-width">
-        <h1 data-localize="firsttime_welcome_title"></h1>
-    </div>
-
-    <div class="ui-content">
-    <div class="content-primary">
-        <p data-localize="firsttime_welcome"></p>
-        <div class="if-langpack">
-            <p data-localize="choose_lang_msg"></p>
-            <select data-title-localize="setting-lang"></select>
-        </div>
-    </div>
-    </div>
-
-    <div data-role="footer" data-position="fixed" data-tap-toggle="false" class="bottom-btn">
-        <a class="firsttime-welcome-next ui-btn ui-btn-icon-left ui-icon-forward" data-localize="continue"></a>
-    </div>
-</div>
-
-<div data-role="page" id="page-add-to-set" data-localize-title="add_song_to_set">
-    <div data-role="header" data-theme="b">
-        <h1 data-localize="add_song_to_set"></h1>
-    </div>
-    <div class="ui-content">
-    <div class="content-primary">
-        <form name="set-add" class="clearfix">
-            <div class="ui-field-contain">
-                <label for="set-name" data-localize="set_name"></label>
-                <input type="text" id="set-name">
-            </div>
-            <button class="ui-btn ui-btn-icon-left ui-icon-plus" data-localize="set_create"></button>
-        </form>
-        <ul class="setlist" data-role="listview" style="margin-top: 1em">
-        </ul>
-    </div>
-    </div>
-
-    <div data-role="popup" id="already-in-set">
-        <p data-localize="already_in_set"></p>
-    </div>
-</div>
-
-<div data-role="page" id="dialog-set-delete" data-localize-title="delete_set">
-    <div data-role="header" data-theme="b" class="full-width">
-        <h1 data-localize="delete_set"></h1>
-    </div>
-    <div class="ui-content">
-    <div class="content-primary">
-        <div data-localize="delete_set_confirm"></div>
-        <div class="ui-grid-a">
-            <div class="ui-block-a">
-                <a data-rel="back" id="button-set-delete" class="ui-btn ui-btn-icon-left ui-icon-delete ui-btn-b" data-localize="delete_set_btn"></a>
-            </div>
-            <div class="ui-block-b">
-                <a data-rel="back" class="ui-btn ui-btn-icon-left ui-icon-back" data-localize="cancel_btn"></a>
-            </div>
-        </div>
-    </div>
-    </div>
-</div>
-
-<div data-role="page" id="dialog-set-share" data-localize-title="share-set">
-    <div data-role="header" data-theme="b">
-        <h1 data-localize="share-set"></h1>
-    </div>
-
-    <div class="ui-content">
-    <div class="content-primary">
-        <div data-localize="share_set_title"></div>
-        <div class="ui-grid-a">
-            <div class="ui-block-a">
-                <a id="button-set-share-live" class="ui-btn ui-btn-icon-left ui-icon-rss ui-btn-b" data-localize="share-set-live"></a>
-            </div>
-            <div class="ui-block-b">
-                <a id="button-set-share-normal" class="ui-btn ui-btn-icon-left ui-icon-bullets ui-btn-b" data-localize="share-set-normal"></a>
-            </div>
-        </div>
-    </div></div>
-</div>
-
-<div data-role="page" id="dialog-set-rename" data-localize-title="rename_set">
-    <div data-role="header" data-theme="b" class="full-width">
-        <h1 data-localize="rename_set"></h1>
-    </div>
-    <div class="ui-content">
-    <div class="content-primary">
-        <form name="set-rename">
-            <div class="ui-field-contain">
-                <label for="set-name-rename" data-localize="set_name"></label>
-                <input type="text" id="set-name-rename">
-            </div>
-            <button class="ui-btn" data-localize="rename_set_btn"></button>
-        </form>
-    </div>
-    </div>
-</div>
-
-<div data-role="page" id="page-set-list" data-localize-title="sets">
-    <div data-role="header" data-position="fixed" data-tap-toggle="false" data-theme="b">
-        <a class="ui-btn-left ui-btn ui-btn-inline ui-btn-icon-left ui-icon-search nosplitview" href="#page-list" data-localize="songlist"></a>
-        <a class="ui-btn-left ui-btn ui-btn-inline ui-btn-icon-left ui-icon-search widescreen-only-btn" href="#songinfo" data-localize="songlist"></a>
-        <h1 data-localize="sets"></h1>
-        <a href="#page-settings" data-localize="settings" class="ui-btn-right ui-btn ui-btn-inline ui-btn-icon-left ui-icon-gear"></a>
-    </div>
-
-    <div class="ui-content">
-    <div class="content-primary">
-        <p class="no-sets" data-localize="no-sets"></p>
-        <ul class="setlist" data-role="listview" data-split-icon="delete" data-split-theme="a">
-        </ul>
-    </div>
-    </div>
-
-    <div class="helptext">
-        <p data-localize="help_page_set_list" data-title-localize="help_page_set_list"></p>
-    </div>
-</div>
-
-<div data-role="page" id="page-set-view">
-    <div data-role="header" data-position="fixed" data-tap-toggle="false" data-theme="b">
-        <a class="ui-btn-left ui-btn ui-btn-inline ui-btn-icon-left ui-icon-bullets" href="#page-set-list" data-localize="set_list"></a>
-        <h1 class="set-name"></h1>
-        <a class="ui-btn-right ui-btn ui-btn-inline ui-btn-icon-left ui-extra-icon ui-icon-rss" id="share-set-btn" data-localize="sharebtn" data-rel="dialog"></a>
-    </div>
-    <div class="ui-content">
-    <div class="content-primary">
-        <ul class="setsongs songlist" data-role="listview">
-        </ul>
-    </div>
-    </div>
-
-    <div class="helptext">
-        <p data-localize="help_page_set_view" data-title-localize="help_page_set_view"></p>
-    </div>
-</div>
-
-<div data-role="page" id="page-tag-select" data-localize-title="tag_str">
-    <div data-role="header" data-theme="b">
-        <h1 data-localize="tag_str"></h1>
-    </div>
-    <div class="ui-content">
-    <div class="content-primary">
-        <ul class="" data-role="listview" id="tag-list">
-        </ul>
-    </div>
-    </div>
-</div>
-
-<div data-role="page" id="page-source-select" data-localize-title="source_str">
-    <div data-role="header" data-theme="b">
-        <h1 data-localize="source_str"></h1>
-    </div>
-    <div class="ui-content">
-    <div class="content-primary">
-        <ul class="" data-role="listview" id="source-list">
-        </ul>
-    </div>
-    </div>
-</div>
-
-<div data-role="page" id="songinfo">
-    <div id="sidebar" data-role="page">
-        <div data-role="header" data-theme="b" data-position="fixed" data-tap-toggle="false">
-            <a class="ui-btn-left ui-btn ui-btn-inline ui-btn-icon-left ui-icon-bullets" href="#page-set-list" data-localize="set_list"></a>
-            <h1 data-localize="search"></h1>
-            <a class="ui-btn-right ui-btn ui-btn-inline ui-btn-icon-notext ui-icon-carat-l ui-corner-all toggle-sidebar" data-localize="sidebar_hide"></a>
-            <div>
-                <div class="btn-right">
-                    <button class="dropdown ui-btn ui-corner-all ui-icon-carat-d ui-btn-icon-notext" data-localize="more_search_options"></button>
-                    <input type="search" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" class="search" data-placeholder-localize="search_placeholder" data-title-localize="search_placeholder">
-                </div>
-                <div class="extra">
-                    <select class="order-by" data-mini="true" data-title-localize="sort_default">
-                        <option value="default" data-localize="sort_default"></option>
-                        <option value="real_song_usage desc" data-localize="sort_popular"></option>
-                        <option value="sort_title asc" data-localize="sort_title"></option>
-                        <option value="sort_title desc" data-localize="sort_title_back"></option>
-                        <option value="rating desc" data-localize="sort_rated"></option>
-                        <option value="songs.id desc" data-localize="sort_added"></option>
-                        <option value="song_ts desc" data-localize="sort_updated"></option>
-                        <option value="song_source.number asc" data-localize="sort_song_number"></option>
-                        <option value="year desc" data-localize="year_written"></option>
-                        <option class="offline-db-only" value="usage_stat.last_view desc" data-localize="sort_last_viewed"></option>
-                        <option class="offline-db-only" value="usage_stat.total_views desc" data-localize="sort_most_viewed"></option>
-                    </select>
-
-                    <select class="filter-language" data-mini="true" data-title-localize="button-choose-song-languages">
-                        <option value="all" data-localize="filter_lang_all"></option>
-                        <option value="more" data-localize="filter_lang_select_more"></option>
-                    </select>
-
-                    <div class="ui-mini">
-                        <a class="clear-filter-tags ui-btn ui-btn-icon-notext ui-corner-all ui-icon-delete left-icon"></a>
-                        <a class="filter-tags ui-btn ui-btn-icon-right ui-icon-carat-d block" href="#page-tag-select" data-rel="dialog" data-localize="tag_str"></a>
-                    </div>
-
-                    <div class="ui-mini">
-                        <a class="clear-filter-sources ui-btn ui-btn-icon-notext ui-corner-all ui-icon-delete left-icon"></a>
-                        <a class="filter-sources ui-btn ui-btn-icon-right ui-icon-carat-d block" href="#page-source-select" data-rel="dialog" data-localize="source_str"></a>
-                    </div>
-
-                    <div class="ui-mini">
-                        <button class="filter-mp3 ui-btn ui-corner-all tristate" type="button">
-                            <span data-localize="listen_words"></span> <span class="symbols">&#x266B;</span>
-                        </button>
-                    </div>
-
-                    <div class="ui-mini">
-                        <button class="filter-chord ui-btn ui-corner-all tristate" type="button">
-                            <span data-localize="edit_chords"></span> <span class="symbols">&#x266F;&#x266D;</span>
-                        </button>
-                    </div>
-
-                    <div class="ui-mini">
-                        <button class="filter-sheet ui-btn ui-corner-all tristate" type="button">
-                            <span data-localize="has_sheet"></span> <span class="symbols">&#xF0F6;</span>
-                        </button>
-                    </div>
-
-                    <div class="ui-mini">
-                        <button class="filter-original ui-btn ui-corner-all tristate" type="button">
-                            <span data-localize="untranslated_song"></span> <span class="symbols">&#x2605;</span>
-                        </button>
-                    </div>
-
-                    <div class="ui-mini offline-db-only">
-                        <button class="filter-favourites ui-btn ui-corner-all tristate" type="button">
-                            <span data-localize="favourite-filter"></span> <span class="symbols">&#x2665;</span>
-                        </button>
-                    </div>
-
-                    <div class="ui-mini">
-                        <input type="search" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" class="songkey" data-placeholder-localize="key_text" data-title-localize="key_text">
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div class="sidebar-container">
-            <div class="pager">
-                <a class="ui-btn pager-prev ui-icon-arrow-l ui-btn-icon-notext ui-btn-inline ui-corner-all" data-localize="pager_prev"></a>
-                <a class="ui-btn pager-next ui-icon-arrow-r ui-btn-icon-notext ui-btn-inline ui-corner-all" data-localize="pager_next"></a>
-                <span class="pager-total"></span>
-            </div>
-
-            <p data-localize="noresults" style="font-weight: bold; display: none" class="noresults"></p>
-            <ul class="songlist" data-role="listview">
-            </ul>
-
-            <div class="pager">
-                <a class="ui-btn pager-prev ui-icon-arrow-l ui-btn-icon-notext ui-btn-inline ui-corner-all" data-localize="pager_prev"></a>
-                <a class="ui-btn pager-next ui-icon-arrow-r ui-btn-icon-notext ui-btn-inline ui-corner-all" data-localize="pager_next"></a>
-                <span class="pager-total"></span>
-            </div>
-        </div>
-    </div>
-
-    <div id="main-page">
-    <div data-role="header" data-theme="b" data-position="fixed" data-tap-toggle="false">
-        <div class="ui-btn-left">
-            <a class="ui-btn ui-btn-inline ui-btn-icon-notext ui-icon-carat-r ui-corner-all toggle-sidebar no-sidebar-show" data-localize="sidebar_show"></a>
-
-            <a href="#page-settings" data-localize="settings" class="ui-btn ui-btn-inline ui-btn-icon-left ui-icon-gear sidebar-only-btn listview-only"></a>
-            <a href="#page-list" data-localize="songlist" class="ui-btn ui-btn-inline ui-btn-icon-left ui-icon-search no-sidebar-show listview-only"></a>
-
-            <button class="to-set-list ui-btn ui-btn-inline ui-btn-icon-left ui-icon-back setview-only" data-localize="set_list"></button>
-        </div>
-        <h1 class="songtitle" lang="<%= htmlWebpackPlugin.options.build == 'live' ? '[% html_lang %]' : '' %>">
-            <% if( htmlWebpackPlugin.options.build == 'live' ) { %>
-                [% song.title | html %]
-            <% } %>
-        </h1>
-        <a class="ui-btn-right ui-btn ui-btn-inline ui-btn-icon-left ui-icon-plus listview-only" href="#page-add-to-set" data-rel="dialog" data-localize="add_to_set"></a>
-
-        <a class="ui-btn-right ui-btn ui-btn-inline ui-btn-icon-left ui-icon-delete nosplitview setview-only" href="#page-list" data-localize="exit_set"></a>
-        <a class="ui-btn-right ui-btn ui-btn-inline ui-btn-icon-left ui-icon-delete widescreen-only-btn setview-only" href="#songinfo" data-localize="exit_set"></a>
-
-        <div class="songalttitles ui-title" lang="<%= htmlWebpackPlugin.options.build == 'live' ? '[% html_lang %]' : '' %>">
-            <% if( htmlWebpackPlugin.options.build == 'live' ) { %>
-                [% alt_titles = [];
-                FOR t IN song.alternative_titles;
-                    t = t | html;
-                    alt_titles.push( '<span class="subtitle">' _ t _ '</span>' );
-                END;
-                alt_titles = alt_titles.join('');
-                %]
-
-                [% alt_titles %]
-            <% } %>
-        </div>
-
-        <div data-role="header" class="prevnext setview-only" data-theme="a">
-            <button data-localize="pager_prev" class="set-prev ui-btn-inline ui-btn ui-btn-left ui-btn-icon-left ui-icon-arrow-l ui-btn-a"></button>
-            <h1></h1>
-            <button data-localize="pager_next" class="set-next ui-btn-inline ui-btn ui-btn-right ui-btn-icon-left ui-icon-arrow-r ui-btn-a"></button>
-        </div>
-    </div>
-
-    <div class="ui-content">
-    <div class="print-advertising" data-localize="print_ad"></div>
-    <div class="content-primary songnotfound">
-        <p data-localize="unknown-song" style="font-weight: bold"></p>
-    </div>
-    <div class="content-primary songdisplay">
-
-        <ul id="songlinks" data-role="listview" class="noprint">
-        </ul>
-
-        <div id="song-left">
-            <div id="song-info-top">
-            </div>
-
-            <div id="songs-container">
-                <div id="primary-song" class="songcontainer">
-
-                    <div class="presenter-view">
-                        <div class="iframe-container">
-                            <iframe src="presentor.html"></iframe>
-                        </div>
-
-                        <button id="present-up" type="button" class="ui-btn ui-icon-arrow-u ui-btn-icon-notext ui-corner-all"></button>
-                        <button id="present-down" type="button" class="ui-btn ui-icon-arrow-d ui-btn-icon-notext ui-corner-all"></button>
-                        <button id="present-left" type="button" class="ui-btn ui-icon-arrow-l ui-btn-icon-notext ui-corner-all"></button>
-                        <button id="present-right" type="button" class="ui-btn ui-icon-arrow-r ui-btn-icon-notext ui-corner-all"></button>
-                        <button id="present-out" type="button" class="ui-btn ui-icon-minus ui-btn-icon-notext ui-corner-all"></button>
-                        <button id="present-in" type="button" class="ui-btn ui-icon-plus ui-btn-icon-notext ui-corner-all"></button>
-                        <button id="present-blank" type="button" class="ui-btn ui-icon-delete ui-btn-icon-notext ui-corner-all"></button>
-                    </div>
-
-                    <div id="song-capo" class="clearfix">
-                        <label for="capo-select" data-localize="capo"></label>
-                        <select data-mini="true" id="capo-select" data-title-localize="capo">
-                            <option value=0 data-localize="none"></option>
-                            <option value=1>1</option>
-                            <option value=2>2</option>
-                            <option value=3>3</option>
-                            <option value=4>4</option>
-                            <option value=5>5</option>
-                            <option value=6>6</option>
-                            <option value=7>7</option>
-                            <option value=8>8</option>
-                            <option value=9>9</option>
-                            <option value=10>10</option>
-                            <option value=11>11</option>
-                        </select>
-                    </div>
-
-                    <button id="song-switch-songxml" class="ui-btn ui-icon-bars ui-btn-icon-left" data-localize="song-switch-songxml"></button>
-
-                    <div class="sheet-music" lang="<%= htmlWebpackPlugin.options.build == 'live' ? '[% html_lang %]' : '' %>">
-                    </div>
-                    <div class="songxml" lang="<%= htmlWebpackPlugin.options.build == 'live' ? '[% html_lang %]' : '' %>">
-                        <% if( htmlWebpackPlugin.options.build == 'live' ) { %>
-                            <pre>[% song.songxml.to_lyrics | html %]</pre>
-                            [%# Add some links to other songs for seo purposes %]
-                            [% FOREACH other_song IN get_random_rows(c, 10) %]
-                                <a href="https://songs.worshipleaderapp.com/[% other_song.pretty_path() %]">[% other_song.title | html %]</a>
-                            [% END %]
-                        <% } %>
-                    </div>
-                </div>
-
-                <div id="secondary-song" class="songcontainer">
-                    <div class="clearfix" id="sec-song-switch">
-                        <button id="sec-pri-switch" class="ui-btn ui-icon-arrow-l ui-btn-icon-notext ui-corner-all" data-localize="song_switch"></button>
-                        <select data-mini="true" id="sec-selector"></select>
-                    </div>
-                    <div class="songxml">
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <div id="song-right">
-            <div class="section noprint">
-                <button id="song-switch-score" class="ui-btn ui-btn-b ui-icon-file-text-o ui-btn-icon-left" data-localize="song-switch-sheet"></button>
-
-                <button id="present-btn" class="ui-btn ui-mini ui-icon-video ui-btn-icon-left ui-btn-inline" data-localize="present-btn"></button>
-                <button id="print-btn" class="ui-btn ui-mini ui-extra-icon ui-icon-print ui-btn-icon-left ui-btn-inline" data-localize="print-btn"></button>
-                <a id="copybtn" class="ui-btn ui-mini ui-icon-action ui-btn-icon-left ui-btn-inline" data-rel="dialog" href="#page-copy-textarea" data-localize="copybtn"></a>
-                <button id="sharebtn" class="ui-btn ui-mini ui-btn-inline ui-btn-icon-left ui-extra-icon ui-icon-rss" data-localize="sharebtn"></button>
-            </div>
-
-            <div class="noprint section">
-                <button id="favourite-btn" class="ui-btn-inline ui-btn ui-mini ui-icon-heart ui-btn-icon-left" data-localize="favourite-btn"></button>
-
-                <div style="display: inline-block">
-                    <span data-localize="rating"></span>
-                    <span class="rating"></span>
-                    <span class="avg-rating">
-                        (<span class="rtng"></span>)
-                    </span>
-                </div>
-            </div>
-
-            <div id="mp3-words" class="noprint section entry-section collapsable-section" data-localize-title="listen_words">
-                <div class="collapse-widget ui-alt-icon"></div>
-                <h3></h3>
-                <div class="entries">
-                </div>
-            </div>
-
-            <div id="mp3-instrumentals" class="noprint section entry-section collapsable-section" data-localize-title="listen_instrumentals">
-                <div class="collapse-widget ui-alt-icon"></div>
-                <h3></h3>
-                <div class="entries"></div>
-            </div>
-
-            <div id="videos" class="noprint section entry-section title-with-buttons collapsable-section" data-localize-title="videos">
-                <div class="collapse-widget ui-alt-icon"></div>
-                <h3></h3>
-                <span class="entries"></span>
-            </div>
-
-            <div class="section noprint" id="chord_dropdown">
-                <label for="chord_select"></label>
-                <select data-mini="true" id="chord_select"><option></option></select>
-            </div>
-
-            <div id="song-info" class="section collapsable-section partial-display">
-                <div class="collapse-widget ui-alt-icon"></div>
-                <div class="entries">
-                </div>
-            </div>
-
-            <div id="tags" class="section noprint title-with-buttons collapsable-section entry-section" data-localize-title="tag_str">
-                <div class="collapse-widget ui-alt-icon"></div>
-                <h3></h3>
-                <span class="entries"></span>
-            </div>
-
-            <div id="albums" class="section noprint collapsable-section entry-section" data-localize-title="albums">
-                <div class="collapse-widget ui-alt-icon"></div>
-                <h3></h3>
-                <div class="entries">
-                </div>
-            </div>
-
-            <div id="sheet-music" class="noprint section entry-section title-with-buttons collapsable-section" data-localize-title="sheet_music">
-                <div class="collapse-widget ui-alt-icon"></div>
-                <h3></h3>
-                <span class="entries"></span>
-            </div>
-
-            <div class="section noprint">
-                <a id="editbtn" class="ui-btn ui-mini ui-icon-edit ui-btn-icon-left ui-btn-inline" data-rel="dialog" href="#page-edit-textarea" data-localize="editbtn"></a>
-                <a id="newbtn" class="ui-btn ui-mini ui-extra-icon ui-icon-upload ui-btn-icon-left ui-btn-inline" data-rel="dialog" href="#page-edit-textarea" data-localize="newbtn"></a>
-                <button id="refreshbtn" class="ui-btn ui-mini ui-btn-inline ui-btn-icon-left ui-extra-icon ui-icon-refresh" data-localize="refreshbtn"></button>
-            </div>
-        </div>
-    </div>
-    </div>
-    </div>
-
-    <div id="presentation-left" class="presentation-overlay">
-        <div class="set-prev symbols">&#x2190;</div>
-    </div>
-    <div id="presentation-right" class="presentation-overlay">
-        <div id="presentation-next" class="set-next symbols">&#x2192;</div>
-    </div>
-    <div id="presentation-bottom" class="presentation-overlay">
-        <div id="close-presentation">&times;</div>
-    </div>
-
-    <div id="chord-display-popup">
-        <div id="chord-prev" class="ui-icon-carat-l ui-alt-icon"></div>
-
-        <div id="chord-display">
-        </div>
-
-        <div id="chord-next" class="ui-icon-carat-r ui-alt-icon"></div>
-    </div>
-
-    <div data-role="popup" class="mp3nonetwork">
-        <p data-localize="mp3nonetwork"></p>
-    </div>
-
-    <div data-role="popup" id="download-file-finished">
-        <p data-localize="download_file_finished"></p>
-    </div>
-
-    <div data-role="popup" id="download-file-error">
-        <p data-localize="download_file_error"></p>
-    </div>
-
-    <div data-role="popup" id="edit-submit-success">
-        <p data-localize="edit_submit_success"></p>
-    </div>
-
-    <div class="helptext">
-        <p data-localize="help_page_songinfo" data-title-localize="help_page_songinfo"></p>
-    </div>
-</div>
-
-<div data-role="page" id="page-copy-textarea" data-localize-title="copybtn">
-    <div data-role="header" data-theme="b">
-        <h1 data-localize="copybtn"></h1>
-    </div>
-    <div class="ui-content">
-    <div class="content-primary">
-        <div class="ui-field-contain">
-            <fieldset data-role="controlgroup" data-type="horizontal">
-                <legend data-localize="edit_format"></legend>
-                <input type="radio" name="copy-type" id="copy-chords" value="chords" checked><label data-localize="edit_chords" for="copy-chords"></label>
-                <input type="radio" name="copy-type" id="copy-opensong" value="opensong"><label data-localize="edit_opensong" for="copy-opensong"></label>
-            </fieldset>
-        </div>
-
-        <pre class="textarea" contenteditable=true data-role="none"></pre>
-    </div>
-    </div>
-</div>
-
-<div data-role="page" id="page-edit-textarea" data-localize-title="editbtn">
-    <div data-role="header" data-theme="b">
-        <h1 data-localize="editbtn"></h1>
-    </div>
-    <div class="ui-content">
-    <div class="content-primary">
-        <div data-localize="edit_welcome_text"></div>
-
-        <div class="ui-field-contain">
-            <fieldset data-role="controlgroup" data-type="horizontal">
-                <legend data-localize="edit_format"></legend>
-                <input type="radio" name="edit-type" id="edit-opensong" value="opensong" checked><label data-localize="edit_opensong" for="edit-opensong"></label>
-                <input type="radio" name="edit-type" id="edit-chords" value="chords"><label data-localize="edit_chords" for="edit-chords"></label>
-                <input type="radio" name="edit-type" id="edit-elvanto" value="elvanto"><label for="edit-elvanto">Elvanto</label>
-            </fieldset>
-        </div>
-
-        <pre class="textarea" contenteditable=true data-role="none"></pre>
-        <div class="ui-grid-a">
-            <div class="ui-block-a"><button id="edit-submit" data-localize="editsubmit" class="ui-btn ui-btn-b ui-btn-icon-left ui-icon-arrow-u"></button></div>
-            <div class="ui-block-b"><a data-rel="back" data-localize="cancel_btn" class="ui-btn ui-btn-icon-left ui-icon-back"></a></div>
-        </div>
-    </div>
-    </div>
-
-    <div data-role="popup" id="edit-submit-failed">
-        <p data-localize="edit_submit_failed"></p>
-    </div>
-</div>
-
-<div data-role="page" id="page-settings" data-localize-title="settings">
-    <div data-role="header" data-position="fixed" data-tap-toggle="false" data-theme="b">
-        <a class="ui-btn-left ui-btn ui-btn-inline ui-btn-icon-left ui-icon-back" data-rel="back" data-localize="back"></a>
-        <h1 data-localize="settings"></h1>
-        <a class="ui-btn-right ui-btn ui-btn-inline ui-btn-icon-left ui-icon-mail" data-ajax="false" target=_blank href="mailto:contact@worshipleaderapp.com" data-localize="contact"></a>
-    </div>
-    <div class="ui-content">
-    <div class="content-primary">
-        <div class="ui-field-contain">
-            <label for="setting-song-zoom" data-localize="setting-zoom"></label>
-            <select id="setting-song-zoom">
-                <option value="vsmall" data-localize="zoom-vsmall"></option>
-                <option value="small" data-localize="zoom-small"></option>
-                <option value="medium" data-localize="zoom-medium"></option>
-                <option value="large" data-localize="zoom-large"></option>
-                <option value="xlarge" data-localize="zoom-xlarge"></option>
-                <option value="xxlarge" data-localize="zoom-xxlarge"></option>
-            </select>
-        </div>
-
-        <div class="ui-field-contain">
-            <label for="setting-lang" data-localize="setting-lang"></label>
-            <select id="setting-lang">
-            </select>
-        </div>
-
-        <a class="ui-btn ui-corner-all ui-btn-icon-left ui-icon-bullets" href="#page-db-langs?from_settings=1" data-localize="button-choose-song-languages"></a>
-
-        <label for="setting-display-lyrics" data-localize="setting-display-lyrics"></label>
-        <input type="checkbox" id="setting-display-lyrics">
-
-        <div id="container-display-chords">
-            <label for="setting-display-chords" data-localize="setting-display-chords"></label>
-            <input type="checkbox" id="setting-display-chords">
-        </div>
-
-        <div class="container-chord-only">
-            <label for="setting-show-fingering" data-localize="setting-show-fingering"></label>
-            <input type="checkbox" id="setting-show-fingering">
-        </div>
-
-        <div class="container-chord-only">
-            <label for="setting-use-solfege" data-localize="setting-use-solfege"></label>
-            <input type="checkbox" id="setting-use-solfege">
-        </div>
-
-        <div id="setting-chord-color-group" class="ui-checkbox">
-            <a class="ui-btn ui-corner-all">
-                <input type="text" id="setting-chord-color" data-role="none">
-                <span data-localize="setting-chord-color"></span>
-            </a>
-        </div>
-
-        <div class="container-chord-only">
-            <label for="setting-show-key-in-list" data-localize="setting-show-key-in-list"></label>
-            <input type="checkbox" id="setting-show-key-in-list">
-        </div>
-
-        <div id="container-sidebyside">
-            <label for="setting-sidebyside" data-localize="setting-sidebyside"></label>
-            <input type="checkbox" id="setting-sidebyside">
-        </div>
-
-        <div id="setting-poweron-group">
-            <label for="setting-poweron" data-localize="setting-poweron"></label>
-            <input type="checkbox" id="setting-poweron">
-        </div>
-
-        <div>
-            <label for="setting-hide-toolbar-btn" data-localize="setting-hide-toolbar-btn"></label>
-            <input type="checkbox" id="setting-hide-toolbar-btn">
-        </div>
-
-        <label for="setting-transitions" data-localize="setting-transitions"></label>
-        <input type="checkbox" id="setting-transitions">
-
-        <label for="setting-show-help" data-localize="setting-show-help"></label>
-        <input type="checkbox" id="setting-show-help">
-
-        <div class="ui-field-contain if-supports-offline">
-            <label for="setting-db" data-localize="setting-db"></label>
-            <select id="setting-db">
-                <option value="online" data-localize="db-type-online"></option>
-                <option value="offline" data-localize="db-type-offline"></option>
-            </select>
-        </div>
-
-        <button class="offline-db-only ui-btn ui-corner-all ui-btn-icon-left ui-icon-refresh" id="button-reloaddb" type="button" data-localize="button-reloaddb"></button>
-
-        <button class="ui-btn ui-corner-all ui-btn-icon-left ui-icon-video" id="refresh-cast" type="button" data-localize="cast_scan"></button>
-        <p id="setting-info"></p>
-    </div></div>
-
-    <div data-role="popup" id="dbreload-success">
-        <p data-localize="dbreload_success"></p>
-    </div>
-
-    <div data-role="popup" id="dbreload-failed">
-        <p data-localize="dbreload_failed"></p>
-    </div>
-
-    <div data-role="popup" id="db-langs-update-succeeded">
-        <p data-localize="db-langs-update-succeeded"></p>
-    </div>
-
-    <div data-role="popup" id="langpack-not-loaded">
-        <p data-localize="langpack-not-loaded"></p>
-    </div>
-
-    <div class="helptext">
-        <p data-localize="help_page_settings" data-title-localize="help_page_settings"></p>
-    </div>
-</div>
-
-<div data-role="page" id="page-db-langs" data-localize-title="db_langs_title">
-    <div data-role="header" data-position="fixed" data-tap-toggle="false" data-theme="b">
-        <a class="ui-btn-left ui-btn ui-btn-inline ui-btn-icon-left ui-icon-back" data-rel="back" data-localize="back"></a>
-        <h1 data-localize="db_langs_header"></h1>
-    </div>
-
-    <div class="ui-content">
-    <div class="content-primary">
-        <p data-localize="db-langs-intro"></p>
-
-        <div class="show-on-complete" id="database-languages"></div>
-    </div></div>
-
-    <div data-role="footer" data-position="fixed" data-tap-toggle="false" class="bottom-btn">
-        <a class="ui-btn ui-corner-all ui-btn-icon-left ui-icon-refresh show-on-retry" id="button-retry-db-langs" data-localize="retry"></a>
-        <a class="show-on-complete ui-btn ui-corner-all ui-btn-icon-left ui-icon-refresh" id="button-update-db-langs" data-localize="button-update-db-langs"></a>
-    </div>
-
-    <!--div class="helptext">
-        <p data-localize="help_page_db_langs" data-title-localize="help_page_db_langs"></p>
-    </div-->
-
-    <div data-role="popup" id="db-langs-select-one">
-        <p data-localize="db-langs-select-one"></p>
-    </div>
-
-    <div data-role="popup" id="db-langs-download-error">
-        <p data-localize="db-langs-download-error"></p>
-    </div>
-</div>
-
-<div data-role="page" id="page-native-prompter" data-localize-title="native_prompt_title">
-    <div data-role="header" data-theme="b">
-        <h1 data-localize="native_prompt_title"></h1>
-    </div>
-
-    <div class="ui-content">
-    <div class="content-primary">
-        <p data-localize="native_prompt_body"></p>
-
-        <div class="ui-grid-a">
-            <div class="ui-block-a">
-                <a id="button-download-app" class="ui-btn ui-btn-icon-left ui-icon-download ui-btn-b" data-localize="native_prompt_btn"></a>
-            </div>
-            <div class="ui-block-b">
-                <a class="ui-btn ui-btn-icon-left ui-icon-forward firsttime-welcome-next" data-localize="continue"></a>
-            </div>
-        </div>
-    </div>
-    </div>
-</div>
-
-<div data-role="page" id="page-sharer" data-dialog="true" data-localize-title="sharebtn">
-    <div data-role="header" data-theme="b">
-        <h1 data-localize="sharebtn"></h1>
-    </div>
-
-    <div class="ui-content">
-    <div class="content-primary">
-        <div data-localize="share_title"></div>
-
-        <a id="share-email" class="ui-btn ui-btn-icon-left ui-icon-mail" data-localize="email"></a>
-        <a id="share-whatsapp" target="_blank" class="ui-btn ui-btn-icon-left ui-extra-icon ui-icon-phone-square" data-action="share/whatsapp/share" data-localize="whatsapp"></a>
-        <a id="share-facebook" target="_blank" class="ui-btn ui-btn-icon-left ui-extra-icon ui-icon-facebook-square" data-localize="facebook"></a>
-        <a id="share-sms" class="ui-btn ui-btn-icon-left ui-icon-phone" data-localize="sms"></a>
-        <a id="share-vk" class="ui-btn" data-localize="vk"></a>
-
-        <label for="share-link" data-localize="copy_link"></label>
-        <input readonly="readonly" id="share-link">
-    </div></div>
-</div>
-
-<div data-role="page" id="page-present" data-dialog="true" data-localize-title="present-choose">
-    <div data-role="header" data-theme="b">
-        <h1 data-localize="present-choose"></h1>
-    </div>
-
-    <div class="ui-content">
-    <div class="content-primary">
-        <button type="button" id="present-monitor" class="ui-btn ui-btn-icon-left ui-icon-video" data-localize="present-monitor"></button>
-        <button type="button" id="present-cast" class="ui-btn ui-btn-icon-left ui-icon-rss" data-localize="present-cast"></button>
-
-        <a data-rel="back" class="ui-btn ui-btn-icon-left ui-icon-back" data-localize="cancel_btn"></a>
-    </div></div>
-</div>
-
-<% if( htmlWebpackPlugin.options.build == 'live' ) { %>
-    [% END %]
-<% } %>
 
 <% if( htmlWebpackPlugin.options.build == 'phonegap' ) { %>
     <script vite-ignore src="cordova.js"></script>
 <% } %>
 
-<div id="lock-screen"></div>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,700&display=swap" />
+<!--link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" /-->
+<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons" />
 
-<!--link href="src/main.css" rel="stylesheet"-->
+<!-- TODO: Include in src/abc.js if we can figure out how to fix the window.abcsf2 loading issues -->
+<script vite-ignore src="/play-1.js"></script>
 
-<!-- public stuff that we just include directly. Hacky but there we go. -->
-<script vite-ignore src="jquery.min.js"></script>
-<script vite-ignore src="jquery.mobile-1.4.5.min.js"></script>
-<!-- TODO: Include in src/score.js if we can figure out how to fix the window.abcsf2 loading issues -->
-<script vite-ignore src="play-1.js"></script>
-
-<script type="module" src="src/main.js"></script>
+<script type="module" src="src/main.tsx"></script>
 
 </body>
 </html>

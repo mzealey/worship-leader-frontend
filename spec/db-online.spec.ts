@@ -14,7 +14,9 @@ vi.mock('../src/langdetect.es5', () => ({
 }));
 
 vi.mock('../src/langpack', () => ({
-    app_lang: () => 'en',
+    useAppLang: {
+        getState: vi.fn(() => ({ appLang: 'en' })),
+    },
 }));
 
 vi.mock('../src/util', () => ({

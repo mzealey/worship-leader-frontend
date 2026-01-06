@@ -1,6 +1,8 @@
 import js from '@eslint/js';
 // TODO: Re-enable this somehow?
 //import importPlugin from 'eslint-plugin-import';
+import react from 'eslint-plugin-react';
+import reactHooks from 'eslint-plugin-react-hooks';
 import { defineConfig } from 'eslint/config';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
@@ -11,11 +13,14 @@ export default defineConfig([
     //importPlugin.flatConfigs.recommended,
     {
         files: ['**/*.{js,jsx,ts,tsx}'],
+        plugins: {
+            react,
+            'react-hooks': reactHooks,
+        },
         languageOptions: {
             globals: {
                 // HTML ones
                 ...globals.browser,
-                ...globals.jquery,
                 ...globals.webextensions,
 
                 // From vite
@@ -43,11 +48,17 @@ export default defineConfig([
             parserOptions: {
                 ecmaFeatures: {
                     impliedStrict: true,
+                    jsx: true,
                 },
             },
         },
 
-        settings: {},
+        settings: {
+            react: {
+                //pragma: 'h',
+                version: 'detect',
+            },
+        },
 
         rules: {
             'no-extra-semi': 0,
@@ -64,6 +75,12 @@ export default defineConfig([
             'no-misleading-character-class': 0,
 
             'no-unused-vars': 'off', // Overridden by @typescript-eslint/no-unused-vars below
+
+            'react/react-in-jsx-scope': 0,
+            'react/no-string-refs': 0,
+
+            // TODO: Add this in
+            'react/prop-types': 0,
 
             // TODO: Fix these eventually
             'no-var': 0,

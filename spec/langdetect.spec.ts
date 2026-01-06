@@ -2,8 +2,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { get_app_languages, get_browser_languages } from '../src/langdetect.es5';
 import { persistentStorage } from '../src/persistent-storage.es5';
-
-// Remove mock for src/splash-util.es5 to test real integration
+import { useSettingsStore } from '../src/settings-store';
 
 describe('langdetect', () => {
     let originalLocation: Location;
@@ -11,6 +10,7 @@ describe('langdetect', () => {
     beforeEach(() => {
         vi.resetModules();
         persistentStorage.clear();
+        useSettingsStore.setState({ settings: useSettingsStore.getState().settings });
         originalLocation = window.location;
     });
 
@@ -85,7 +85,7 @@ describe('langdetect', () => {
         });
 
         it('includes languages from get_setting("setting-lang")', () => {
-            persistentStorage.set('setting-lang', 'de');
+            useSettingsStore.getState().updateSetting('lang', 'de');
             mockLanguages(['en']);
             const langs = get_browser_languages();
             expect(langs).toContain('de');
