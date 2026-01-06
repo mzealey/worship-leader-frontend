@@ -1,0 +1,96 @@
+/* Windows smaller than this amount don't allow side-by-side display. Do side-by-side printing though */
+@media only screen and (min-width: 900px), only print {
+    .sidebyside-display .songcontainer,
+    .sidebyside-display #secondary-song {
+        display: inline-block;
+        vertical-align: top;
+        width: 48%;
+    }
+    .sidebyside-display #primary-song {
+        margin-right: 2%;
+    }
+}
+
+@media only screen and (max-width: $sidebar-breakpoint) {
+    .ui-responsive .ui-block-a,
+    .ui-responsive .ui-block-b {
+        float: none;
+        width: 100%;
+    }
+    .ui-responsive {
+        margin-top: -0.446em;
+    }
+}
+
+/* At this point put the song list and display together */
+@media only screen and (max-width: $sidebar-breakpoint - 1px) {
+    .widescreen-only-btn,
+    .toggle-sidebar.no-sidebar-show {
+        display: none !important;
+    }
+    .sidebar-only-btn {
+        display: none !important;
+    }
+}
+
+@media only screen and (min-width: $sidebar-breakpoint) {
+    #songinfo.show-sidebar #sidebar {
+        display: block;
+        width: 320px;
+        float: left;
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        border-right: 1px solid #ccc;
+    }
+    #songinfo.show-sidebar #main-page .ui-header-fixed,
+    #songinfo.show-sidebar .ui-footer {
+        left: 320px;
+        width: auto;
+    }
+
+    #songinfo.show-sidebar #main-page {
+        margin-left: 321px; /* because of 1px border on sidebar */
+    }
+
+    #songinfo.show-sidebar #main-page .no-sidebar-show,
+    .nosplitview {
+        display: none !important;
+    }
+}
+
+@media only screen and (min-width: $song-info-rhs-breakpoint) {
+    .normal-display.show-lyrics #song-right,
+    .normal-display.show-lyrics #song-left {
+        display: inline-block;
+        vertical-align: top;
+    }
+    .normal-display.show-lyrics #song-right {
+        border-left: 1px solid #ccc;
+        border-top: 0;
+        width: 40%;
+        float: right;
+        margin-left: 0;
+        margin-right: 0;
+        /*
+        width: 280px;
+        position: absolute;
+        right: 0;*/
+    }
+
+    .normal-display.show-lyrics #song-left {
+        /*width: 500px;*/
+        float: left;
+        margin-top: 0;
+        width: 58%;
+    }
+
+    .normal-display.show-lyrics.ui-content {
+        padding-right: 0px;
+    }
+
+    .normal-display.show-lyrics #songlinks {
+        margin-right: 0;
+    }
+}

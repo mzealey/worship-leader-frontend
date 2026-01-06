@@ -1,0 +1,1 @@
+[ { "relation": [ "delegate_permission/common.handle_all_urls" ], "target": { "namespace": "android_app", "package_name": "com.mzealey.worship.leader", "sha256_cert_fingerprints": [ "5D:94:C7:71:5B:D3:A7:D4:6C:0D:D5:7D:EC:32:02:DD:66:49:52:73:20:B1:43:06:E6:11:64:16:0B:3C:66:D4" ] } } ]

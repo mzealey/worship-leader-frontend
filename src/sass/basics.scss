@@ -1,0 +1,53 @@
+.clearfix:after {
+    content: '';
+    display: table;
+    clear: both;
+}
+
+body,
+.chord,
+.presentation .songxml,
+.gapfill {
+    user-select: none;
+
+    cursor: default;
+}
+
+textarea,
+input,
+.songxml,
+.songtitle,
+.textarea,
+[contenteditable] {
+    user-select: text;
+}
+
+/* Override jqm for consistency between platforms */
+body,
+input,
+select,
+textarea,
+button,
+.ui-btn {
+    font-family: $default-font;
+}
+
+.textarea {
+    background-color: white;
+    cursor: text;
+    border: 1px solid #ddd;
+    padding: 5px;
+    border-radius: 5px;
+    overflow: auto;
+}
+
+pre {
+    font-family: 'Deja Vu Sans Mono', 'Droid Sans Mono', 'Monaco', 'Courier New', Courier, mono, monospace;
+}
+
+.hidden {
+    display: none !important;
+}
+.block {
+    display: block;
+}

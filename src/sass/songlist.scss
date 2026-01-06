@@ -1,0 +1,30 @@
+/* Won't work when flex is not displayed - should just show icons appended to text in that case */
+.songlist > li h3 > span,
+#songlinks > li h3 > span {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.songlist > li .title,
+#songlinks > li .title {
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.songlist {
+    .type-album {
+        background-color: #fadbd8;
+        border-color: #c7a8a5;
+        &:hover {
+            background-color: #e1c2bf;
+        }
+    }
+
+    .type-song_source {
+        background-color: #d1f2eb;
+        border-color: #9ebfb8;
+        &:hover {
+            background-color: #b8d9d2;
+        }
+    }
+}

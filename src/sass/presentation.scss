@@ -1,0 +1,177 @@
+// Amount of blank space to add at the bottom of a song when presenting. We
+// can't use vh units as these change a bit when in a presentation-iframe
+$overscroll-size: 500px;
+
+.presentation-overlay {
+    display: none;
+}
+.presentation {
+    .ui-header,
+    .chord,
+    #song-right,
+    #sidebar,
+    #songlinks,
+    #sec-song-switch,
+    .helptext,
+    .gapfill,
+    #song-info-top,
+    #song-capo,
+    #song-switch-songxml {
+        display: none !important;
+    }
+
+    #main-page {
+        margin-left: 0 !important;
+        border-left: none !important;
+    }
+
+    .show-score {
+        background-color: #f6f6f6;
+    }
+    &,
+    body,
+    [data-role='page'] {
+        background-color: black;
+        color: white;
+    }
+    #song-left {
+        width: 100% !important;
+    }
+    .chorus,
+    .bridge,
+    .prechorus {
+        padding-left: 0;
+    }
+
+    .songxml {
+        text-align: center;
+        padding-bottom: $overscroll-size;
+
+        font-size: 20pt;
+        @media only screen and (min-width: 700px) {
+            font-size: 30pt;
+        }
+        @media only screen and (min-width: 1000px) {
+            font-size: 40pt;
+        }
+
+        &.vertical-lr {
+            padding-bottom: 0;
+            margin-right: $overscroll-size; // allow overscroll to the right
+        }
+
+        chordsonly {
+            display: none;
+        }
+        .has-chords {
+            line-height: 140% !important;
+        }
+
+        &.zoom--2 > * {
+            font-size: 80%;
+        }
+        &.zoom--1 > * {
+            font-size: 90%;
+        }
+        &.zoom-1 > * {
+            font-size: 120%;
+        }
+        &.zoom-2 > * {
+            font-size: 140%;
+        }
+        &.zoom-3 > * {
+            font-size: 160%;
+        }
+        &.zoom-4 > * {
+            font-size: 180%;
+        }
+        &.zoom-5 > * {
+            font-size: 200%;
+        }
+    }
+
+    #songinfo {
+        position: relative;
+        &.hide-mouse {
+            &,
+            .songxml {
+                cursor: none;
+            }
+        }
+    }
+
+    // chrome scroll bars
+    ::-webkit-scrollbar {
+        height: 12px;
+        width: 12px;
+        background: #000;
+    }
+
+    ::-webkit-scrollbar-thumb {
+        background: #444;
+        -webkit-border-radius: 1ex;
+        -webkit-box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.75);
+    }
+
+    ::-webkit-scrollbar-corner {
+        background: #000;
+    }
+
+    /* ie scroll bars */
+    scrollbar-base-color: #444;
+    scrollbar-track-color: black;
+    scrollbar-arrow-color: black;
+
+    .presentation-overlay {
+        display: block;
+        font-weight: bold;
+        position: fixed;
+        cursor: pointer;
+        font-size: 40px;
+        color: #777;
+        text-shadow: none;
+        > div {
+            display: inline-block;
+            padding: 0 10px;
+            &:hover {
+                color: #ddd;
+            }
+        }
+    }
+
+    #presentation-left {
+        left: 0;
+        top: 0;
+    }
+    #presentation-right {
+        right: 0;
+        top: 0;
+    }
+    #presentation-bottom {
+        right: 0;
+        bottom: 0;
+    }
+
+    &.presentation-cast,
+    &.presentation-iframe {
+        // If don't display scroll bar etc
+        overflow: hidden;
+
+        // Attempt to not show a cursor over the top if 2nd monitor but doesn't
+        // / shouldn't work as mouse cannot interact with the display.
+        cursor: none;
+
+        // Only way to fake the over-width that we do with margin above on normal presentation mode
+        .songxml.vertical-lr {
+            &:after {
+                content: '';
+                display: block;
+                width: $overscroll-size;
+            }
+        }
+
+        &.vertical {
+            max-height: 100%; // safari needs this apparently
+        }
+    }
+}

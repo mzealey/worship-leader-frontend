@@ -1,0 +1,146 @@
+10.0.0 - 10/10/2025
+- Fix non-latin language search
+
+9.9.9 - 1/10/2024
+- Database performance improvements
+- Android upgrades
+
+9.9.1 - 17/10/2024
+- Fix score display
+
+9.9.0 - 12/10/2024
+- Significant database changes
+- Make android background downloads work again
+
+9.8.12 - 12/10/2024
+- Android version update
+
+9.8.0 - 06/05/2023
+- New UI languages - Hungarian, Bulgarian
+- Android version update
+
+9.7.0 - 11/12/2021
+- Fix database update issues on Android
+
+9.7.0 - 09/12/2021
+- Fixes for crashes on Android 11
+- Many new languages
+- New UI languages - Uzbek, French, Azeri
+- Support for non-youtube videos
+
+9.6.0 - 01/03/2020
+- Loads more guitar fingerings
+- Fix a few crashes and bugs
+- Kyrgyz user interface
+- Option to show key/tempo/time signature in the search list
+- Improved search and ordering
+
+9.5.0 - 06/08/2019
+- Handle transposition of keys more correctly
+- Fix bug where phone builds couldn't switch to online db
+
+8.4.0 - 18/07/2019
+- Live set sharing - everyone you share a set with gets any updates that you make
+- Fix bug with transposition for one song affecting the next viewed song
+- Fix bug with displaying chord display in some keys eg Bb chords showing as A# by default
+- Various other bug fixes and improvements
+
+8.3.5 - 14/06/2019
+- Improvements to downloading songs on Android
+- Make music player stick to the bottom of the screen
+- Fix a few paging/searching bugs
+
+8.3.0 - 26/04/2019
+- Change dual screen presentation zoom settings
+- fix dual screen issues on android
+- Quicker modification of offline language selections
+- Allow switching between offline and online database formats
+- Infinite scroll on song lists
+
+8.2.0 - 19/02/2019
+- Dual/wireless screen presentation support
+
+8.1.0 - 11/02/2019
+- Offline playback of scores with note highlighting
+- Lots of bug fixes, significant speed improvements and app and database size reduction
+- Automatically download songs in set when imported if they are not already in the database
+- Improve printing of music scores from mobile devices
+- Fix hiding text from prev/next set buttons
+- Presentation mode improvements
+- Share individual tracks as well as sets/songs
+- Ability to persistently limit songs to a collection of songbooks
+
+7.2.0 - 30/12/2018
+- Make headers sticky in song view, and remove scroller button
+- Click song tags to set up a quick filter for only those songs
+- Reduce space requirements for download and storage of database
+- Make song info sections togglable
+- Show duration of song recordings at load
+- Support printing from the app on all platforms
+- Choose app language on first load
+- Get suggested list of databases to install based on country you are accessing from
+- Option to hide text from titlebar buttons in order to display more of the titles
+
+7.0.0 - 07/12/2018
+- Enable web-app features for android auto install from chrome
+- Fix some "update song" issues
+- Some set add/rename improvements
+- App interface translated to Cyrillic Turkish, Slovak, Czech, Kurdish and Arabic
+
+6.8.0 - 17/06/2018
+- Localize solfege for Cyrillic users
+
+6.6.0 - 24/05/2018
+- Fix some issues when one song is in the same album multiple times
+- Allow negative tag searches
+- Option to display chords as solfège
+- Display year for some songs
+- Put words under sheet music when it doesn't have any
+
+6.5.0 - 31/03/2018
+- Ability to hide sidebar on wide screens
+- Ability to order by my most recently viewed / my most frequently viewed
+- A few small fixes and improvements
+
+6.4.0
+- iPhone X improvements
+- Fix loading list of languages when offline
+- Display guitar chords
+
+6.3.0
+- Allow searching by album or source name easily with default ordering
+- Reduce storage size requirements
+
+6.2.2
+- Allow sort by song number
+- Source can be clicked on to set the filter to show only songs from the same source
+- Fix bug whereby new installs on iOS would not use the offline database due to db space size requirements
+
+6.2.0
+- Fix to submitting song corrections especially on iOS devices
+- Better font support for Arabic/Mongolian
+- Lower memory requirements while loading/updating the database
+- Database updates happen more quietly in the background
+- Various UI fixes
+
+6.1.0
+- Fullscreen mode fixes
+- Upgrade audio player library version
+- Move download button into media player for audio files
+- Fix startup/first time install issues on some devices
+
+6.0.3
+- Fix issue with sets not loading
+- Ability to rename sets
+- Set sharing also shares capo and key settings
+- Improvements for masking copyrighted songs
+
+6.0.0
+- Display sheet music offline in the app
+- Download MP3s for later offline use
+- (ios) speed improvements
+- Add in a basic mode to hide lyric display for people in closed countries
+- New tag filter UI & display counts of songs per tag
+- Presentation mode improvements
+- List even songs that have no words with them as some now only have music
+- Option to display the song in different capos

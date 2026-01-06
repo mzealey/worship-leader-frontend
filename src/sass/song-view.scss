@@ -1,0 +1,126 @@
+/* For songxml view */
+.zoom-vsmall {
+    font-size: 80%;
+}
+.zoom-small {
+    font-size: 100%;
+}
+.zoom-medium {
+    font-size: 120%;
+}
+.zoom-large {
+    font-size: 150%;
+}
+.zoom-xlarge {
+    font-size: 200%;
+}
+.zoom-xxlarge {
+    font-size: 250%;
+}
+
+.sheet-music svg {
+    margin-bottom: 15px;
+    .overlay {
+        fill: red;
+        fill-opacity: 0;
+    }
+}
+
+.songalttitles.ui-title {
+    font-size: 14px;
+    margin: 0 1em;
+    white-space: normal;
+    .subtitle {
+        white-space: nowrap;
+        display: inline-block;
+        padding-right: 0.5em;
+    }
+}
+
+#songs-container {
+    margin-top: 15px;
+    margin-bottom: 1em;
+}
+.show-score #songs-container {
+    margin-top: 0;
+}
+
+.show-lyrics #song-switch-songxml {
+    display: none;
+}
+.show-score #song-switch-score,
+.hide-lyrics #song-switch-score {
+    display: none;
+}
+.show-lyrics .sheet-music {
+    display: none;
+}
+
+#main-page > .ui-header {
+    border-bottom: none;
+}
+
+.show-score #song-capo {
+    display: none;
+}
+
+#songlinks {
+    margin-bottom: 0;
+}
+
+/* Hide the main page when loading, but allow layout of chords and sheet music to happen rather than a display:none */
+#songinfo #main-page {
+    &.same-song-loading,
+    &.song-loading {
+        .content-primary {
+            opacity: 0;
+        }
+    }
+    &.song-loading {
+        // Blank titles too
+        .songalttitles {
+            display: none !important;
+        }
+        .songtitle {
+            opacity: 0;
+        }
+    }
+}
+
+#main-page.song-not-found {
+    .songdisplay {
+        display: none;
+    }
+    .songnotfound {
+        display: block;
+    }
+}
+.songnotfound {
+    display: none;
+}
+
+.is-copyright {
+    #present-btn,
+    #print-btn,
+    #copybtn,
+    #editbtn {
+        display: none !important;
+    }
+}
+
+.hide-lyrics {
+    #song-left,
+    #present-btn,
+    #print-btn,
+    #copybtn,
+    #editbtn {
+        display: none !important;
+    }
+    #song-right {
+        border-top: none;
+    }
+    #songlinks,
+    #songlinks {
+        margin-right: -1em;
+    }
+}

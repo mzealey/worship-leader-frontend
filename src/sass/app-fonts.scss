@@ -1,0 +1,26 @@
+/* Include symbols correctly */
+@font-face {
+    font-family: 'DejaVu Sans-Misc Symbols';
+
+    @include font-import('../fonts/misc-symbols');
+
+    /* This is needed for legacy androids because android webview will not
+     * correctly fall-back to other fonts if the glyph is not found in this.
+     */
+    unicode-range: U+2600-26FF;
+}
+
+@font-face {
+    font-family: 'Stave-Misc Symbols';
+    @include font-import('../fonts/stave');
+
+    /* This is needed for legacy androids because android webview will not
+     * correctly fall-back to other fonts if the glyph is not found in this.
+     */
+    unicode-range: U+F0F6;
+}
+
+.symbols,
+.chord {
+    font-family: 'DejaVu Sans-Misc Symbols', 'Stave-Misc Symbols', $default-font;
+}

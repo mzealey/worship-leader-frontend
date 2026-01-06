@@ -1,0 +1,17 @@
+html.lock-screen {
+    pointer-events: none;
+    touch-action: none;
+
+    #lock-screen {
+        position: fixed; // can cause some issues when scrolling on ios/android but only way to blank the whole screen I think.
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 1px;
+        z-index: 5000;
+
+        // Same as popup lock screens
+        background: black;
+        opacity: 0.5;
+    }
+}

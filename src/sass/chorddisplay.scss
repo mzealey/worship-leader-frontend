@@ -1,0 +1,145 @@
+.repeat:before {
+    content: '// ';
+}
+.repeat:after {
+    content: ' //';
+}
+
+.repeat[count='3']:before {
+    content: '/// ';
+}
+.repeat[count='3']:after {
+    content: ' ///';
+}
+
+.repeat[count='4']:before {
+    content: '//// ';
+}
+.repeat[count='4']:after {
+    content: ' ////';
+}
+
+.repeat[count='5']:before {
+    content: '///// ';
+}
+.repeat[count='5']:after {
+    content: ' /////';
+}
+
+.chordsonly {
+    color: #888888;
+}
+.chord {
+    display: none;
+}
+
+.showchords .chord {
+    display: inline-block;
+    font-size: 80%;
+    font-style: normal;
+    font-weight: bold;
+    overflow: visible;
+    position: relative;
+    top: -1.2em;
+    white-space: nowrap;
+    width: 0;
+}
+
+// Make a block to allow pressing on chord to happen more easily
+.showchords.setting-show-fingering.rendered .chord:after {
+    content: '';
+    display: block;
+    position: absolute;
+    top: 0;
+    width: 30px;
+    height: 30px;
+}
+
+.vertical-lr.showchords.setting-show-fingering .chord:after {
+    top: unset;
+    left: 3px;
+}
+
+/* In vertical script, we don't change text properties but we do need to change
+ * the html positioning as these dimensions do not change */
+.vertical-lr.showchords .chord {
+    top: 0;
+    left: -1.2em;
+    width: auto;
+    height: 0;
+}
+
+.word-with-chord {
+    white-space: nowrap;
+}
+.showchords .has-chords {
+    line-height: 200%;
+}
+.chorus,
+.verse,
+.bridge,
+.prechorus {
+    display: block;
+    margin-top: 1em;
+
+    /* Correct printing cutting the chords over the pages */
+    padding-top: 0.5em;
+}
+
+.chorus,
+.bridge,
+.prechorus {
+    font-style: italic;
+    padding-left: 2.5em;
+}
+.songxml[dir='rtl'] {
+    .chorus,
+    .bridge,
+    .prechorus {
+        padding-left: 0;
+        padding-right: 2.5em;
+    }
+}
+
+.vertical-lr {
+    .chorus,
+    .bridge,
+    .prechorus {
+        padding-left: 0;
+        padding-top: 2.5em;
+    }
+    .chorus,
+    .verse,
+    .bridge,
+    .prechorus {
+        margin-top: 0;
+        margin-left: 1.5em;
+    }
+}
+
+.showchords {
+    .gapfill {
+        display: inline-block;
+        margin: 0 3px;
+        min-width: 5px;
+        vertical-align: middle;
+        line-height: 1px;
+        &.line {
+            border-top: black solid 2px;
+        }
+    }
+    &.vertical-lr .gapfill {
+        border-top: none;
+        margin: 3px 0;
+        min-height: 5px;
+        min-width: 0;
+        &.line {
+            border-left: black solid 2px;
+        }
+    }
+}
+
+.indent {
+    display: inline-block;
+    width: 3em;
+}

@@ -1,0 +1,41 @@
+.songxml.setting-show-fingering .chord {
+    cursor: pointer;
+}
+
+#chord-display-popup {
+    border: 1px #ccc #444;
+    z-index: 9999;
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    box-shadow: 0 0 12px rgba(0, 0, 0, 0.6);
+
+    > div {
+        display: table-cell;
+        vertical-align: middle;
+    }
+
+    h4 {
+        text-align: center;
+        margin: 5px 0 0;
+    }
+}
+#chord-prev,
+#chord-next {
+    cursor: pointer;
+    padding: 5px;
+
+    &::after {
+        content: '';
+        background-repeat: no-repeat;
+        display: block;
+        width: 15px;
+        height: 22px;
+        margin-top: 6px;
+    }
+
+    &:hover {
+        background-color: #ededed;
+        color: black;
+    }
+}

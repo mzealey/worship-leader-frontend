@@ -1,0 +1,53 @@
+name: CI
+
+on:
+  push:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        submodules: recursive
+
+    - name: Use Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+        cache: 'yarn'
+
+    - name: Install dependencies
+      run: yarn install --frozen-lockfile
+
+    - name: Run Lint
+      run: yarn lint
+
+    - name: Run Unit Tests
+      run: yarn test:unit
+
+    # Playwright tests are disabled for now as they are very slow on GH
+    #- name: Get Playwright version
+    #  id: playwright-version
+    #  run: echo "version=$(npm ls @playwright/test --json | jq -r '.dependencies["@playwright/test"].version')" >> $GITHUB_OUTPUT
+
+    #- name: Cache Playwright Browsers
+    #  id: playwright-cache
+    #  uses: actions/cache@v4
+    #  with:
+    #    path: ~/.cache/ms-playwright
+    #    key: ${{ runner.os }}-playwright-${{ steps.playwright-version.outputs.version }}
+    #    restore-keys: |
+    #      ${{ runner.os }}-playwright-
+
+    #- name: Install Playwright Browsers
+    #  if: steps.playwright-cache.outputs.cache-hit != 'true'
+    #  run: npx playwright install firefox
+
+    #- name: Install Playwright dependencies (if cache hit)
+    #  if: steps.playwright-cache.outputs.cache-hit == 'true'
+    #  run: npx playwright install-deps
+
+    #- name: Run Browser Tests
+    #  run: yarn test:browser

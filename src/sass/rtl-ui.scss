@@ -1,0 +1,17 @@
+body[dir='rtl'] {
+    .ui-checkbox .ui-btn,
+    .ui-radio .ui-btn,
+    .tristate.ui-btn {
+        text-align: right;
+    }
+
+    input:-moz-placeholder,
+    ::-webkit-input-placeholder {
+        text-align: right;
+        direction: rtl;
+    }
+}
+
+.songlist.ui-listview > li > a.ui-btn {
+    text-align: initial;
+} /* Fix rtl issues */

@@ -1,0 +1,18 @@
+// Traditional Mongolian, for example
+.vertical-lr {
+    writing-mode: vertical-lr;
+    width: 100%;
+
+    // Safari
+    -webkit-text-orientation: sideways-right;
+
+    // Allow finger scrolling
+    &.vertical-lr-scroll {
+        overflow-x: auto;
+
+        // To prevent right-hand scrollbars when chords overfill a line add
+        // some padding and chop anything else off...
+        overflow-y: hidden;
+        padding-bottom: 40px;
+    }
+}

@@ -1,0 +1,41 @@
+{
+  "include": [
+    "tests/**/*.ts",
+    "playwright.config.ts"
+  ],
+  "compilerOptions": {
+    "lib": [
+      "DOM",
+      "DOM.Iterable",
+      "ES2022"
+    ],
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "noImplicitAny": false,
+    "jsx": "react-jsx",
+    "moduleResolution": "Bundler",
+    "types": [
+      "@react-router/node",
+      "vite/client",
+      "node"
+    ],
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "target": "ES2022",
+    "module": "ESNext",
+    "strict": true,
+    "baseUrl": ".",
+    "paths": {
+      "~/*": [
+        "./src/*"
+      ],
+      "./*": [
+        "./src/*"
+      ]
+    },
+    "noEmit": true,
+    "forceConsistentCasingInFileNames": true,
+    "allowJs": true,
+    "rootDirs": ["."]
+  }
+}

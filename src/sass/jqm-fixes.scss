@@ -1,0 +1,131 @@
+.ui-mini.ui-btn {
+    margin: 0.5em 0;
+}
+/* From jqm to support the above properly */
+.ui-mini.ui-btn.ui-btn-inline {
+    margin-right: 0.625em;
+}
+/* override jqm spacing */
+[class*='ui-block-'] > .ui-select.ui-mini {
+    margin: 0.446em;
+}
+
+.ui-footer.ui-footer-fixed {
+    // Otherwise btn overflows the fixed footer (on ff? There are some issues
+    // if you use <button rather than <a that I really can't figure out...)
+    &.bottom-btn {
+        padding: 0 10px;
+        box-sizing: border-box;
+    }
+    .ui-btn {
+        display: block;
+        width: auto;
+
+        // set as standard button
+        font-size: 16px;
+        font-weight: bold;
+    }
+}
+
+/* Allow scrolling the header itself on small mobiles when keyboard is selected */
+.ui-header-fixed {
+    overflow-y: auto;
+    max-height: 100%;
+}
+
+/* Make song list items smaller */
+li .ui-btn.mini {
+    padding-top: 0.2em;
+    padding-bottom: 0.2em;
+}
+
+.ui-dialog-contain .ui-popup-screen {
+    /* Something weird with jqm popup within dialog code */
+    height: auto !important;
+}
+
+.ui-popup-screen {
+    // Fade out the background when a popup is shown - opacity is 0.5 anyway
+    background: black;
+}
+
+.ui-selectmenu-list .ui-li-divider {
+    text-align: center;
+}
+
+.btn-right .ui-input-search {
+    margin-right: 36px;
+    margin-left: 0.446em;
+}
+
+.btn-right {
+    position: relative;
+    > .ui-btn {
+        position: absolute;
+        right: 4px;
+        top: 0;
+    }
+}
+
+// Style the placeholder on text/search inputs. ::placeholder pseudo doesn't work in chrome
+input {
+    &[type='text'],
+    &[type='search'] {
+        text-overflow: ellipsis;
+        overflow: hidden;
+    }
+}
+
+// Shift the padding to the input so that we can have full width when clear btn is not shown
+.ui-input-search.ui-input-has-clear {
+    padding-right: 0;
+    > input {
+        padding-right: 2.375em; // per default
+
+        &:placeholder-shown {
+            // not ie9, edge or older browsers
+            padding-right: 0;
+        }
+    }
+}
+
+// Position popups based on the window...
+.ui-popup-container {
+    position: fixed !important;
+    top: 45% !important;
+    // no need to change left as we don't have horizontal scrolling
+}
+
+// Make the title as wide as possible for different pages
+.ui-page.ui-dialog .ui-header .ui-title {
+    margin: 0 2.5em;
+}
+.ui-header.full-width .ui-title {
+    margin: 0;
+}
+
+// copied from ui-btn-active
+@mixin ui-btn-active() {
+    background-color: #22aadd /*{b-active-background-color}*/;
+    border-color: #22aadd /*{b-active-border}*/;
+    color: #fff /*{b-active-color}*/;
+    text-shadow: 0 /*{b-active-shadow-x}*/ 1px /*{b-active-shadow-y}*/ 0 /*{b-active-shadow-radius}*/ #0088bb /*{b-active-shadow-color}*/;
+}
+html .ui-bar-b .ui-btn.ui-btn-active-forced {
+    @include ui-btn-active();
+}
+
+.ui-listview > li {
+    p.wrappable {
+        white-space: normal;
+    }
+
+    &.two-buttons {
+        > .second-btn {
+            right: 2.5em !important;
+        }
+        &.ui-li-has-alt > .ui-btn:first-child {
+            margin-right: 5em;
+        }
+    }
+}

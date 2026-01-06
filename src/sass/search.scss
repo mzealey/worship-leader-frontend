@@ -1,0 +1,36 @@
+.dropdown {
+    margin-top: 0.25em;
+    margin-bottom: 0.25em;
+    &,
+    &:after {
+        transition:
+            background-color,
+            box-shadow,
+            border-color 1s;
+    }
+}
+
+.left-icon {
+    float: left;
+    margin: 3px;
+}
+
+.extra {
+    display: none;
+}
+.show-extra .extra {
+    display: block;
+}
+.extra .ui-select .ui-btn {
+    display: block;
+}
+
+/* favourite filter */
+.ui-header .ui-checkbox .ui-btn,
+.ui-header .ui-btn.block {
+    display: block;
+}
+.ui-header .extra button.ui-btn {
+    width: 100%;
+    margin: 0;
+}

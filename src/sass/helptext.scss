@@ -1,0 +1,15 @@
+.helptext {
+    cursor: pointer;
+    p {
+        margin: 0.5em 1em;
+        height: 100%;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    &.ui-footer.full p {
+        white-space: normal;
+        overflow: visible;
+    }
+}

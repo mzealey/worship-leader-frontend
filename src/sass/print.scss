@@ -1,0 +1,144 @@
+.songxml > * {
+    page-break-inside: avoid;
+}
+
+.print-advertising {
+    display: none;
+}
+
+@media only print {
+    .noprint,
+    .ui-header a,
+    .helptext,
+    .ui-btn,
+    #chord-display-popup,
+    .collapse-widget {
+        display: none !important;
+    }
+    #song-right > .section {
+        border: none;
+    }
+    .clearfix:after {
+        display: none;
+    }
+    #song-right .entries {
+        display: block !important;
+        height: auto;
+    }
+
+    a.search-link {
+        color: black;
+    }
+
+    .ui-header .ui-title {
+        margin: 0;
+    }
+    #main-page > .ui-header {
+        position: static;
+        border-top: 1px solid black;
+        border-bottom: 1px solid black;
+    }
+
+    .ui-content {
+        padding: 0;
+    }
+
+    .show-lyrics #song-capo[data-value='0'] {
+        display: none !important;
+    }
+    .show-lyrics #song-capo label {
+        margin-right: 0;
+    }
+    .show-lyrics #song-capo .ui-mini {
+        margin: 0;
+    }
+    .show-lyrics #song-capo .ui-btn {
+        padding-top: 0;
+        padding-left: 0.7em;
+        line-height: 35px;
+        color: black;
+        display: inline-block !important;
+        background-color: transparent;
+        border: none;
+        box-shadow: none;
+        font-size: 16px;
+        font-weight: normal;
+    }
+    .show-lyrics #song-capo .ui-btn-icon-right:after {
+        display: none;
+    }
+
+    .ui-page-theme-a,
+    .ui-overlay-a,
+    .ui-bar-b,
+    h1,
+    #song-right {
+        color: black;
+        text-shadow: none;
+        background-color: white;
+    }
+
+    #song-right {
+        margin-top: 20px;
+    }
+
+    #songs-container {
+        margin: 0;
+    }
+
+    h1 {
+        font-size: 2em;
+    }
+
+    #song-right > #song-info {
+        padding: 0;
+        margin: 10px 0;
+    }
+
+    #songinfo {
+        /* jqm automatically changes this on page update. Help with some sizing otherwise we get extra blank pages... */
+        padding-bottom: 0 !important;
+        padding-top: 0 !important;
+        position: static;
+    }
+
+    .print-advertising {
+        margin: 10px 0 0 20px;
+        display: block;
+        float: right;
+        writing-mode: vertical-lr;
+
+        #main-page.song-rtl & {
+            float: left;
+            margin: 10px 20px 0 0;
+        }
+
+        #main-page.song-vertical & {
+            writing-mode: unset;
+        }
+
+        .show-score & {
+            writing-mode: unset;
+        }
+    }
+
+    .songxml.vertical-lr {
+        overflow-x: visible;
+    }
+
+    .setview #main-page > .ui-header-fixed {
+        border-bottom: none;
+    }
+    .setview .prevnext .ui-title {
+        font-weight: normal;
+    }
+    .setview .prevnext {
+        border-top: 1px solid black;
+        border-bottom: none;
+    }
+
+    /* Hide music sheet position */
+    .sheet-music svg .overlay {
+        fill-opacity: 0 !important;
+    }
+}

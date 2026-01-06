@@ -1,0 +1,41 @@
+{
+    "name": "__MSG_extName__",
+    "version": "10.0.0",
+    "default_locale": "en",
+    "permissions": [
+        "unlimitedStorage",
+        "webRequest",
+        "downloads",
+        "declarativeNetRequest"
+    ],
+    "host_permissions": [
+        "file://*",
+        "*://repo.worshipleaderapp.com/",
+        "*://songs.worshipleaderapp.com/"
+    ],
+    "web_accessible_resources": [
+        {
+            "resources": ["*.html"],
+            "matches": ["*://*.worshipleaderapp.com/*"]
+        }
+    ],
+    "homepage_url": "https://worshipleaderapp.com/",
+    "background": {
+        "service_worker": "browser-service-worker.js",
+        "type": "module"
+    },
+    "icons": {
+        "16": "icon-16.png",
+        "32": "icon-32.png",
+        "48": "icon-48.png",
+        "128": "icon-128.png"
+    },
+    "action": {
+        "default_icon": "icon-32.png",
+        "default_title": "__MSG_extName__"
+    },
+    "content_security_policy": {
+        "extension_pages":"script-src 'self' 'wasm-unsafe-eval'; object-src 'self'"
+    },
+    "manifest_version": 3
+}

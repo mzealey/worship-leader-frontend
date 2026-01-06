@@ -1,0 +1,23 @@
+#secondary-song {
+    display: none;
+    .sidebyside-display & {
+        display: inline-block;
+    }
+
+    h3 {
+        a {
+            color: black;
+            text-decoration: none;
+        }
+        .symbols {
+            display: none;
+        }
+    }
+}
+
+#sec-pri-switch {
+    margin: 3px 8px 3px 0;
+    float: left;
+    position: relative;
+    z-index: 10;
+}

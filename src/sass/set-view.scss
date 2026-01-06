@@ -1,0 +1,33 @@
+#page-set-list {
+    .live-shared {
+        &:after {
+            content: ' ';
+            display: inline-block;
+            margin-left: 6px;
+            margin-bottom: -2px;
+            width: 17px;
+            height: 17px;
+            background-repeat: no-repeat;
+            background-size: contain;
+            background-position: 0 0;
+
+            filter: invert(1); // make it black
+        }
+    }
+}
+
+#page-set-view {
+    // Because we have extra buttons need to bump the margin
+    .ui-listview.setsongs > li.ui-li-has-alt {
+        > a.ui-btn:nth-child(1) {
+            margin-right: 5em;
+        }
+        h3 {
+            padding-right: 0;
+        }
+    }
+
+    &.set-ro #share-set-btn {
+        display: none !important;
+    }
+}
