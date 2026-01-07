@@ -7,6 +7,10 @@ import { expect, test } from '@playwright/test';
  * database instance in the browser context and running various database operations.
  */
 
+// Performance threshold multiplier for CI environments where tests may run slower
+// Set PERF_TIMEOUT_MULTIPLIER environment variable to increase timeout thresholds
+const PERF_MULTIPLIER = Number(process.env.PERF_TIMEOUT_MULTIPLIER) || 1;
+
 test.describe('SQLite WASM Database', () => {
     test.beforeEach(async ({ page }) => {
         // TODO: Get this from playwright itself
@@ -112,7 +116,7 @@ test.describe('SQLite WASM Database', () => {
 
             expect(result.count).toBe(50);
             // Bulk insert should be fast (less than 500ms for 50 records)
-            expect(result.duration).toBeLessThan(500);
+            expect(result.duration).toBeLessThan(500 * PERF_MULTIPLIER);
         });
 
         test('should handle transactions', async ({ page }) => {
@@ -566,9 +570,9 @@ test.describe('SQLite WASM Database', () => {
 
             expect(result.count).toBe(1000);
             // Should insert 1000 records in under 3 seconds
-            expect(result.insertDuration).toBeLessThan(3000);
+            expect(result.insertDuration).toBeLessThan(3000 * PERF_MULTIPLIER);
             // Query should be fast
-            expect(result.queryDuration).toBeLessThan(200);
+            expect(result.queryDuration).toBeLessThan(200 * PERF_MULTIPLIER);
         });
 
         test('should handle complex queries on large datasets', async ({ page }) => {
@@ -618,7 +622,7 @@ test.describe('SQLite WASM Database', () => {
 
             expect(result.resultCount).toBeGreaterThan(0);
             // Complex query should complete in under 500ms
-            expect(result.duration).toBeLessThan(500);
+            expect(result.duration).toBeLessThan(500 * PERF_MULTIPLIER);
         });
 
         test('should load a simulated Russian language database efficiently', async ({ page }) => {
@@ -735,10 +739,10 @@ test.describe('SQLite WASM Database', () => {
             expect(result.popularResultCount).toBe(20);
 
             // Loading 2000 songs should complete in reasonable time (under 10 seconds)
-            expect(result.insertDuration).toBeLessThan(10000);
+            expect(result.insertDuration).toBeLessThan(10000 * PERF_MULTIPLIER);
 
             // Queries should be fast even with 2000 songs
-            expect(result.queryDuration).toBeLessThan(1000);
+            expect(result.queryDuration).toBeLessThan(1000 * PERF_MULTIPLIER);
         });
 
         test('should handle concurrent operations efficiently', async ({ page }) => {
@@ -774,7 +778,7 @@ test.describe('SQLite WASM Database', () => {
 
             expect(result.successCount).toBe(20);
             // 20 concurrent queries should complete in reasonable time
-            expect(result.duration).toBeLessThan(2000);
+            expect(result.duration).toBeLessThan(2000 * PERF_MULTIPLIER);
         });
     });
 });
