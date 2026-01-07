@@ -2,6 +2,7 @@
 //import { Audio5 } from 'abc2svg/snd';
 
 import * as Comlink from 'comlink';
+import type { AbcRenderRequest, AbcRenderResult, AbcRenderer } from './abc2svg-renderer';
 import { timeout } from './util';
 
 // The below inlining is used to try to fix a cordova problem with inability to load workers via file:// protocol which
@@ -10,18 +11,7 @@ import { timeout } from './util';
 // important than this.
 //
 // TODO: This causes the entirety of abc2svg to be inlined into the main js file which is not great for size.
-import { type AbcRenderer } from './abc2svg.worker';
 import AbcWorker from './abc2svg.worker?worker&inline';
-
-export type AbcRenderRequest = {
-    abc: string;
-    width: number;
-    delta?: number;
-};
-export type AbcRenderResult = {
-    audio: Float32Array[];
-    svg: string;
-};
 
 // Safari needs horrible hacks to make sound play. The standard AudioContext
 // play-on-click sets it to running but no sound comes unless you have already
