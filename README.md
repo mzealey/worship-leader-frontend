@@ -1,8 +1,9 @@
 This is the source code of the frontend app for [Worship Leader](https://worshipleaderapp.com).
 
-It's based in typescript and the main branch uses very legacy JQuery Mobile.
+It's written in Typescript (AI ported from javascript, for the most part) and the main branch uses very legacy JQuery
+Mobile. See History below for how the project got to this state.
 
-The in-progress new-react-version branch is a rewrite to use React and Material UI.
+The in-progress https://github.com/mzealey/worship-leader-frontend/pull/1 is a rewrite to use React and Material UI.
 
 From this code-base we produce builds supporting:
 - Web (including very old web browsers)
@@ -13,6 +14,34 @@ From this code-base we produce builds supporting:
 - A set of libraries for the editor frontend (legacy AngularJS project) to use
 
 As many phones and browsers are old we want to target the broadest range of support possible.
+
+# Features
+
+- Offline-First Architecture: Features a robust, abstraction-based database layer (src/db.ts) that seamlessly switches
+  between OnlineDB, OfflineWebSQLDB (Cordova), and OfflineWASMDB (Browser SQLite via WebAssembly), ensuring
+  functionality without internet access.
+- Dual-Screen Presentation API: Implements the W3C Presentation API (src/dual-present.ts) to "cast" lyrics and chords
+  to a secondary screen (projector/TV) natively, with fallbacks for standard popup windows and a custom Cordova
+  implementation.
+- Real-Time Device Synchronization: Uses a custom EventSocket (src/event-socket.ts) with a WebSocket primary channel
+  and HTTP polling fallback to synchronize state (scroll position, active song) between a leader's device and band
+  members/projectors, including time-skew correction.
+- Dynamic Sheet Music Rendering: Integrates abc2svg in a Web Worker (src/abc2svg.worker.ts) to compile ABC musical
+  notation into SVG sheet music on-the-fly without blocking the main UI thread.
+- Client-Side Transposition: Features a music-theory-aware transposition engine (src/transpose.ts) that correctly
+  handles key changes, sharps/flats relative to the key (Circle of Fifths logic), and Capo calculations.
+- Interactive Chord Diagrams: Dynamically renders guitar/ukulele chord charts onto HTML Canvas (src/chord.ts), enabling
+  visual resizing and custom fingerings rather than using static images.
+- Browser Audio Synthesis: Capable of playing back sheet music directly in the browser using SoundFonts
+  (src/abc2svg.ts), allowing users to hear the melody or parts of a song.
+- Polyglot Song Support: sophisticated localization (src/song-languages.ts) that manages song lyrics in multiple
+  languages, handling user preferences for which language version to display or print. This includes correct rendering
+  RTL and Vertical scripts.
+- Regional Music Notation: The transposition logic (src/transpose.ts) specifically handles regional differences, such
+  as the German/European usage of "H" instead of "B". Also includes solfege support (src/solfege-util.ts) to support
+  Do-Re-Mi notation systems.
+- Responsive "Print Mode": Includes logic (resize_for_print in src/render-songxml.ts) to dynamically re-render sheet
+  music and lyrics optimized for A4 paper dimensions when printing is detected.
 
 # Development
 
@@ -33,6 +62,18 @@ The following basic commands are available (see package.json for more):
     yarn test           # Run all tests
     yarn test:unit:watch # Run the unit tests in watch mode
     yarn build:test     # Do a test build of everything into build/
+
+# History
+
+See https://worshipleaderapp.com/en/story-worship-leader for some details of the general project. The history of the
+code in this frontend is that it was originally a single page JQuery Mobile app that grew to around 5k lines of JS
+before I split it into a modern build system using webpack around 2016. In 2018/2019 I started migrating to
+React/Material UI in a different branch but the project became stuck for a long time. I then updated to vite around
+2023 and in 2025/2026 started using some LLM agents to convert to typescript and backport as many of the non-UI
+improvements from the react branch to the main branch.
+
+I'm not particularly proud of the state of the code at present but I've been quite time-limited to clean it up and
+write tests and proper documentation.
 
 # Other notes
 
