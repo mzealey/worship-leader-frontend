@@ -238,8 +238,8 @@ export class DBSearch {
     filters: DBFilters;
     db: CommonDB;
     state: Subject<DBSearchState>;
-    search: Promise<string>;
-    prepared_query: Promise<unknown>;
+    search!: Promise<string>;
+    prepared_query!: Promise<unknown>;
     query_validity: string;
     pager: Pager;
     page: JQueryPage;
@@ -250,8 +250,6 @@ export class DBSearch {
         this.filters = get_filters(page); // Cache original filters to send with feedback details
         this.db = db;
         this.state = new Subject<DBSearchState>();
-        this.search = Promise.reject(new Error('No search string'));
-        this.prepared_query = Promise.reject(new Error('No query prepared'));
         this.query_validity = this.db.query_validity();
         this.page = page;
         this._refresh_query();
