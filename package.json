@@ -45,7 +45,6 @@
   },
   "dependencies": {
     "@fingerprintjs/botd": "^1.9.1",
-    "canvas": "^2.8.0",
     "classlist-polyfill": "^1.2.0",
     "comlink": "^4.4.2",
     "core-js": "^2.6.1",
