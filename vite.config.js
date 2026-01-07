@@ -98,6 +98,9 @@ export default defineConfig(({ command, mode }) => {
             },
         };
         config.build.copyPublicDir = false;
+        config.esbuild = {
+            minifyIdentifiers: false,
+        };
     } else {
         const html_config = {
             pages: [
