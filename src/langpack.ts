@@ -32,12 +32,12 @@ export async function lang_setup(lang = 'en') {
         if (elem) new_translation = JSON.parse(elem.innerHTML);
     }
 
-    // force reload when www client to get latest data. Service worker should do this for us automatically anyway
-    if (!new_translation)
-        // TODO: force reload when www client to get latest data. Service worker should do this for us automatically anyway
-        new_translation = await fetch_json<Record<string, unknown>>(`langpack/${new_lang}.json`); //, has_service_worker || BUILD_TYPE != 'www' ? { cache: 'no-cache' } : {});
-
     try {
+        // force reload when www client to get latest data. Service worker should do this for us automatically anyway
+        if (!new_translation)
+            // TODO: force reload when www client to get latest data. Service worker should do this for us automatically anyway
+            new_translation = await fetch_json<Record<string, unknown>>(`langpack/${new_lang}.json`); //, has_service_worker || BUILD_TYPE != 'www' ? { cache: 'no-cache' } : {});
+
         // Test mode override whene we don't have this set - in prod builds it should be set for all langpacks
         if (!('langpack_direction' in new_translation)) new_translation['langpack_direction'] = 'ltr';
 

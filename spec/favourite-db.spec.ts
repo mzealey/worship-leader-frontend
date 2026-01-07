@@ -1,8 +1,9 @@
 // @vitest-environment jsdom
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { type FavouriteDB } from '../src/favourite-db';
+import { persistentStorage } from '../src/persistent-storage.es5';
 
-// Mock dependencies
+// Mock DB only
 vi.mock('../src/db', () => ({
     DB: Promise.resolve({
         type: () => 'offline',
@@ -10,15 +11,7 @@ vi.mock('../src/db', () => ({
     }),
 }));
 
-vi.mock('../src/persistent-storage.es5', () => ({
-    persistentStorage: {
-        getObj: vi.fn(),
-        setObj: vi.fn(),
-    },
-}));
-
 describe('favourite-db functions', function () {
-    let mockPersistentStorage: any;
     let mockDb: any;
     let FAVOURITE_DB: FavouriteDB;
 
@@ -26,20 +19,12 @@ describe('favourite-db functions', function () {
         vi.clearAllMocks();
         vi.resetModules();
 
-        // Setup mocks
-        mockPersistentStorage = {
-            getObj: vi.fn(() => ({})),
-            setObj: vi.fn(),
-        };
+        persistentStorage.clear();
 
         mockDb = {
             type: () => 'offline',
             set_favourite: vi.fn(),
         };
-
-        vi.doMock('../src/persistent-storage.es5', () => ({
-            persistentStorage: mockPersistentStorage,
-        }));
 
         vi.doMock('../src/db', () => ({
             DB: Promise.resolve(mockDb),
@@ -56,16 +41,14 @@ describe('favourite-db functions', function () {
     });
 
     describe('FAVOURITE_DB instance', function () {
-        it('initializes with data from persistent storage', function () {
-            expect(mockPersistentStorage.getObj).toHaveBeenCalledWith('favourites', {});
-        });
+        it('initializes with data from persistent storage', async () => {
+            const mockData = { '1': { favourite: 1 } };
+            persistentStorage.setObj('favourites', mockData);
 
-        it('has required methods', function () {
-            expect(typeof FAVOURITE_DB.get_favourite).toBe('function');
-            expect(typeof FAVOURITE_DB.set_favourite).toBe('function');
-            expect(typeof FAVOURITE_DB.get_favourites).toBe('function');
-            expect(typeof FAVOURITE_DB.get_rating).toBe('function');
-            expect(typeof FAVOURITE_DB.set_rating).toBe('function');
+            // Re-import to trigger initialization with data
+            vi.resetModules();
+            const module = await import('../src/favourite-db');
+            expect(module.FAVOURITE_DB._data).toEqual(mockData);
         });
     });
 
@@ -76,21 +59,18 @@ describe('favourite-db functions', function () {
         });
 
         it('returns true for favourited song', function () {
-            mockPersistentStorage.getObj.mockReturnValue({
+            FAVOURITE_DB._data = {
                 1: { favourite: 1 },
-            });
-            // Reinitialize with new data
-            FAVOURITE_DB._data = mockPersistentStorage.getObj();
+            };
 
             const result = FAVOURITE_DB.get_favourite(1);
             expect(result).toBe(true);
         });
 
         it('returns false for unfavourited song', function () {
-            mockPersistentStorage.getObj.mockReturnValue({
+            FAVOURITE_DB._data = {
                 1: { favourite: 0 },
-            });
-            FAVOURITE_DB._data = mockPersistentStorage.getObj();
+            };
 
             const result = FAVOURITE_DB.get_favourite(1);
             expect(result).toBe(false);
@@ -104,12 +84,11 @@ describe('favourite-db functions', function () {
         });
 
         it('returns object with favourited song IDs', function () {
-            mockPersistentStorage.getObj.mockReturnValue({
+            FAVOURITE_DB._data = {
                 1: { favourite: 1 },
                 2: { favourite: 0 },
                 3: { favourite: 1 },
-            });
-            FAVOURITE_DB._data = mockPersistentStorage.getObj();
+            };
 
             const result = FAVOURITE_DB.get_favourites();
             expect(result).toEqual({
@@ -124,14 +103,14 @@ describe('favourite-db functions', function () {
             FAVOURITE_DB.set_favourite(1, true);
 
             expect(FAVOURITE_DB._data['1'].favourite).toBe(1);
-            expect(mockPersistentStorage.setObj).toHaveBeenCalledWith('favourites', expect.any(Object));
+            expect(persistentStorage.getObj('favourites')).toEqual(FAVOURITE_DB._data);
         });
 
         it('sets favourite to false', function () {
             FAVOURITE_DB.set_favourite(1, false);
 
             expect(FAVOURITE_DB._data['1'].favourite).toBe(0);
-            expect(mockPersistentStorage.setObj).toHaveBeenCalledWith('favourites', expect.any(Object));
+            expect(persistentStorage.getObj('favourites')).toEqual(FAVOURITE_DB._data);
         });
 
         it('updates offline database when available', async function () {
@@ -151,20 +130,18 @@ describe('favourite-db functions', function () {
         });
 
         it('returns stored rating', function () {
-            mockPersistentStorage.getObj.mockReturnValue({
+            FAVOURITE_DB._data = {
                 1: { rating: 5 },
-            });
-            FAVOURITE_DB._data = mockPersistentStorage.getObj();
+            };
 
             const result = FAVOURITE_DB.get_rating(1);
             expect(result).toBe(5);
         });
 
         it('returns 0 when no rating set', function () {
-            mockPersistentStorage.getObj.mockReturnValue({
+            FAVOURITE_DB._data = {
                 1: { favourite: 1 },
-            });
-            FAVOURITE_DB._data = mockPersistentStorage.getObj();
+            };
 
             const result = FAVOURITE_DB.get_rating(1);
             expect(result).toBe(0);
@@ -176,7 +153,7 @@ describe('favourite-db functions', function () {
             FAVOURITE_DB.set_rating(1, 4);
 
             expect(FAVOURITE_DB._data['1'].rating).toBe(4);
-            expect(mockPersistentStorage.setObj).toHaveBeenCalledWith('favourites', expect.any(Object));
+            expect(persistentStorage.getObj('favourites')).toEqual(FAVOURITE_DB._data);
         });
 
         it('overwrites existing rating', function () {
@@ -207,7 +184,7 @@ describe('favourite-db functions', function () {
 
             FAVOURITE_DB._save();
 
-            expect(mockPersistentStorage.setObj).toHaveBeenCalledWith('favourites', FAVOURITE_DB._data);
+            expect(persistentStorage.getObj('favourites')).toEqual(FAVOURITE_DB._data);
         });
     });
 });
