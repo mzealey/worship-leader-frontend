@@ -203,7 +203,10 @@ export function fetch_json<T = FetchResult>(url: string, init?: RequestInit): Ab
                     rej(e);
                 }
             };
-            req.onerror = () => rej(new Error('Network error'));
+            req.onerror = (e) => {
+                console.error(`[fetch_json] XHR Error for ${url}`, e);
+                rej(new Error('Network error'));
+            };
             req.onabort = () => rej(new Error('Request aborted'));
             req.open('GET', url);
             req.send();

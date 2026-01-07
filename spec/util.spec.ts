@@ -256,7 +256,7 @@ describe('util functions', function () {
 
     describe('fetch_json', function () {
         it('returns an AbortablePromise with abort method', function () {
-            const promise = fetch_json('https://example.com/api/data');
+            const promise = fetch_json('https://songs.worshipleaderapp.com/api/get?id=1');
             expect(typeof promise.abort).toBe('function');
 
             // Clean up by aborting to prevent unhandled promise rejection
@@ -264,14 +264,14 @@ describe('util functions', function () {
         });
 
         it('abort method is callable without throwing', function () {
-            const promise = fetch_json('https://example.com/api/data');
+            const promise = fetch_json('https://songs.worshipleaderapp.com/api/get?id=1');
 
             // Should not throw when calling abort
             expect(() => promise.abort?.()).not.toThrow();
         });
 
         it('creates a promise that can be chained', function () {
-            const promise = fetch_json<{ test: boolean }>('https://example.com/api/data');
+            const promise = fetch_json<{ test: boolean }>('https://songs.worshipleaderapp.com/api/get?id=1');
 
             expect(promise.then).toBeDefined();
             expect(promise.catch).toBeDefined();
