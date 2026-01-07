@@ -178,17 +178,17 @@ export abstract class OfflineSQLiteDB extends OfflineDBCommon {
     async add_song(song: Song): Promise<void> {
         await this.rw_trans((exec) => {
             // Kill off any remanent first. Only need to do this when replacing a song
+            if (this.fts_table) {
+                if (this.fts_table == 'fts5') exec(`INSERT INTO ${this.fts_table} (${this.fts_table}, rowid) VALUES (?, ?)`, ['delete', song.id]);
+                else exec(`DELETE FROM ${this.fts_table} WHERE rowid = ?`, [song.id]);
+            }
+
             exec(
                 ['DELETE FROM songs WHERE id = ?', [song.id]],
                 ['DELETE FROM song_source WHERE song_id = ?', [song.id]],
                 ['DELETE FROM song_tags WHERE song_id = ?', [song.id]],
                 ['DELETE FROM album_songs WHERE song_id = ?', [song.id]],
             );
-
-            if (this.fts_table) {
-                if (this.fts_table == 'fts5') exec(`INSERT INTO ${this.fts_table} (${this.fts_table}, rowid) VALUES (?, ?)`, ['delete', song.id]);
-                else exec(`DELETE FROM ${this.fts_table} WHERE rowid = ?`, [song.id]);
-            }
 
             this._add_songs(exec, [song as Record<string, unknown>]);
         });
