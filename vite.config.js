@@ -48,11 +48,7 @@ export default defineConfig(({ command, mode }) => {
         //base: './',
         publicDir: false,
         optimizeDeps: {
-            include: ['abc2svg', 'abc2svg/snd'],
-            needsInterop: ['abc2svg', 'abc2svg/snd'],
-            esbuildOptions: {
-                plugins: [],
-            },
+            esbuildOptions: {},
         },
         define: {
             BUILD_TYPE: JSON.stringify(build_type),

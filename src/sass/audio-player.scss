@@ -33,7 +33,7 @@ $jqm-icon-size: 22px;
         height: $mejs-icon-size;
         top: ($audio-player-height - $mejs-icon-size) /2;
         left: ($audio-player-height - $mejs-icon-size) /2;
-        background-image: url(../img/mejs-controls.svg?inline);
+        background-image: url(../../img/mejs-controls.svg?inline);
     }
     &.playing .play-btn:after {
         background-position: -$mejs-icon-size 0;
