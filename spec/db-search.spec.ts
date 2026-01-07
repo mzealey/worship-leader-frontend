@@ -1,14 +1,14 @@
 // @vitest-environment jsdom
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import $ from 'jquery';
 import { JSDOM } from 'jsdom';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { persistentStorage } from '../src/persistent-storage.es5';
 
 let mockJQueryImplementation: any;
 
 vi.mock('jquery', () => {
-    const $ = (arg: any) => mockJQueryImplementation ? mockJQueryImplementation(arg) : {};
+    const $ = (arg: any) => (mockJQueryImplementation ? mockJQueryImplementation(arg) : {});
     return { default: $ };
 });
 
@@ -45,7 +45,7 @@ const createMockPage = () => {
 
     mockJQueryImplementation = (selector: string | HTMLElement) => {
         let elements: NodeListOf<Element> | Element[];
-        
+
         if (typeof selector === 'string') {
             elements = dom.window.document.querySelectorAll(selector);
         } else {
