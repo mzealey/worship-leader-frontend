@@ -238,36 +238,32 @@ describe('songxml', function () {
         it('wraps words with chords in word-with-chord span', function () {
             const result = songxml_to_divs('<verse>Hel<chord>Am</chord>lo</verse>');
             expect(result).toBe(
-                '<div class="verse"><span class=\'word-with-chord\'>Hel\u200D<span class="chord"><span class="chord-inner">&#x202D;Am</span></span>\u200Dlo</span></div>',
+                '<div class="verse"><span class=\'word-with-chord\'>Hel\u200D<ruby class="chord">\u200Dlo<rt>&#x202D;Am</rt></ruby></span></div>',
             );
         });
 
-        it('converts chord tags to span elements', function () {
+        it('converts chord tags to ruby elements', function () {
             const result = songxml_to_divs('<verse><chord>Am</chord>Hello</verse>');
-            expect(result).toBe(
-                '<div class="verse"><span class=\'word-with-chord\'><span class="chord"><span class="chord-inner">&#x202D;Am</span></span>Hello</span></div>',
-            );
+            expect(result).toBe('<div class="verse"><span class=\'word-with-chord\'><ruby class="chord">Hello<rt>&#x202D;Am</rt></ruby></span></div>');
         });
 
         it('applies chord_color when provided', function () {
             const result = songxml_to_divs('<verse><chord>Am</chord>Hello</verse>', false, '#ff0000');
             expect(result).toBe(
-                '<div class="verse"><span class=\'word-with-chord\'><span class="chord" style="color: #ff0000"><span class="chord-inner">&#x202D;Am</span></span>Hello</span></div>',
+                '<div class="verse"><span class=\'word-with-chord\'><ruby class="chord" style="color: #ff0000">Hello<rt>&#x202D;Am</rt></ruby></span></div>',
             );
         });
 
         it('adds zero-width joiners for mid-word chords', function () {
             const result = songxml_to_divs('<verse>wo<chord>Am</chord>rd</verse>');
             expect(result).toBe(
-                '<div class="verse"><span class=\'word-with-chord\'>wo\u200D<span class="chord"><span class="chord-inner">&#x202D;Am</span></span>\u200Drd</span></div>',
+                '<div class="verse"><span class=\'word-with-chord\'>wo\u200D<ruby class="chord">\u200Drd<rt>&#x202D;Am</rt></ruby></span></div>',
             );
         });
 
         it('preserves chord content in html output', function () {
             const result = songxml_to_divs('<verse><chord>Am7</chord>Test</verse>');
-            expect(result).toBe(
-                '<div class="verse"><span class=\'word-with-chord\'><span class="chord"><span class="chord-inner">&#x202D;Am7</span></span>Test</span></div>',
-            );
+            expect(result).toBe('<div class="verse"><span class=\'word-with-chord\'><ruby class="chord">Test<rt>&#x202D;Am7</rt></ruby></span></div>');
         });
     });
 });

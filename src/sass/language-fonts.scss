@@ -54,7 +54,7 @@ $default-font: 'Arial', 'Roboto', sans-serif;
     &.zoom-xxlarge {
         font-size: 300%;
     }
-    &.showchords .chord {
+    &.showchords ruby.chord rt {
         font-size: 65%;
     }
 }

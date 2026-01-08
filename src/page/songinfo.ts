@@ -733,7 +733,7 @@ export function init_songinfo() {
         let last_chord, last_chord_close;
         let chord_popup = $('#chord-display-popup');
 
-        page.on('mouseleave', '.songxml .chord, #chord-display-popup', () => {
+        page.on('mouseleave', '.songxml ruby.chord, #chord-display-popup', () => {
             // Set a small timeout in case it is just flipping between the popup and the chord
             last_chord_close = setTimeout(() => chord_popup.css('display', 'none'), 200);
         });
@@ -779,7 +779,7 @@ export function init_songinfo() {
         page.find('#chord-next').on('click', () => render_chord_fingerings(last_chord, chord_idx + 1));
         page.find('#chord-prev').on('click', () => render_chord_fingerings(last_chord, chord_idx - 1));
 
-        page.on('mouseenter', '.songxml .chord', function (e) {
+        page.on('mouseenter', '.songxml ruby.chord', function (e) {
             if (!is_set('setting-show-fingering')) return;
 
             clearTimeout(last_chord_close);
