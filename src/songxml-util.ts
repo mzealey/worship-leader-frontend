@@ -134,6 +134,37 @@ export function convert_to_elvanto(songxml: string, without_chords = false): str
     return out.replace(/\n+$/, '');
 }
 
+/**
+ * Prevents chord annotations from overlapping when displayed above lyrics.
+ *
+ * PROBLEM: Chords are styled with `width: 0` and `position: relative; top: -1.2em`
+ * so they float above the text without affecting document flow. However, when
+ * multiple chords appear close together on the same line, they visually overlap
+ * because they occupy no horizontal space in the layout.
+ *
+ * SOLUTION: This function measures the actual rendered positions of chord elements
+ * and injects `<span class="gapfill">` spacer elements with explicit pixel widths
+ * when chords would overlap. The spacers push the underlying text apart, creating
+ * room for the chords above.
+ *
+ * The algorithm:
+ * 1. Iterate through all chord elements in reading order
+ * 2. For each chord on the same line as the previous one, calculate if they overlap
+ * 3. If overlap detected, insert a gapfill spacer before the chord
+ * 4. Optionally add a visual line (border) to connect the chord to its syllable
+ *
+ * BROWSER TIMING: Since this requires measuring offsetLeft/offsetTop, it must run
+ * after the browser has rendered the DOM. If many chords report position 0 (not
+ * yet rendered), the function reschedules itself via setTimeout.
+ *
+ * WRITING MODES: The function handles LTR, RTL, and vertical (Mongolian) scripts
+ * by transforming coordinates—conceptually rotating the layout so the algorithm
+ * always processes in a consistent "reading direction".
+ *
+ * WHY NOT PURE CSS? CSS cannot dynamically measure element overlap and inject
+ * spacing. CSS Ruby (https://github.com/mzealey/worship-leader-frontend/pull/14)
+ * may be a potential alternative in the future.
+ */
 function _fixup_chord_rendering(elem: HTMLElement | null): void {
     if (!elem) return;
     const chords = Array.from(elem.getElementsByClassName('chord')) as HTMLElement[];
