@@ -1,5 +1,4 @@
 import GraphemeSplitter from 'grapheme-splitter';
-import { is_rtl, is_vertical } from './util';
 
 let splitter = new GraphemeSplitter();
 
@@ -134,87 +133,14 @@ export function convert_to_elvanto(songxml: string, without_chords = false): str
     return out.replace(/\n+$/, '');
 }
 
+/**
+ * Legacy function that was used to prevent chord annotations from overlapping.
+ * With CSS Ruby annotations, the browser now handles spacing automatically.
+ * This function is retained for compatibility but simply marks the element as rendered.
+ */
 function _fixup_chord_rendering(elem: HTMLElement | null): void {
     if (!elem) return;
-    const chords = Array.from(elem.getElementsByClassName('chord')) as HTMLElement[];
-    if (!chords.length) return;
-
-    let last_offset_top = 0;
-    let last_right_pos = 0;
-    let zero_chord_position_count = 0;
-    const text = elem.textContent || '';
-    const rtl = is_rtl(text);
-    const vertical = is_vertical(text);
-
-    Array.from(elem.getElementsByClassName('gapfill')).forEach((gapfill) => gapfill.parentElement?.removeChild(gapfill));
-
-    const dimension: 'height' | 'width' = vertical ? 'height' : 'width';
-
-    // Think of the algo as doing ltr standard script and then rotating
-    // this for different cases eg vertical or rtl
-    for (const chordElem of chords) {
-        const offset_top = vertical ? chordElem.offsetLeft : chordElem.offsetTop;
-        let offset_left = vertical ? chordElem.offsetTop : chordElem.offsetLeft;
-
-        if (last_offset_top === offset_top) {
-            if (offset_left === 0) {
-                // probably the browser hasn't rendered the html yet
-                zero_chord_position_count++;
-            } else {
-                // same line - pad by 10px
-                const dif = rtl ? last_right_pos - offset_left : offset_left - last_right_pos - 4;
-
-                if (dif < 0) {
-                    // things overlap or are too close together
-                    let classes = 'gapfill';
-                    let needs_line = true;
-
-                    // No need for line on the first chord element - only ones after will affect the spacing
-                    if (chordElem.parentElement?.firstChild === chordElem) needs_line = false;
-
-                    let sibling: ChildNode | null = chordElem;
-                    while (sibling) {
-                        if (sibling.nodeType === Node.TEXT_NODE) break;
-
-                        // non chord node (can be no gapfills as we removed them all above)
-                        // classList.contains would be nice but ie doesn't support it.
-                        if (sibling.nodeType === Node.ELEMENT_NODE && !/\bchord\b/i.test((sibling as Element).className)) break;
-
-                        sibling = sibling.nextSibling;
-                    }
-
-                    // Only chords until the end of the word - just make it a space
-                    if (!sibling) needs_line = false;
-
-                    if (needs_line) classes += ' line';
-
-                    chordElem.insertAdjacentHTML('beforebegin', `<span class="${classes}" style="${dimension}: ${-dif}px">&nbsp;</span>`);
-                }
-            }
-        } else {
-            // start of new line
-            last_offset_top = offset_top;
-        }
-
-        // If we gapfill'd it then it needs updating...
-        offset_left = vertical ? chordElem.offsetTop : chordElem.offsetLeft;
-        let chord_width = vertical ? chordElem.scrollHeight : chordElem.scrollWidth;
-        if (chord_width === 0) {
-            // For firefox need to have this extra code because of the css elements are 0-width.
-            chordElem.style[dimension] = 'auto';
-            chord_width = vertical ? chordElem.scrollHeight : chordElem.scrollWidth;
-            chordElem.style[dimension] = '0';
-        }
-
-        last_right_pos = offset_left + (rtl ? -1 : 1) * chord_width;
-    }
-
-    // many of the chords offsets were set to 0 - the browser didn't render
-    // the page yet so wait a bit and try again.
-    if (zero_chord_position_count > chords.length / 3) setTimeout(() => _fixup_chord_rendering(elem), 20);
-    else {
-        elem.classList.add('rendered');
-    }
+    elem.classList.add('rendered');
 }
 
 // Add spacers into the html to ensure chords do not overlap. May need to call
@@ -271,16 +197,22 @@ export function songxml_to_divs(songxml: string | null | undefined, without_chor
     else {
         result = add_chord_zwjs(result);
 
-        // Set a U+202D (LEFT-TO-RIGHT OVERRIDE) character within the chord to
-        // force it to be the right way around, even though we set the chord
-        // itself to be the standard text direction to get it starting at the
-        // correct point.
-        result = result
-            .replace(
-                /<chord([^>]*)>/gi,
-                '<span class="chord"' + (chord_color ? ` style="color: ${chord_color}"` : '') + '$1><span class="chord-inner">&#x202D;',
-            )
-            .replace(/<\/chord>/gi, '</span></span>');
+        // Convert <chord>X</chord>followingText to <ruby class="chord">followingText<rt>X</rt></ruby>
+        // This uses CSS Ruby for automatic annotation positioning above text.
+        // The regex captures: chord content, then following non-whitespace/non-tag characters
+        const colorStyle = chord_color ? ` style="color: ${chord_color}"` : '';
+        result = result.replace(/<chord([^>]*)>([^<]*)<\/chord>([^\s<]*)/gi, (_match, attrs, chordText, followingText) => {
+            // U+202D (LEFT-TO-RIGHT OVERRIDE) forces chord to display LTR even in RTL context
+            const rtContent = `&#x202D;${chordText}`;
+            if (followingText) {
+                // Normal case: chord has following text to annotate
+                return `<ruby class="chord"${colorStyle}${attrs}>${followingText}<rt>${rtContent}</rt></ruby>`;
+            } else {
+                // Edge case: chord at end of word with no following text
+                // Use zero-width space as base to position the annotation
+                return `<ruby class="chord"${colorStyle}${attrs}>&#x200B;<rt>${rtContent}</rt></ruby>`;
+            }
+        });
     }
 
     // songxml has tags but no actual text - behave as if none.

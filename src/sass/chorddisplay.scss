@@ -29,44 +29,28 @@
 .chordsonly {
     color: #888888;
 }
-.chord {
+
+ruby.chord {
     display: none;
 }
 
-.showchords .chord {
-    display: inline-block;
-    font-size: 80%;
+.showchords ruby.chord {
+    display: ruby;
+    ruby-position: over;
+    ruby-align: start;
     font-style: normal;
-    font-weight: bold;
-    overflow: visible;
-    position: relative;
-    top: -1.2em;
     white-space: nowrap;
-    width: 0;
 }
 
-// Make a block to allow pressing on chord to happen more easily
-.showchords.setting-show-fingering.rendered .chord:after {
-    content: '';
-    display: block;
-    position: absolute;
-    top: 0;
-    width: 30px;
-    height: 30px;
+.showchords ruby.chord rt {
+    display: ruby-text;
+    font-size: 80%;
+    font-weight: bold;
+    text-align: start;
 }
 
-.vertical-lr.showchords.setting-show-fingering .chord:after {
-    top: unset;
-    left: 3px;
-}
-
-/* In vertical script, we don't change text properties but we do need to change
- * the html positioning as these dimensions do not change */
-.vertical-lr.showchords .chord {
-    top: 0;
-    left: -1.2em;
-    width: auto;
-    height: 0;
+.showchords.setting-show-fingering.rendered ruby.chord rt {
+    cursor: pointer;
 }
 
 .word-with-chord {

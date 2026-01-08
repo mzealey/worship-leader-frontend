@@ -50,15 +50,12 @@ export function _load_songxml_into(elem, songdata, force_chords_off?) {
         .toggleClass('song-vertical', songdata.lang == 'mn-TR');
 
     set_direction(songxml, songdata.lang, true);
-    songxml.find('.chord').each((i, e) =>
-        $(e).data(
-            'chord',
-            $(e)
-                .text()
-                .replace(/\u202D/g, ''),
-        ),
-    );
-    songxml.find('.chord').parents('.bridge, .chorus, .verse, .prechorus').addClass('has-chords');
+    songxml.find('ruby.chord').each((i, e) => {
+        const $ruby = $(e);
+        const $rt = $ruby.find('rt');
+        $ruby.data('chord', $rt.text().replace(/\u202D/g, ''));
+    });
+    songxml.find('ruby.chord').parents('.bridge, .chorus, .verse, .prechorus').addClass('has-chords');
 
     if (!show_chords) return;
 
@@ -70,18 +67,21 @@ export function render_chords(elem) {
     let songxml = elem.find('.songxml');
     let details = $('#primary-song').data('keychange') || {};
 
-    songxml.find('.chord').each((i, el) => {
-        el = $(el);
-        let chord = trans.getNewChord(el.data('chord'), (details.delta || 0) - (details.capo || 0) + (details.song_capo || 0), details.key, details.is_minor);
-        el.data('cur_chord', chord); // for fingering to use
+    songxml.find('ruby.chord').each((i, el) => {
+        const $ruby = $(el);
+        const $rt = $ruby.find('rt');
+        let chord = trans.getNewChord(
+            $ruby.data('chord'),
+            (details.delta || 0) - (details.capo || 0) + (details.song_capo || 0),
+            details.key,
+            details.is_minor,
+        );
+        $ruby.data('cur_chord', chord);
 
-        // Map # and &/b into sharp/flat symbols
         chord = chord.replace(/[&b]/, '\u266D').replace(/#/, '\u266F');
 
-        // Ensure each chord has 1 and 1 only utf8 ltr forcer
-        el.text('\u202D' + maybe_convert_solfege(chord));
+        $rt.text('\u202D' + maybe_convert_solfege(chord));
     });
 
-    // Width of chords may have changed - re-do the space stuff
     format_html_chords(songxml);
 }
