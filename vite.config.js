@@ -13,6 +13,7 @@ import eslint from 'vite-plugin-eslint';
 import { createHtmlPlugin } from 'vite-plugin-html';
 import { VitePWA } from 'vite-plugin-pwa';
 import tsconfigPaths from 'vite-tsconfig-paths';
+import { resolveDependencyPaths } from './vite-plugin-resolve-deps.js';
 
 const font_versions = {
     www: 'woff2, woff, ttf',
@@ -171,6 +172,9 @@ export default defineConfig(({ command, mode }) => {
                     followSymlinks: true,
                 },
             ),
+
+            // Resolve dependency path references in public files (play-1.js, jquery.min.js, etc.)
+            resolveDependencyPaths(),
 
             createHtmlPlugin(html_config),
         );
