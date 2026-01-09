@@ -79,6 +79,7 @@ export default defineConfig(({ command, mode }) => {
     );
 
     if (build_type == 'phonegap') config.base = '/android_asset/www';
+    if (build_type == 'www') config.base = ''; // relative base
 
     if (build_type == 'editor') {
         config.build.rollupOptions = {
