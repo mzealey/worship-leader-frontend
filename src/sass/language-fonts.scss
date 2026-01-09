@@ -1,3 +1,7 @@
+@mixin font-import($basepath) {
+    src: url($basepath + '.woff2') format("woff2")
+}
+
 $default-font: 'Arial', 'Roboto', sans-serif;
 
 /* Font overrides for different languages */

@@ -13,13 +13,6 @@ import { createHtmlPlugin } from 'vite-plugin-html';
 import { VitePWA } from 'vite-plugin-pwa';
 import tsconfigPaths from 'vite-tsconfig-paths';
 
-const font_versions = {
-    www: 'woff2, woff, ttf',
-    chrome: 'woff2',
-    edge: 'woff2',
-    phonegap: 'woff', // android 4.4+ supports this
-    editor: 'woff',
-};
 const package_conf = require('./package.json');
 const browserslist = {
     // Let www build use the default targets from package.json
@@ -58,7 +51,6 @@ export default defineConfig(({ command, mode }) => {
         css: {
             preprocessorOptions: {
                 scss: {
-                    additionalData: `$font-versions: (${font_versions[build_type]});`,
                     api: 'modern-compiler',
                     // Noisy warnings go away
                     silenceDeprecations: ['slash-div', 'import', 'color-functions', 'global-builtin'],
@@ -196,7 +188,7 @@ export default defineConfig(({ command, mode }) => {
 
         config.build.assetsInlineLimit = (filePath, content) => {
             // Stuff to never inline. We could use ?no-inline but this then breaks sw caching
-            if (filePath.endsWith('.ttf') || filePath.endsWith('.woff') || filePath.endsWith('.woff2')) return false;
+            if (filePath.endsWith('.woff2')) return false;
             return content.length < 7000;
         };
 
