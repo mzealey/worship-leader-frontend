@@ -3,6 +3,10 @@ name: CI
 on:
     push:
 
+permissions:
+  pages: write
+  id-token: write
+
 jobs:
     test:
         runs-on: ubuntu-latest
