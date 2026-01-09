@@ -33,30 +33,8 @@ $default-font: 'Arial', 'Roboto', sans-serif;
 }
 [lang='mn-TR'] {
     font-family: 'Mongolian White', $default-font;
-    font-size: 125%;
-
     /* Mongolian font is smaller than most */
-    &.zoom-vsmall {
-        font-size: 110%;
-    }
-    &.zoom-small {
-        font-size: 130%;
-    }
-    &.zoom-medium {
-        font-size: 160%;
-    }
-    &.zoom-large {
-        font-size: 200%;
-    }
-    &.zoom-xlarge {
-        font-size: 250%;
-    }
-    &.zoom-xxlarge {
-        font-size: 300%;
-    }
-    &.showchords .chord {
-        font-size: 65%;
-    }
+    font-size: 125%;
 }
 
 [lang='fa'],

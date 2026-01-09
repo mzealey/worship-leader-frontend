@@ -4,7 +4,7 @@ $types: (
     woff2: 'woff2',
 );
 @mixin font-import($basepath) {
-    // font-versions passed through via the webpack config
+    // font-versions passed through via the vite config
     $items: ();
     @each $version in $font-versions {
         $items: append($items, url($basepath + '.' + $version) format(map-get($types, $version)), comma);

@@ -1,22 +1,22 @@
 // @vitest-environment jsdom
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-// Remove mock for src/util
-// We keep song-languages and jqm-util mocks
 vi.mock('../src/song-languages', () => ({
     song_language_translations: vi.fn(),
 }));
 
-vi.mock('../src/jqm-util', () => ({
-    refresh_selectmenu: vi.fn(),
+vi.mock('../src/settings-store', () => ({
+    updateSetting: vi.fn(),
+}));
+
+vi.mock('../src/component/notification', () => ({
+    send_ui_notification: vi.fn(),
 }));
 
 describe('langpack', () => {
     let langpackMod: typeof import('../src/langpack');
     let songLanguagesMod: typeof import('../src/song-languages');
-    let mockJQuery: any;
-    let mockJQueryObj: any;
-    let fetchMock: any;
+    let fetchMock: ReturnType<typeof vi.fn>;
 
     beforeEach(async () => {
         vi.resetModules();
@@ -24,20 +24,6 @@ describe('langpack', () => {
 
         fetchMock = vi.fn();
         vi.stubGlobal('fetch', fetchMock);
-
-        mockJQueryObj = {
-            attr: vi.fn(),
-            find: vi.fn().mockReturnThis(),
-            each: vi.fn(),
-            html: vi.fn(),
-            is: vi.fn(),
-            parent: vi.fn(),
-            text: vi.fn(),
-            sort: vi.fn().mockReturnThis(),
-            appendTo: vi.fn(),
-        };
-        mockJQuery = vi.fn(() => mockJQueryObj);
-        (window as any).$ = mockJQuery;
 
         document.body.innerHTML = '';
         (globalThis as any).BUILD_TYPE = 'www';
@@ -51,7 +37,7 @@ describe('langpack', () => {
         vi.unstubAllGlobals();
     });
 
-    describe('lang_setup', () => {
+    describe('setLanguage', () => {
         it('fetches language pack and sets app language', async () => {
             const mockLangPack = {
                 langpack_direction: 'ltr',
@@ -63,14 +49,13 @@ describe('langpack', () => {
                 ok: true,
             });
 
-            const lang = await langpackMod.lang_setup('en');
+            await langpackMod.useAppLang.getState().setLanguage('en');
 
-            expect(lang).toBe('en');
             expect(fetchMock).toHaveBeenCalledWith('langpack/en.json', expect.anything());
-            expect(langpackMod.app_lang()).toBe('en');
+            expect(langpackMod.useAppLang.getState().appLang).toBe('en');
 
-            expect(mockJQuery).toHaveBeenCalledWith('html, body');
-            expect(mockJQueryObj.attr).toHaveBeenCalledWith({ dir: 'ltr', lang: 'en' });
+            expect(document.documentElement.getAttribute('dir')).toBe('ltr');
+            expect(document.documentElement.getAttribute('lang')).toBe('en');
         });
 
         it('loads from injected script tag if available', async () => {
@@ -81,9 +66,8 @@ describe('langpack', () => {
             script.innerHTML = JSON.stringify(mockLangPack);
             document.body.appendChild(script);
 
-            const lang = await langpackMod.lang_setup('fr');
+            await langpackMod.useAppLang.getState().setLanguage('fr');
 
-            expect(lang).toBe('fr');
             expect(fetchMock).not.toHaveBeenCalled();
             expect(langpackMod.get_translation('welcome')).toBe('Injected Welcome');
         });
@@ -102,9 +86,9 @@ describe('langpack', () => {
                 ok: true,
             });
 
-            const lang = await langpackMod.lang_setup('es');
+            await langpackMod.useAppLang.getState().setLanguage('es');
 
-            expect(lang).toBe('en');
+            expect(langpackMod.useAppLang.getState().appLang).toBe('en');
             expect(fetchMock).toHaveBeenCalledTimes(2);
             expect(fetchMock).toHaveBeenNthCalledWith(1, 'langpack/es.json', expect.anything());
             expect(fetchMock).toHaveBeenNthCalledWith(2, 'langpack/en.json', expect.anything());
@@ -114,10 +98,10 @@ describe('langpack', () => {
     describe('get_translation', () => {
         it('returns translation if exists', async () => {
             fetchMock.mockResolvedValue({
-                json: () => Promise.resolve({ welcome: 'Welcome' }),
+                json: () => Promise.resolve({ welcome: 'Welcome', langpack_direction: 'ltr' }),
                 ok: true,
             });
-            await langpackMod.lang_setup('en');
+            await langpackMod.useAppLang.getState().setLanguage('en');
 
             expect(langpackMod.get_translation('welcome')).toBe('Welcome');
         });
@@ -132,48 +116,12 @@ describe('langpack', () => {
             });
 
             fetchMock.mockResolvedValue({
-                json: () => Promise.resolve({}),
+                json: () => Promise.resolve({ langpack_direction: 'ltr' }),
                 ok: true,
             });
-            await langpackMod.lang_setup('en');
+            await langpackMod.useAppLang.getState().setLanguage('en');
 
             expect(langpackMod.get_translation('lang.fr')).toBe('French');
-        });
-    });
-
-    describe('relocalize_page', () => {
-        it('localizes elements with data attributes', () => {
-            const mockElements = [
-                {
-                    attr: vi.fn(),
-                    html: vi.fn(),
-                    is: vi.fn().mockReturnValue(false),
-                    find: vi.fn().mockReturnThis(),
-                    text: vi.fn(),
-                    appendTo: vi.fn(),
-                    sort: vi.fn().mockReturnThis(),
-                },
-            ];
-
-            mockJQueryObj.find.mockImplementation((_selector) => {
-                return {
-                    each: (cb) => {
-                        mockElements.forEach((el, i) => cb(i, el));
-                    },
-                } as any;
-            });
-
-            mockJQuery.mockImplementation((e) => {
-                if (e === 'html, body') return mockJQueryObj;
-                if (mockElements.includes(e as any)) return e;
-                return mockJQueryObj;
-            });
-
-            langpackMod.relocalize_page(mockJQueryObj as any);
-
-            expect(mockJQueryObj.find).toHaveBeenCalledWith('[data-title-localize]');
-            expect(mockJQueryObj.find).toHaveBeenCalledWith('[data-placeholder-localize]');
-            expect(mockJQueryObj.find).toHaveBeenCalledWith('[data-localize]');
         });
     });
 });

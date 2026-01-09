@@ -35,7 +35,7 @@ interface ChordDimensions {
 interface CanvasRenderer {
     canvas: HTMLCanvasElement;
     ctx: CanvasRenderingContext2D;
-    init(info: ChordDimensions): void;
+    init(info: ChordDimensions, config: CanvasConfig): void;
     line(x1: number, y1: number, x2: number, y2: number, width?: number, cap?: LineCap): void;
     text(x: number, y: number, text: string, font: string, size: number, baseline: TextBaseline, align: TextAlign): void;
     rect(x: number, y: number, width: number, height: number, lineWidth: number): void;
@@ -49,9 +49,13 @@ interface BarInfo {
     index: number;
 }
 
+interface CanvasConfig {
+    color?: string;
+}
+
 const MUTED = -1;
 
-const sizes = {
+const DEFAULT_SIZES = {
     cellWidth: [4, 6, 8, 10, 12, 14, 16, 18, 20, 22],
     nutSize: [2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
     lineWidth: [1, 1, 1, 1, 1, 1, 2, 2, 2, 2],
@@ -61,7 +65,9 @@ const sizes = {
     openStringLineWidth: [1, 1.2, 1.2, 1.4, 1.4, 1.4, 1.6, 2, 2, 2],
     muteStringRadius: [2, 2.5, 3, 3.5, 4, 4.5, 5, 5.5, 6, 6.5],
     muteStringLineWidth: [1.05, 1.1, 1.1, 1.2, 1.5, 1.5, 1.5, 2, 2.4, 2.5],
-    nameFontSize: [10, 14, 18, 22, 26, 32, 36, 40, 44, 48],
+    // Disable name at top
+    nameFontSize: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    //nameFontSize: [10, 14, 18, 22, 26, 32, 36, 40, 44, 48],
     nameFontPaddingBottom: [4, 4, 5, 4, 4, 4, 5, 5, 5, 5],
     fingerFontSize: [7, 8, 9, 11, 13, 14, 15, 18, 20, 22],
     fretFontSize: [6, 8, 10, 12, 14, 14, 16, 17, 18, 19],
@@ -71,7 +77,7 @@ const canvasRenderer: CanvasRenderer = {
     canvas: null!,
     ctx: null!,
 
-    init(info: ChordDimensions): void {
+    init(info: ChordDimensions, config: CanvasConfig = {}): void {
         this.canvas = document.createElement('canvas');
         const ctx = (this.ctx = this.canvas.getContext('2d')!);
         this.canvas.width = info.width;
@@ -80,11 +86,11 @@ const canvasRenderer: CanvasRenderer = {
         if (info.lineWidth % 2 == 1) {
             ctx.translate(0.5, 0.5);
         }
-        ctx.fillStyle = 'black';
+        ctx.fillStyle = config.color || 'black';
         ctx.lineJoin = 'miter';
         ctx.lineWidth = info.lineWidth;
         ctx.lineCap = 'square';
-        ctx.strokeStyle = 'black';
+        ctx.strokeStyle = config.color || 'black';
     },
 
     line(x1: number, y1: number, x2: number, y2: number, width?: number, cap?: LineCap): void {
@@ -124,10 +130,8 @@ const canvasRenderer: CanvasRenderer = {
         }
     },
 
-    diagram(): HTMLImageElement {
-        const img = document.createElement('img');
-        img.src = this.canvas.toDataURL();
-        return img;
+    diagram(): HTMLCanvasElement {
+        return this.canvas;
     },
 };
 
@@ -141,7 +145,7 @@ export class Chord {
         canvas: canvasRenderer,
     };
 
-    static sizes = sizes;
+    private sizes = DEFAULT_SIZES;
 
     name: string;
     rawPositions: string;
@@ -288,28 +292,28 @@ export class Chord {
     private calculateDimensions(scale: number): ChordDimensions {
         const idx = scale - 1;
         const info: ChordDimensions = {
-            cellWidth: sizes.cellWidth[idx],
-            nutSize: sizes.nutSize[idx],
-            lineWidth: sizes.lineWidth[idx],
-            barWidth: sizes.barWidth[idx],
-            dotRadius: sizes.dotRadius[idx],
-            openStringRadius: sizes.openStringRadius[idx],
-            openStringLineWidth: sizes.openStringLineWidth[idx],
-            muteStringRadius: sizes.muteStringRadius[idx],
-            muteStringLineWidth: sizes.muteStringLineWidth[idx],
-            nameFontSize: sizes.nameFontSize[idx],
-            nameFontPaddingBottom: sizes.nameFontPaddingBottom[idx],
-            fingerFontSize: sizes.fingerFontSize[idx],
-            fretFontSize: sizes.fretFontSize[idx],
+            cellWidth: this.sizes.cellWidth[idx],
+            nutSize: this.sizes.nutSize[idx],
+            lineWidth: this.sizes.lineWidth[idx],
+            barWidth: this.sizes.barWidth[idx],
+            dotRadius: this.sizes.dotRadius[idx],
+            openStringRadius: this.sizes.openStringRadius[idx],
+            openStringLineWidth: this.sizes.openStringLineWidth[idx],
+            muteStringRadius: this.sizes.muteStringRadius[idx],
+            muteStringLineWidth: this.sizes.muteStringLineWidth[idx],
+            nameFontSize: this.sizes.nameFontSize[idx],
+            nameFontPaddingBottom: this.sizes.nameFontPaddingBottom[idx],
+            fingerFontSize: this.sizes.fingerFontSize[idx],
+            fretFontSize: this.sizes.fretFontSize[idx],
             scale: idx,
             positions: this.rawPositions,
             fingers: this.rawFingers,
             name: this.name,
-            cellHeight: sizes.cellWidth[idx],
-            dotWidth: 2 * sizes.dotRadius[idx],
+            cellHeight: this.sizes.cellWidth[idx],
+            dotWidth: 2 * this.sizes.dotRadius[idx],
             font: 'Arial',
-            boxWidth: (this.stringCount - 1) * sizes.cellWidth[idx],
-            boxHeight: this.fretCount * sizes.cellWidth[idx],
+            boxWidth: (this.stringCount - 1) * this.sizes.cellWidth[idx],
+            boxHeight: this.fretCount * this.sizes.cellWidth[idx],
             width: 0,
             height: 0,
             boxStartX: 0,
@@ -324,9 +328,9 @@ export class Chord {
         return info;
     }
 
-    private draw(scale: number): void {
+    private draw(scale: number, config: CanvasConfig = {}): void {
         const info = this.calculateDimensions(scale);
-        this.renderer.init(info);
+        this.renderer.init(info, config);
         this.drawFretGrid(info);
         this.drawNut(info);
         this.drawName(info);
@@ -336,9 +340,9 @@ export class Chord {
         this.drawBars(info);
     }
 
-    getDiagram(scale: number): HTMLImageElement | HTMLCanvasElement {
+    getDiagram(scale: number, config: CanvasConfig = {}): HTMLImageElement | HTMLCanvasElement {
         this.renderer = Chord.renderers.canvas;
-        this.draw(scale);
+        this.draw(scale, config);
         return this.renderer.diagram();
     }
 

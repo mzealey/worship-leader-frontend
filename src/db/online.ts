@@ -1,7 +1,7 @@
 import type { DBRequestedItems, DBSearchRunResult } from '../db-search';
 import { DUMP_VERSION, get_db_path, get_host } from '../globals';
 import { get_browser_languages } from '../langdetect.es5';
-import { app_lang } from '../langpack';
+import { useAppLang } from '../langpack';
 import { persistentStorage } from '../persistent-storage.es5';
 import { Song, SongSource } from '../song';
 import { fetch_json, generate_search_params, type AbortablePromise } from '../util';
@@ -52,8 +52,9 @@ export class OnlineDB extends CommonDB {
     // Get some language params for api calls to better help with returning
     // stuff to app that is useful for the user
     _get_lang_details(): { ui_lang: string; browser_langs: string } {
+        const { appLang } = useAppLang.getState();
         return {
-            ui_lang: app_lang(),
+            ui_lang: appLang!,
             browser_langs: get_browser_languages().join(','),
         };
     }

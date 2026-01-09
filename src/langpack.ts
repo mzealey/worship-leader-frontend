@@ -1,29 +1,16 @@
-import LANGPACK_INDEX from '../langpack/index.json';
-import { refresh_selectmenu } from './jqm-util';
-import { JQueryPage } from './song';
+import { create } from 'zustand';
+import { send_ui_notification } from './component/notification';
+import { updateSetting } from './settings-store';
 import { song_language_translations } from './song-languages';
 import { LOCALE_SORT } from './sort-helpers';
-import { deferred_promise, fetch_json, is_rtl } from './util';
+import { fetch_json } from './util';
 
 // Currently active language translation pack
 let translations: Record<string, unknown> = {};
-let _app_lang; // should be set to the current language of the app
-
-// Now try to load the current translation language pack for this setup
-const [_langpack_loaded, _langpack_loaded_promise] = deferred_promise<void>();
-export function langpack_loaded() {
-    return _langpack_loaded_promise;
-}
-export function app_lang() {
-    return _app_lang;
-}
-let _langpack_loaded_resolved = 0;
-_langpack_loaded_promise.then(() => (_langpack_loaded_resolved = 1));
 
 // Load a language pack
-export async function lang_setup(lang = 'en') {
-    _app_lang = lang || 'en';
-    const new_lang = _app_lang;
+async function lang_setup(lang = 'en') {
+    const new_lang = lang || 'en';
 
     // If we are in a live build then see if we previously had the correct langpack injected
     let new_translation: Record<string, unknown> | undefined;
@@ -42,15 +29,13 @@ export async function lang_setup(lang = 'en') {
         if (!('langpack_direction' in new_translation)) new_translation['langpack_direction'] = 'ltr';
 
         Object.assign(translations, new_translation);
-        _langpack_loaded.resolve();
 
         // Get the special string saying the direction of the language pack
-        $('html, body').attr({
-            dir: get_translation('langpack_direction'),
-            lang: _app_lang,
+        // TODO: React-ify this stuff
+        [document.documentElement, document.body].map((e) => {
+            e.setAttribute('dir', get_translation('langpack_direction'));
+            e.setAttribute('lang', new_lang);
         });
-
-        relocalize_page($('body'));
     } catch (_e) {
         // file not found. The only case when this could potentially happen is
         // if we are a webapp running offline and someone goes to an uncached
@@ -68,11 +53,7 @@ export async function lang_setup(lang = 'en') {
             f: `langpack/${_app_lang}.json`,
         });
         */
-        try {
-            $('#langpack-not-loaded').popup('open', { history: false });
-        } catch (e) {
-            // may happen that the app did not load fully yet
-        }
+        send_ui_notification({ message_code: 'langpack-not-loaded' });
 
         // We should have the en language pack always available - if not, major issues.
         if (lang != 'en') return await lang_setup('en');
@@ -80,12 +61,25 @@ export async function lang_setup(lang = 'en') {
     return new_lang;
 }
 
+interface AppLangState {
+    appLang: string | undefined;
+    setLanguage: (lang: string) => Promise<void>;
+}
+
+export const useAppLang = create<AppLangState>((set) => ({
+    appLang: undefined,
+    setLanguage: async (lang) => {
+        set({ appLang: await lang_setup(lang) });
+        updateSetting('lang', lang);
+    },
+}));
+
 type TranslationContext = unknown;
 
 export function get_translation(name: string, e?: TranslationContext) {
     if (/^lang\./.test(name)) return lang_name(name.replace(/^lang\./, ''));
 
-    if (DEBUG && _langpack_loaded_resolved && !translations[name]) {
+    if (DEBUG && !(name in translations)) {
         console.log('No translation found for ', name, e || 'no element passed');
         return `XXX NO TRANSLATION (${name}) XXX`; // debug only
     }
@@ -95,64 +89,32 @@ export function get_translation(name: string, e?: TranslationContext) {
 }
 
 // Return the localized name of a language code
-export function lang_name(lang_id: string) {
+function lang_name(lang_id: string) {
     // The data fetched from the server should always be up to date and more
     // correct than the language pack distributed with this app build.
     let langs = song_language_translations();
-    if (langs && langs[lang_id] && langs[lang_id]?.name?.[_app_lang]) return langs[lang_id].name[_app_lang];
+    const { appLang } = useAppLang.getState();
+
+    if (appLang && langs?.[lang_id].name?.[appLang]) return langs[lang_id].name[appLang];
 
     // Fallback to our inbuilt translation or just the language id by itself
-    const lang_names = translations?.language_names as Record<string, string> | undefined;
-    return translations && lang_names && lang_names[lang_id] ? lang_names[lang_id] : lang_id;
+    const languageNames = translations['language_names'] as Record<string, string> | undefined;
+    return languageNames?.[lang_id] ?? lang_id;
 }
 
-export function relocalize_page(page: JQueryPage) {
-    // NOTE: Doesn't change the title until the next load of the page (see pagebeforeshow below)
-    page.find('[data-title-localize]').each((i, e) => {
-        e = $(e);
-        e.attr('title', get_translation(e.attr('data-title-localize'), e));
-    });
-
-    page.find('[data-placeholder-localize]').each((i, e) => {
-        e = $(e);
-        e.attr('placeholder', get_translation(e.attr('data-placeholder-localize'), e));
-    });
-
-    page.find('[data-localize]').each((i, e) => {
-        e = $(e);
-        let translation = get_translation(e.attr('data-localize'), e);
-
-        e.html(translation); // note .html is required for allowing <> tags etc in the translation
-        e.attr('title', translation);
-
-        if (e.is('option')) refresh_selectmenu(e.parent());
-    });
-
-    // Reorder the language list which is dynamic:
-    page.find('.filter-language').each((i, e) => {
-        e = $(e);
-        e.find('option.reorderable')
-            .sort((a, b) => LOCALE_SORT($(a).text(), $(b).text()))
-            .appendTo(e);
-    });
-}
-
-export function sorted_language_codes(languages: string[]) {
+function sorted_language_codes(languages: string[]) {
     languages.sort((a, b) => LOCALE_SORT(lang_name(a), lang_name(b)));
 
     return languages;
 }
 
-export function get_language_options() {
-    // Order the list
-    let languages = Object.keys(LANGPACK_INDEX);
-    languages.sort((a, b) => LOCALE_SORT(LANGPACK_INDEX[a], LANGPACK_INDEX[b]));
+export function useTranslation() {
+    // This should trigger a re-render whenever the language changes
+    useAppLang();
 
-    let options = languages.map((key) =>
-        $('<option>')
-            .attr({ value: key, dir: is_rtl(LANGPACK_INDEX[key]) ? 'rtl' : 'ltr' })
-            .text(LANGPACK_INDEX[key]),
-    );
-
-    return Promise.resolve(options);
+    return {
+        t: get_translation,
+        lang_name,
+        sorted_language_codes,
+    };
 }

@@ -131,18 +131,16 @@ describe('Chord', () => {
             vi.restoreAllMocks();
         });
 
-        it('returns an image element', () => {
+        it('returns a canvas element', () => {
             const chord = new Chord('G', '320003');
-            const img = chord.getDiagram(1);
-            expect(img).toBeInstanceOf(HTMLImageElement);
-            expect((img as HTMLImageElement).src).toContain('data:image/png;base64');
+            const canvas = chord.getDiagram(1);
+            expect(canvas).toBeInstanceOf(HTMLCanvasElement);
         });
 
         it('handles scale parameter', () => {
             const chord = new Chord('G', '320003');
-            // Just ensuring it doesn't throw
-            const img = chord.getDiagram(3);
-            expect(img).toBeTruthy();
+            const canvas = chord.getDiagram(3);
+            expect(canvas).toBeTruthy();
         });
     });
 

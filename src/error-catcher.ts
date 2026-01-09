@@ -1,7 +1,7 @@
 import * as StackTrace from 'stacktrace-js';
 import { DB_AVAILABLE } from './db';
 import { eventSocket } from './event-socket';
-import { app_lang } from './langpack';
+import { useAppLang } from './langpack';
 import { persistentStorage } from './persistent-storage.es5';
 
 const app_start_time = Date.now();
@@ -11,7 +11,9 @@ type ErrorReport = Record<string, unknown>;
 export type ErrorObject = unknown;
 
 let send_report = (error_report: ErrorReport): void => {
-    if (DEBUG) console.error(error_report);
+    if (DEBUG)
+        //alert('Error: ' + JSON.stringify(error_report));
+        console.error(error_report);
     else _send_error_report(error_report);
 };
 
@@ -25,8 +27,9 @@ export function send_error_report(type: string, error_obj: ErrorObject, error_re
 
     if (persistentStorage) error_report.s = persistentStorage.type();
 
+    const { appLang } = useAppLang.getState();
+    error_report.ui = appLang;
     try {
-        error_report.ui = app_lang();
         DB_AVAILABLE.then((db) => (error_report.db = db.type())); // in startup this will not have anything, but otherwise should run inline
 
         if (!error_report.msg && (typeof error_obj === 'object' || typeof error_obj === 'function') && error_obj && 'toString' in error_obj) {

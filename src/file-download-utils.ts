@@ -1,3 +1,4 @@
+import { send_ui_notification } from './component/notification';
 import { file_feedback } from './feedback';
 import { get_client_type } from './globals';
 import { get_translation } from './langpack';
@@ -206,6 +207,7 @@ export async function is_local_url_allowed(): Promise<boolean> {
         return new Promise((resolve) =>
             chrome.extension.isAllowedFileSchemeAccess((allowed: boolean) => {
                 if (!allowed && !persistentStorage.get('chrome_prompt_local_file')) {
+                    // TODO: React this alert
                     // Only show once per instance
                     if (!alert_shown) {
                         alert(get_translation('chrome-enable-localfile'));
@@ -312,8 +314,7 @@ export function download_file(song_id: number, file: DownloadableFile, song_titl
             .then(
                 (local_allowed) => {
                     if (local_allowed) set_src(local_url);
-
-                    $('#download-file-finished').popup('open', { history: false });
+                    send_ui_notification({ message_code: 'download_file_finished' });
                 },
                 (msg) => {
                     // Fallback to window.open method if proper methods failed, or if it was a link that should have been opened...
@@ -327,9 +328,9 @@ export function download_file(song_id: number, file: DownloadableFile, song_titl
         file_promise = try_window_open_download(file.download_path || file.path);
     }
 
-    file_promise = file_promise.catch(() => {
-        console.log('error thrown', arguments);
-        $('#download-file-error').popup('open', { history: false });
+    file_promise = file_promise.catch((err) => {
+        console.log('error thrown', err);
+        send_ui_notification({ message_code: 'download_file_error' });
     });
 }
 

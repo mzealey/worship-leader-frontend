@@ -55,7 +55,7 @@ export class SQLiteWorker {
         // Assume we now have an array of sql/vars. Pass them all over in one big
         // block to minimize comms channel overhead.
         let last_columns: undefined | string[],
-            last_rows: any[] = []; // Store the result efficiently
+            last_rows = []; // Store the result efficiently
         for (let i = 0; i < args.length; i++) {
             const save_results = i == args.length - 1;
 

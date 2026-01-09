@@ -3,14 +3,13 @@ const DEBUG_SINGLE_SCREEN = DEBUG && 0; // run presentation in popup window
 
 // TODO: Add Comlink to make this a lot simpler?
 import { Subject } from 'rxjs';
-//import { create } from 'zustand';
+import { create } from 'zustand';
 import { eventSocket } from './event-socket';
 import { is_chrome_extension, is_cordova } from './util';
 
 const send_available_event = eventSocket.add_queue('cast-available', 5, 7 * 24 * 60 * 60);
 const send_active_event = eventSocket.add_queue('cast-active', 10, 7 * 24 * 60 * 60);
 
-/*
 interface Cast {
     supported: boolean;
     available: boolean;
@@ -23,7 +22,6 @@ export const useCast = create<Cast>((set) => ({
     active: false,
     set: (newState: Cast) => set({ ...newState }),
 }));
-*/
 
 type Connection = unknown;
 
@@ -71,6 +69,10 @@ export abstract class PresentationCommon {
     subject = new Subject<PresentationState>();
     _connection: PresentationSession | Window | null = null;
     private connection_had_msg: boolean = false;
+
+    constructor() {
+        useCast.setState({ supported: true });
+    }
 
     set_cast_availability(val: boolean) {
         this.cast_available = val;
@@ -254,17 +256,20 @@ class PresentationWindow extends PresentationCommon {
         this._connection = window.open('presentor.html', 'presentor', 'scrollbars=no,status=no,location=no,toolbar=no,menubar=no');
         if (this._connection) {
             // popup may be blocked or something
-            (this._connection as any).state = 'connected';
+            //this._connection.state = 'connected'; // Window doesn't have state
             this.handle_connect();
         }
     }
 }
 
-let presentation: PresentationCommon | undefined;
+let _presentation: Promise<PresentationCommon> | undefined;
+export function get_presentation(): Promise<PresentationCommon> {
+    if (!_presentation) _presentation = init_casting();
+    return _presentation;
+}
 
-// TODO: Convert to async fn?
-export function setup_presentation() {
-    if (!DEBUG_SINGLE_SCREEN && !presentation && window.PresentationRequest) {
+async function init_casting(): Promise<PresentationCommon> {
+    if (!DEBUG_SINGLE_SCREEN && window.PresentationRequest) {
         let request;
         try {
             // Chrome extension seems to need full path. The extension captures
@@ -281,22 +286,19 @@ export function setup_presentation() {
         //
         // Not sure why but chrome 70 returned a Cannot set property
         // 'defaultRequest' of undefined issue so checking this as well...
-        if (request && request.getAvailability && navigator.presentation) presentation = new PresentationW3C(request);
+        if (request && request.getAvailability && navigator.presentation) return new PresentationW3C(request);
     }
 
-    if (!presentation && is_cordova()) {
-        document.addEventListener('deviceready', () => {
-            if (navigator.presentation) presentation = new PresentationCordova();
-        });
+    if (is_cordova()) {
+        return new Promise((resolve, reject) =>
+            document.addEventListener('deviceready', () => {
+                if (navigator.presentation) resolve(new PresentationCordova());
+                else reject();
+            }),
+        );
     }
 
     // Option to do presentation in an external window in other browsers that
     // don't support PresentationRequest
-    if (!presentation && !is_cordova()) presentation = new PresentationWindow();
+    return new PresentationWindow();
 }
-
-export const get_presentation = () => presentation;
-export const has_cast_device = () => !!presentation?.cast_available;
-export const is_casting = () => !!presentation?.is_casting();
-export const enter_cast_mode = () => presentation?.enter_cast_mode();
-export const exit_cast_mode = () => presentation?.exit_cast_mode();

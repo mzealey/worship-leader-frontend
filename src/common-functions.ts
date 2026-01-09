@@ -18,9 +18,9 @@ window.SORT_TITLE_SORT = SORT_TITLE_SORT;
 window.get_youtube_id = get_youtube_id;
 window.unidecode = unidecode;
 
-window.HOST = get_host() || '';
+window.HOST = get_host();
 
 // Legacy string formatting hack
 (String.prototype as any).format = function (...arg: unknown[]) {
-    return format_string(this as string, ...arg);
+    return format_string(this as unknown as string, ...arg);
 };

@@ -17,11 +17,11 @@
     ],
     "isolatedModules": true,
     "esModuleInterop": true,
-    "noImplicitAny": false,
+    "noImplicitAny": true,
     "jsx": "react-jsx",
     "moduleResolution": "Bundler",
     "types": [
-      "jquery",
+      "@react-router/node",
       "vite/client"
     ],
     "skipLibCheck": true,

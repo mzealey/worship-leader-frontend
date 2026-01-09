@@ -80,7 +80,7 @@ export abstract class OfflineDBCommon extends CommonDB {
     }
 
     async on_dbload_fail() {
-        $.mobile.changePage('#page-dbload-failed', { reverse: false, changeHash: false });
+        // TODO $.mobile.changePage('#page-dbload-failed', { reverse: false, changeHash: false });
     }
 
     full_type(): string {

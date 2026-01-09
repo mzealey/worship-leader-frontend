@@ -1,13 +1,11 @@
 // @vitest-environment jsdom
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 
-// Define mocks first using hoisted
 const mocks = vi.hoisted(() => ({
     sendReport: vi.fn(),
     fromError: vi.fn().mockResolvedValue([]),
 }));
 
-// Mock dependencies
 vi.mock('stacktrace-js', () => {
     return {
         __esModule: true,
@@ -22,29 +20,34 @@ vi.mock('../src/db', () => ({
 
 vi.mock('../src/event-socket', () => ({
     eventSocket: {
-        add_queue: vi.fn().mockReturnValue(mocks.sendReport),
+        add_queue: () => mocks.sendReport,
     },
 }));
 
 vi.mock('../src/langpack', () => ({
-    app_lang: vi.fn().mockReturnValue('en'),
+    useAppLang: {
+        getState: () => ({ appLang: 'en' }),
+    },
 }));
 
 vi.mock('../src/persistent-storage.es5', () => ({
     persistentStorage: {
-        type: vi.fn().mockReturnValue('mock_storage'),
+        type: () => 'mock_storage',
     },
 }));
 
 describe('error-catcher', () => {
     let errorCatcherMod: typeof import('../src/error-catcher');
-    let originalDebug: any;
-    let originalBuildType: any;
-    let originalAppVersion: any;
-    let originalOnError: any;
+    let originalDebug: unknown;
+    let originalBuildType: unknown;
+    let originalAppVersion: unknown;
+    let originalOnError: OnErrorEventHandler;
 
     beforeAll(async () => {
-        // Import the module under test after mocks are set up
+        (globalThis as Record<string, unknown>).DEBUG = false;
+        (globalThis as Record<string, unknown>).BUILD_TYPE = 'test';
+        (globalThis as Record<string, unknown>).APP_VERSION = '1.0.0';
+
         errorCatcherMod = await import('../src/error-catcher');
     });
 
@@ -53,22 +56,21 @@ describe('error-catcher', () => {
         mocks.fromError.mockClear();
         mocks.fromError.mockResolvedValue([]);
 
-        originalDebug = (globalThis as any).DEBUG;
-        originalBuildType = (globalThis as any).BUILD_TYPE;
-        originalAppVersion = (globalThis as any).APP_VERSION;
+        originalDebug = (globalThis as Record<string, unknown>).DEBUG;
+        originalBuildType = (globalThis as Record<string, unknown>).BUILD_TYPE;
+        originalAppVersion = (globalThis as Record<string, unknown>).APP_VERSION;
         originalOnError = window.onerror;
 
-        (globalThis as any).DEBUG = false;
-        (globalThis as any).BUILD_TYPE = 'test';
-        (globalThis as any).APP_VERSION = '1.0.0';
+        (globalThis as Record<string, unknown>).DEBUG = false;
+        (globalThis as Record<string, unknown>).BUILD_TYPE = 'test';
+        (globalThis as Record<string, unknown>).APP_VERSION = '1.0.0';
     });
 
     afterEach(() => {
-        (globalThis as any).DEBUG = originalDebug;
-        (globalThis as any).BUILD_TYPE = originalBuildType;
-        (globalThis as any).APP_VERSION = originalAppVersion;
+        (globalThis as Record<string, unknown>).DEBUG = originalDebug;
+        (globalThis as Record<string, unknown>).BUILD_TYPE = originalBuildType;
+        (globalThis as Record<string, unknown>).APP_VERSION = originalAppVersion;
         window.onerror = originalOnError;
-        vi.restoreAllMocks();
     });
 
     it('sends report with basic info', async () => {
@@ -96,7 +98,6 @@ describe('error-catcher', () => {
 
         errorCatcherMod.send_error_report('crash', err);
 
-        // Wait for promise resolution
         await new Promise((resolve) => setTimeout(resolve, 10));
 
         expect(mocks.sendReport).toHaveBeenCalledWith(
@@ -142,9 +143,8 @@ describe('error-catcher', () => {
         expect(window.onerror).not.toBe(originalOnError);
         expect(typeof window.onerror).toBe('function');
 
-        // Trigger it
         if (window.onerror) {
-            (window.onerror as any)('msg', 'file.js', 10, 5, new Error('e'));
+            (window.onerror as (msg: string, file: string, line: number, col: number, error: Error) => void)('msg', 'file.js', 10, 5, new Error('e'));
         }
 
         await new Promise((resolve) => setTimeout(resolve, 10));
@@ -158,7 +158,7 @@ describe('error-catcher', () => {
     });
 
     it('logs to console when DEBUG is true', async () => {
-        (globalThis as any).DEBUG = true;
+        (globalThis as Record<string, unknown>).DEBUG = true;
         vi.spyOn(console, 'error').mockImplementation(() => {});
 
         errorCatcherMod.send_error_report('test', 'data');

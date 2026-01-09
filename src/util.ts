@@ -34,7 +34,7 @@ export function scroll_to(element: HTMLElement, scrollTop: number, time?: number
     window.requestAnimationFrame(stepper);
 }
 
-export function _ensure_visible(elem: HTMLElement, parent?: HTMLElement, animate_time = 0) {
+export function ensure_visible(elem: HTMLElement, parent?: HTMLElement, animate_time = 0) {
     const parentElem = parent ?? document.documentElement;
     const parent_height = parent?.clientHeight ?? window.innerHeight;
     const parent_offset_top = parent ? parent.offsetTop : 0;
@@ -49,12 +49,6 @@ export function _ensure_visible(elem: HTMLElement, parent?: HTMLElement, animate
     }
 }
 
-// For JQuery
-export function ensure_visible(elem: JQuery, parent?: JQuery, animate_time = 0) {
-    return _ensure_visible(elem[0], parent?.[0], animate_time);
-}
-
-// Promise shortcuts
 // Stop-gap to make porting jquery $.Deferred() code easier to port. Difficult to kill unfortunately
 export type RejectReason = unknown;
 export interface DeferredPromise<T> {
@@ -76,13 +70,6 @@ export function is_chrome_extension() {
 }
 export function is_cordova() {
     return BUILD_TYPE == 'phonegap' && 'cordova' in window;
-}
-
-export function is_touch_device() {
-    return (
-        !!('ontouchstart' in window) || // works on most browsers
-        !!('onmsgesturechange' in window)
-    ); // works on ie10
 }
 
 export function is_mobile_browser() {

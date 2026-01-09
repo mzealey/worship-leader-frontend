@@ -1,4 +1,5 @@
-import { get_setting, gup } from './splash-util.es5';
+import { getSetting } from './settings-store';
+import { gup } from './splash-util.es5';
 
 // Get languages to try for ui language packs in order of preference. Should
 // always include at least one valid language. This needs to be instant (ie
@@ -15,7 +16,7 @@ export function get_browser_languages(extra?: string[]) {
 
     // First see if user specified anything in the app or from url
     add_lang(gup('lang'));
-    add_lang(get_setting('setting-lang'));
+    add_lang(getSetting('lang'));
 
     // TODO: Perhaps get something from cordova perhaps using
     // https://github.com/apache/cordova-plugin-globalization? But probably the

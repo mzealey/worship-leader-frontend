@@ -1,18 +1,16 @@
 import isEqual from 'lodash/isEqual';
 import { Subject } from 'rxjs';
-import { spinner } from './component/spinner';
-import type { CommonDB, DBFilters } from './db/common';
+import { create } from 'zustand';
+import type { CommonDB, DBBaseFilters, DBFilters } from './db/common';
 import { eventSocket } from './event-socket';
-import { filter_sources } from './filter-sources';
-import { get_translation, langpack_loaded } from './langpack';
-import { Album, JQueryPage, Song, SongSource } from './song';
-import { update_song_list } from './songlist';
-import { filter_tags } from './tag';
+import { persistentStorage } from './persistent-storage.es5';
+import { Album, Song, SongSource } from './song';
 import { unidecode } from './unidecode';
-import { format_string, is_mobile_browser, prepare_search_string } from './util';
+import { is_mobile_browser, prepare_search_string } from './util';
 
 export type SourceFilterMap = Record<number, 0 | 1 | undefined>;
 export type TagFilterMap = DBFilters['advanced_tags'];
+type SearchFiltersState = DBBaseFilters;
 
 export interface DBSearchRunResult {
     data: Song[];
@@ -25,63 +23,110 @@ export interface DBRequestedItems {
     infinite_scroll?: boolean;
 }
 
+// Zustand store for song list state
+interface SongListStore {
+    items: (Song | SongSource | Album)[];
+    requested_items?: DBRequestedItems;
+    pager?: Pager;
+    setSongList: (items: (Song | SongSource | Album)[], requested_items: DBRequestedItems, pager: Pager) => void;
+    setPager: (pager: Pager) => void;
+}
+
+export const useSongListStore = create<SongListStore>((set) => ({
+    items: [],
+    requested_items: undefined,
+    pager: undefined,
+    setSongList: (items, requested_items, pager) => set({ items, requested_items, pager }),
+    setPager: (pager) => set({ pager }),
+}));
+
+// Zustand store for search/filter state
+interface SearchStore {
+    filters: SearchFiltersState;
+    tags: TagFilterMap;
+    sources: SourceFilterMap;
+    current_search?: DBSearch;
+
+    setFilters: (filters: Partial<SearchFiltersState>) => void;
+    updateSourceFilter: (sources: SourceFilterMap) => void;
+    resetSourceFilter: () => void;
+    updateTagFilter: (tags: TagFilterMap) => void;
+    resetTagFilter: () => void;
+    setCurrentSearch: (search: DBSearch | undefined) => void;
+}
+
+export const useSearchStore = create<SearchStore>((set) => ({
+    filters: {
+        order_by: persistentStorage.get('order-by') || 'default',
+        lang: persistentStorage.get('filter-language') || 'all',
+        search: '',
+    },
+    tags: {},
+    sources: persistentStorage.getObj<SourceFilterMap>('source-select', {}),
+    current_search: undefined,
+
+    setFilters: (filters) => {
+        set((state) => ({
+            filters: { ...state.filters, ...filters },
+        }));
+        if (filters.lang) persistentStorage.set('filter-language', filters.lang);
+        if (filters.order_by) persistentStorage.set('order-by', filters.order_by);
+    },
+    updateSourceFilter: (sources) =>
+        set((state) => {
+            const newSources: SourceFilterMap = { ...state.sources };
+            Object.entries(sources).forEach(([sourceIdStr, val]) => {
+                const sourceId = Number(sourceIdStr);
+                if (val) newSources[sourceId] = 1;
+                else delete newSources[sourceId];
+            });
+            persistentStorage.setObj('source-select', newSources);
+            return { sources: newSources };
+        }),
+    resetSourceFilter: () => {
+        const empty: SourceFilterMap = {};
+        set({ sources: empty });
+        persistentStorage.setObj('source-select', empty);
+    },
+    updateTagFilter: (tags) =>
+        set((state) => {
+            const newTags: TagFilterMap = { ...state.tags };
+            Object.entries(tags).forEach(([tagIdStr, val]) => {
+                const tagId = Number(tagIdStr);
+                if (val !== undefined) newTags[tagId] = val;
+                else delete newTags[tagId];
+            });
+            return { tags: newTags };
+        }),
+    resetTagFilter: () => set({ tags: {} }),
+    setCurrentSearch: (current_search) => set({ current_search }),
+}));
+
 const send_search_event = eventSocket.add_queue('search', 100, 30 * 24 * 60 * 60);
 
 // Return a list of filters in SQL::Abstract style. NOTE must ensure that all
 // data is cloned
-export function get_filters(page: JQueryPage): DBFilters {
-    let has_custom_value = 0;
+export function get_filters(): DBFilters {
+    const state = useSearchStore.getState();
 
-    let filters: Partial<DBFilters> = {
-        order_by: page.find('select.order-by').val(),
+    const filters: DBFilters = {
+        ...state.filters,
+        advanced_tags: { ...state.tags },
     };
+    if (filters.lang == 'all') delete filters.lang;
 
     // Handle passing key=val into the search function
-    let search = page.find('.search').val() || '';
-    filters.search = search.replace(/\b([^= ]+)=([^ ]+)/g, function (match, key, value) {
-        filters[key] = value;
+    filters.search = filters.search.replace(/\b([^= ]+)=([^ ]+)/g, (_match, key: string, value: string) => {
+        // TODO: Should we do type checking here?
+        (filters as any)[key] = value;
         return '';
     });
-    filters.search = filters.search!.replace(/^\s+|\s+$/g, '');
+    filters.search = filters.search.replace(/^\s+|\s+$/g, '');
 
-    let filter_lang = page.find('select.filter-language').val();
-    if (filter_lang && filter_lang != 'all') filters.lang = filter_lang;
-
-    // Shallow copy
-    filters.advanced_tags = {};
-    for (let tag_id in filter_tags) {
-        filters.advanced_tags[tag_id] = filter_tags[tag_id];
-        has_custom_value = 1;
-    }
-
-    let sources: string[] = [];
-    for (let source_id in filter_sources) {
-        if (!filter_sources[source_id]) continue;
-
-        sources.push(source_id);
-        has_custom_value = 1;
-    }
+    const sources = Object.keys(state.sources);
     if (sources.length) filters.source_id = sources.join(',');
 
-    filters.favourite = page.find('.filter-favourites').tristateValue();
-    filters.is_original = page.find('.filter-original').tristateValue();
-    filters.has_mp3 = page.find('.filter-mp3').tristateValue();
-    filters.has_sheet = page.find('.filter-sheet').tristateValue();
-    filters.has_chord = page.find('.filter-chord').tristateValue();
-
-    let songkey = page.find('.songkey').val();
-    if (songkey) filters.songkey = songkey;
-
-    // check to see if custom value or not
-    for (let key in filters) {
-        if (key == 'advanced_tags' || key == 'search' || key == 'order_by') continue;
-
-        if (filters[key] !== undefined) has_custom_value = 1;
-    }
-
-    $('.dropdown').toggleClass('ui-btn-active', !!has_custom_value);
-
-    return filters as DBFilters;
+    return filters;
 }
 
 export class Pager {
@@ -92,15 +137,13 @@ export class Pager {
     min_total: number;
     last_real_start: number;
     last_end_update: number;
-    page: JQueryPage; // the page we apply the pager to
 
-    constructor(page: JQueryPage) {
+    constructor() {
         // TODO: Make this based on the performance stats rather than if mobile or not...
         this.page_size = is_mobile_browser() ? 20 : 50;
         this.last_start_update = this.start = 0;
         this.total = -1;
         this.min_total = -1; // the minimum that total could possibly be
-        this.page = page; // the page we apply the pager to
 
         // the last time that a real pager call (as opposed to infinite scroll)
         // was used to page, to avoid overflowing the DOM we limit the amount
@@ -110,7 +153,7 @@ export class Pager {
     }
 
     clone(): Pager {
-        let p = new Pager(this.page);
+        let p = new Pager();
         Object.assign(p, this);
         return p;
     }
@@ -209,24 +252,6 @@ export class Pager {
     no_results(): boolean {
         return this.last_end_update === 0;
     } // Either no results at all, or still loading
-
-    update_pager_display(): void {
-        let pagers = this.page.find('.pager');
-        pagers.toggle(this.last_end_update != 0);
-        pagers.find('.pager-prev').toggle(this.last_start_update > 0);
-        pagers.find('.pager-next').toggle(this.last_end_update < Math.max(this.total, this.min_total));
-
-        // Only update the text after we have translation loaded
-        langpack_loaded().then(() => {
-            pagers
-                .find('.pager-total')
-                .text(format_string(get_translation('pager'), this.last_start_update + 1, this.last_end_update, this.total < 0 ? '...' : this.total));
-        });
-    }
-}
-
-export function current_search(page: JQueryPage) {
-    return page.data('cur_search');
 }
 
 interface DBSearchState {
@@ -237,21 +262,17 @@ interface DBSearchState {
 export class DBSearch {
     filters: DBFilters;
     db: CommonDB;
-    state: Subject<DBSearchState>;
+    state = new Subject<DBSearchState>();
     search!: Promise<string>;
     prepared_query!: Promise<unknown>;
     query_validity: string;
-    pager: Pager;
-    page: JQueryPage;
+    pager: Pager = new Pager();
     private _pager_timeout?: ReturnType<typeof setTimeout>;
 
-    constructor(db: CommonDB, page: JQueryPage) {
-        this.pager = new Pager(page);
-        this.filters = get_filters(page); // Cache original filters to send with feedback details
+    constructor(db: CommonDB) {
+        this.filters = get_filters(); // Cache original filters to send with feedback details
         this.db = db;
-        this.state = new Subject<DBSearchState>();
         this.query_validity = this.db.query_validity();
-        this.page = page;
         this._refresh_query();
     }
 
@@ -260,18 +281,18 @@ export class DBSearch {
         this.prepared_query = this.search.then((search: string) => this.db._prepare_query({ ...this.filters, search }));
         this.query_validity = this.db.query_validity();
 
-        this.pager = new Pager(this.page);
+        this.pager = new Pager();
     }
 
     // Is a new query needed on the given page for the specified db type?
-    isEqual(cur_db: CommonDB, page: JQueryPage): boolean {
-        return cur_db.query_validity() == this.query_validity && isEqual(get_filters(page), this.filters);
+    isEqual(cur_db: CommonDB): boolean {
+        return cur_db.query_validity() == this.query_validity && isEqual(get_filters(), this.filters);
     }
 
     // Returns true if this search object is the one that should be active on
     // the page to avoid displaying stale data
     private _is_active(): boolean {
-        return current_search(this.page) === this;
+        return useSearchStore.getState().current_search === this;
     }
 
     subscribe(fn: (state: DBSearchState) => void) {
@@ -320,16 +341,14 @@ export class DBSearch {
                     if (songs.total) this.pager.set_total(songs.total);
 
                     this.pager.update(requested_items, songs.data.length);
-                    this.pager.update_pager_display();
-                    update_song_list(this.page, song_list, requested_items);
+                    if (infinite_scroll) song_list.unshift(...(useSongListStore.getState().items || []));
+                    useSongListStore.getState().setSongList(song_list, requested_items, this.pager);
 
                     this.state.next({ state: 'resolved', infinite_scroll });
                 }
 
                 return songs;
             });
-
-        if (!infinite_scroll) promise = spinner(promise);
 
         // If the DB preferred to get total via a separate function, run that
         // later and don't wait on the promise as we can just update the pager
@@ -363,7 +382,7 @@ export class DBSearch {
 
                         if (this._is_active()) {
                             this.pager.set_total(total);
-                            this.pager.update_pager_display();
+                            useSongListStore.getState().setPager(this.pager.clone()); // clone to force a rerender - nasty hack for PagerElem updates
                         }
                         songs.total = total;
 
@@ -402,8 +421,8 @@ export class DBSearch {
     }
 
     run(): Promise<DBSearchRunResult> {
-        // Mark this as the currently active query on the page, ignore results from any others
-        this.page.data('cur_search', this);
+        // Mark this as the currently active query
+        useSearchStore.getState().setCurrentSearch(this);
 
         return this._run(true);
     }

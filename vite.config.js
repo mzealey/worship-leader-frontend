@@ -5,6 +5,7 @@
 // - chrome(+ edge?) build cannot have any inline js in it...
 import { viteCommonjs } from '@originjs/vite-plugin-commonjs';
 import legacy from '@vitejs/plugin-legacy';
+import react from '@vitejs/plugin-react';
 import { copyFileSync } from 'fs';
 import { defineConfig } from 'vite';
 import { DynamicPublicDirectory } from 'vite-multiple-assets';
@@ -46,6 +47,10 @@ export default defineConfig(({ command, mode }) => {
         // Copied by the DynamicPublicDirectory plugin
 
         //base: './',
+        server: {
+            // TODO: Figure out why this not working with too many open files
+            //watch: null,
+        },
         publicDir: false,
         optimizeDeps: {
             esbuildOptions: {},
@@ -73,7 +78,7 @@ export default defineConfig(({ command, mode }) => {
             },
         },
 
-        plugins: [viteCommonjs(), tsconfigPaths()],
+        plugins: [react({}), viteCommonjs(), tsconfigPaths()],
     };
 
     // Add in linting plugins. TODO: Disable on production build would reduce time from 21 to 15sec
@@ -120,7 +125,7 @@ export default defineConfig(({ command, mode }) => {
                 },
                 {
                     filename: 'presentor.html',
-                    template: 'presentor.html',
+                    template: 'src/presentor/presentor.html',
                 },
             ],
         };
@@ -293,7 +298,6 @@ export default defineConfig(({ command, mode }) => {
                 html: '<!doctype html><html><body></body></html>',
             },
         },
-        setupFiles: ['./spec/setup.ts'],
         coverage: {
             include: ['src/**'],
         },

@@ -30,7 +30,6 @@ interface Window {
     Audio5: any;
     abc2svg: any;
     ga: any;
-    ym: any;
     clipboardData: any;
     DB_API: any;
     kill_db: any;
@@ -85,26 +84,4 @@ interface Document {
 interface MediaQueryList {
     // We add this in
     unsubscribe(): void;
-}
-
-// JQM etc extensions
-interface JQueryStatic {
-    mobile: any;
-}
-
-// JQM etc extensions
-interface JQuery {
-    listview: any;
-    toolbar: any;
-    raty: any;
-    selectmenu: any;
-    colorPicker: any;
-    dialog: any;
-    popup: any;
-    filterable: any;
-    sortable: any;
-    checkboxradio: any;
-    disableSelection: any;
-    tristateSetState: any;
-    tristateValue: any;
 }
