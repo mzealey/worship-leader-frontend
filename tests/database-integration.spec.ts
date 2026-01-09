@@ -56,8 +56,6 @@ async function initializeDatabase(page, dbType: 'online' | 'offline') {
                 await DB_API.populate_db();
             }
 
-            if (DEBUG) window.DB_API = DB_API;
-
             return { success: true, type: DB_API.type() };
         } catch (error) {
             return { success: false, error: String(error) };
