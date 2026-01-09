@@ -40,8 +40,6 @@ describe('langpack', () => {
         (window as any).$ = mockJQuery;
 
         document.body.innerHTML = '';
-        (globalThis as any).BUILD_TYPE = 'www';
-        (globalThis as any).DEBUG = false;
 
         songLanguagesMod = await import('../src/song-languages');
         langpackMod = await import('../src/langpack');

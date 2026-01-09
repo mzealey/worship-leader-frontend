@@ -1,5 +1,5 @@
 // Export key functions for the editor
-import { get_host } from './globals';
+import { API_HOST } from './globals';
 import { add_chord_zwjs, convert_to_elvanto, convert_to_pre, format_html_chords, songxml_to_divs } from './songxml-util';
 import { SORT_TITLE_SORT } from './sort-helpers';
 import { unidecode } from './unidecode';
@@ -18,7 +18,7 @@ window.SORT_TITLE_SORT = SORT_TITLE_SORT;
 window.get_youtube_id = get_youtube_id;
 window.unidecode = unidecode;
 
-window.HOST = get_host() || '';
+window.HOST = API_HOST;
 
 // Legacy string formatting hack
 (String.prototype as any).format = function (...arg: unknown[]) {

@@ -1,6 +1,5 @@
 // @vitest-environment jsdom
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { maybe_setup_ga } from '../src/analytics';
 import * as jqmUtil from '../src/jqm-util';
 
 // Mock dependencies
@@ -9,16 +8,12 @@ vi.mock('../src/jqm-util', () => ({
 }));
 
 describe('analytics', () => {
-    let originalBuildType: any;
     let originalGA: any;
     let originalYM: any;
     let originalJQuery: any;
-    let originalDebug: any;
 
     beforeEach(() => {
         vi.resetModules();
-        originalBuildType = (globalThis as any).BUILD_TYPE;
-        originalDebug = (globalThis as any).DEBUG;
         originalGA = (window as any).ga;
         originalYM = (window as any).ym;
         originalJQuery = (window as any).$;
@@ -36,16 +31,19 @@ describe('analytics', () => {
     });
 
     afterEach(() => {
-        (globalThis as any).BUILD_TYPE = originalBuildType;
-        (globalThis as any).DEBUG = originalDebug;
         (window as any).ga = originalGA;
         (window as any).ym = originalYM;
         (window as any).$ = originalJQuery;
         vi.restoreAllMocks();
     });
 
-    it('does nothing if BUILD_TYPE is not www', () => {
-        (globalThis as any).BUILD_TYPE = 'dev';
+    it('does nothing if BUILD_TYPE is not www', async () => {
+        vi.doMock('../src/globals', () => ({
+            BUILD_TYPE: 'dev',
+            DEBUG: false,
+        }));
+
+        const { maybe_setup_ga } = await import('../src/analytics');
         maybe_setup_ga();
 
         // Should not inject scripts
@@ -53,9 +51,13 @@ describe('analytics', () => {
         expect((window as any).ym).toBeUndefined();
     });
 
-    it('initializes GA and YM when BUILD_TYPE is www', () => {
-        (globalThis as any).BUILD_TYPE = 'www';
+    it('initializes GA and YM when BUILD_TYPE is www', async () => {
+        vi.doMock('../src/globals', () => ({
+            BUILD_TYPE: 'www',
+            DEBUG: false,
+        }));
 
+        const { maybe_setup_ga } = await import('../src/analytics');
         maybe_setup_ga();
 
         expect((window as any).ga).toBeDefined();
@@ -65,10 +67,14 @@ describe('analytics', () => {
         expect((window as any).ym.a).toBeDefined(); // Yandex queue
     });
 
-    it('cleans up existing ga object', () => {
-        (globalThis as any).BUILD_TYPE = 'www';
+    it('cleans up existing ga object', async () => {
+        vi.doMock('../src/globals', () => ({
+            BUILD_TYPE: 'www',
+            DEBUG: false,
+        }));
         (window as any).ga = 'some-garbage';
 
+        const { maybe_setup_ga } = await import('../src/analytics');
         maybe_setup_ga();
 
         expect(typeof (window as any).ga).toBe('function');
@@ -77,9 +83,8 @@ describe('analytics', () => {
     describe('page tracking', () => {
         let bindCallback: (event: unknown, options: { toPage: { id: string }[] }) => void;
 
-        beforeEach(() => {
-            (globalThis as any).BUILD_TYPE = 'www';
-            (globalThis as any).DEBUG = false;
+        beforeEach(async () => {
+            vi.resetModules();
 
             // Capture the bind callback
             const bindMock = vi.fn((event, cb) => {
@@ -88,15 +93,21 @@ describe('analytics', () => {
                 }
             });
             (window as any).$ = vi.fn().mockReturnValue({ bind: bindMock });
+        });
 
+        it('tracks simple page views', async () => {
+            vi.doMock('../src/globals', () => ({
+                BUILD_TYPE: 'www',
+                DEBUG: false,
+            }));
+
+            const { maybe_setup_ga } = await import('../src/analytics');
             maybe_setup_ga();
 
             // Mock GA and YM functions to track calls
             (window as any).ga = vi.fn();
             (window as any).ym = vi.fn();
-        });
 
-        it('tracks simple page views', () => {
             vi.mocked(jqmUtil.get_page_args).mockReturnValue({});
 
             const options = {
@@ -110,7 +121,19 @@ describe('analytics', () => {
             expect((window as any).ym).toHaveBeenCalledWith(60686398, 'hit', '/some-page');
         });
 
-        it('tracks song views with ID', () => {
+        it('tracks song views with ID', async () => {
+            vi.doMock('../src/globals', () => ({
+                BUILD_TYPE: 'www',
+                DEBUG: false,
+            }));
+
+            const { maybe_setup_ga } = await import('../src/analytics');
+            maybe_setup_ga();
+
+            // Mock GA and YM functions to track calls
+            (window as any).ga = vi.fn();
+            (window as any).ym = vi.fn();
+
             vi.mocked(jqmUtil.get_page_args).mockReturnValue({ song_id: '123' });
 
             const options = {
@@ -123,8 +146,19 @@ describe('analytics', () => {
             expect((window as any).ym).toHaveBeenCalledWith(60686398, 'hit', '/songinfo/123');
         });
 
-        it('logs to console instead of sending when DEBUG is true', () => {
-            (globalThis as any).DEBUG = true;
+        it('logs to console instead of sending when DEBUG is true', async () => {
+            vi.doMock('../src/globals', () => ({
+                BUILD_TYPE: 'www',
+                DEBUG: true,
+            }));
+
+            const { maybe_setup_ga } = await import('../src/analytics');
+            maybe_setup_ga();
+
+            // Mock GA and YM functions to track calls
+            (window as any).ga = vi.fn();
+            (window as any).ym = vi.fn();
+
             vi.mocked(jqmUtil.get_page_args).mockReturnValue({});
 
             const options = {

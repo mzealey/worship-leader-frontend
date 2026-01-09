@@ -12,7 +12,7 @@ import { FAVOURITE_DB } from '../favourite-db';
 import { file_feedback, song_feedback } from '../feedback';
 import { try_window_open_download } from '../file-download-utils';
 import { set_filter_source } from '../filter-sources';
-import { get_host } from '../globals';
+import { API_HOST } from '../globals';
 import { current_page } from '../jqm-util';
 import { app_lang, get_translation, lang_name } from '../langpack';
 import { load_songxml_into, render_chords } from '../load-songxml';
@@ -366,7 +366,7 @@ function load_song(songdata?) {
         // is set to to allow using cdn to work around network restrictions.
         // For web (esp http/2) this should also speed up content fetching as
         // not required to negotiate a new connection.
-        const change_domain = (path) => (path || '').replace(/^https?:\/\/songs.(yasamkilisesi|worshipleaderapp).com/i, get_host());
+        const change_domain = (path) => (path || '').replace(/^https?:\/\/songs.(yasamkilisesi|worshipleaderapp).com/i, API_HOST);
         d.path = change_domain(d.path);
 
         if (d.type == 'mp3' || d.type == 'promomp3' || d.type == 'instmp3' || d.type == 'backmp3') {

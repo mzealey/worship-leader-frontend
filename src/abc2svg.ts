@@ -3,6 +3,7 @@
 
 import * as Comlink from 'comlink';
 import type { AbcRenderRequest, AbcRenderResult, AbcRenderer } from './abc2svg-renderer';
+import { BUILD_TYPE } from './globals';
 import { timeout } from './util';
 
 // The below inlining is used to try to fix a cordova problem with inability to load workers via file:// protocol which

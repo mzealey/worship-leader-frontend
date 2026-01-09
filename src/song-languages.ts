@@ -1,5 +1,5 @@
 import { spinner } from './component/spinner';
-import { get_db_path } from './globals';
+import { BUILD_TYPE, DB_PATH } from './globals';
 import { get_app_languages } from './langdetect.es5';
 import { persistentStorage } from './persistent-storage.es5';
 import { fetch_json } from './util';
@@ -38,7 +38,7 @@ export function refresh_song_languages(with_spinner = false): Promise<Record<str
     }
 
     if (!_song_languages_last_promise) {
-        _song_languages_last_promise = fetch_json(`${get_db_path()}.index.json`, { cache: 'no-store' });
+        _song_languages_last_promise = fetch_json(`${DB_PATH}.index.json`, { cache: 'no-store' });
         if (with_spinner) _song_languages_last_promise = spinner(_song_languages_last_promise);
     }
 

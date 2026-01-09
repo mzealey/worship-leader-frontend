@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { DUMP_VERSION, get_client_type, get_db_path, get_host, get_main_domain, get_uuid, is_firsttime, random_int } from '../src/globals';
+import { DUMP_VERSION, get_client_type, get_uuid, is_firsttime, random_int } from '../src/globals';
 
 // Mock dependencies
 vi.mock('../src/splash-util.es5', () => ({
@@ -14,9 +14,6 @@ vi.mock('../src/persistent-storage.es5', () => ({
         set: vi.fn(),
     },
 }));
-
-(global as any).BUILD_TYPE = 'test';
-(global as any).DEBUG = false;
 
 describe('globals utility functions', function () {
     let mockPersistentStorage: any;
@@ -126,60 +123,6 @@ describe('globals utility functions', function () {
             const result = get_client_type();
             expect(typeof result).toBe('string');
             expect(result.length).toBeGreaterThan(0);
-        });
-    });
-
-    describe('get_main_domain', function () {
-        it('returns main domain URL', function () {
-            const result = get_main_domain();
-            expect(result).toBe('https://songs.worshipleaderapp.com');
-        });
-    });
-
-    describe('get_host', function () {
-        it('returns empty string for production host', function () {
-            window.location.host = 'songs.worshipleaderapp.com';
-            window.location.protocol = 'https:';
-
-            const result = get_host();
-
-            expect(result).toBe('');
-        });
-
-        it('returns main domain for localhost', function () {
-            window.location.host = 'localhost';
-            window.location.protocol = 'http:';
-
-            const result = get_host();
-
-            expect(result).toBe('https://songs.worshipleaderapp.com');
-        });
-
-        it('returns string in debug mode', function () {
-            (global as any).DEBUG = true;
-
-            const result = get_host();
-
-            expect(typeof result).toBe('string');
-
-            (global as any).DEBUG = false;
-        });
-
-        it('caches host value', function () {
-            get_host();
-            const result2 = get_host();
-
-            // Should return same value without recalculating
-            expect(typeof result2).toBe('string');
-        });
-    });
-
-    describe('get_db_path', function () {
-        it('constructs database path with host and version', function () {
-            const result = get_db_path();
-
-            expect(result).toContain(`db${DUMP_VERSION}/db`);
-            expect(typeof result).toBe('string');
         });
     });
 

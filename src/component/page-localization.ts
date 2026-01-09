@@ -1,4 +1,5 @@
 import LANGPACK_INDEX from '../../langpack/index.json';
+import { DEBUG } from '../globals';
 import { get_app_languages } from '../langdetect.es5';
 import { get_translation, lang_setup, relocalize_page } from '../langpack';
 import { jqm_setup_completed } from '../startup-promises';

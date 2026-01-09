@@ -1,5 +1,6 @@
 import { ABC } from '../abc2svg';
 import { type AbcRenderRequest } from '../abc2svg-renderer';
+import { DEBUG } from '../globals';
 import { _load_songxml_into } from '../load-songxml';
 import { ensure_visible } from '../util';
 import { hide_spinner, show_spinner } from './spinner';

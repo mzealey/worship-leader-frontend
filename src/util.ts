@@ -1,3 +1,5 @@
+import { BUILD_TYPE } from './globals';
+
 // Remove various characters to make searching easier
 export function prepare_search_string(input: string) {
     /* See lib/Songs/Schema/Result/Songs.pm:get_search_text for full

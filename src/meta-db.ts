@@ -1,5 +1,5 @@
 import { spinner } from './component/spinner';
-import { get_db_path } from './globals';
+import { BUILD_TYPE, DB_PATH } from './globals';
 import { persistentStorage } from './persistent-storage.es5';
 import { fetch_json } from './util';
 
@@ -41,7 +41,7 @@ export async function refresh_meta_db(with_spinner = false): Promise<MetaDb> {
         if (elem) loading_meta_promise = Promise.resolve(JSON.parse(elem.innerHTML) as MetaDb);
     }
 
-    if (!loading_meta_promise) loading_meta_promise = fetch_json<MetaDb>(`${get_db_path()}.smeta.json`, { cache: 'no-store' });
+    if (!loading_meta_promise) loading_meta_promise = fetch_json<MetaDb>(`${DB_PATH}.smeta.json`, { cache: 'no-store' });
 
     if (with_spinner) loading_meta_promise = spinner(loading_meta_promise);
 

@@ -1,3 +1,5 @@
+import { DEBUG } from './globals';
+
 // For debugging
 const DEBUG_SINGLE_SCREEN = DEBUG && 0; // run presentation in popup window
 

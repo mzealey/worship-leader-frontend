@@ -18,11 +18,6 @@ export default defineConfig([
                 ...globals.jquery,
                 ...globals.webextensions,
 
-                // From vite
-                DEBUG: true,
-                APP_VERSION: true,
-                BUILD_TYPE: true,
-
                 // From cordova
                 cordova: true,
                 BackgroundTransfer: true,

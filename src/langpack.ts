@@ -1,4 +1,5 @@
 import LANGPACK_INDEX from '../langpack/index.json';
+import { BUILD_TYPE, DEBUG } from './globals';
 import { refresh_selectmenu } from './jqm-util';
 import { JQueryPage } from './song';
 import { song_language_translations } from './song-languages';

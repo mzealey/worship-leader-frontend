@@ -4,8 +4,8 @@ import { OnlineDB } from '../src/db/online';
 
 // Mock dependencies
 vi.mock('../src/globals', () => ({
-    get_host: vi.fn(() => 'https://example.com'),
-    get_db_path: vi.fn(() => 'https://example.com/db'),
+    API_HOST: 'https://example.com',
+    DB_PATH: 'https://example.com/db',
     DUMP_VERSION: 1,
 }));
 

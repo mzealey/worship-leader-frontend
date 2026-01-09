@@ -4,8 +4,6 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { persistentStorage } from '../src/persistent-storage.es5';
 import { decode_uri_parameter, gup, is_bot } from '../src/splash-util.es5';
 
-(global as any).BUILD_TYPE = 'test';
-
 describe('splash-util functions', function () {
     let originalNavigator: any;
 
@@ -33,15 +31,12 @@ describe('splash-util functions', function () {
 
     describe('is_bot', function () {
         it('returns false for non-www builds', function () {
-            (global as any).BUILD_TYPE = 'test';
-
             const result = is_bot();
 
             expect(result).toBe(false);
         });
 
         it('detects bot from user agent in www build', function () {
-            (global as any).BUILD_TYPE = 'www';
             Object.defineProperty(window, 'navigator', {
                 writable: true,
                 value: { userAgent: 'Mozilla/5.0 (compatible; bot/1.0)' },
@@ -50,12 +45,9 @@ describe('splash-util functions', function () {
             const result = is_bot();
 
             expect(result).toBeTruthy();
-
-            (global as any).BUILD_TYPE = 'test';
         });
 
         it('returns false for normal user agent in www build', function () {
-            (global as any).BUILD_TYPE = 'www';
             Object.defineProperty(window, 'navigator', {
                 writable: true,
                 value: { userAgent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36' },
@@ -64,8 +56,6 @@ describe('splash-util functions', function () {
             const result = is_bot();
 
             expect(result).toBeFalsy();
-
-            (global as any).BUILD_TYPE = 'test';
         });
     });
 

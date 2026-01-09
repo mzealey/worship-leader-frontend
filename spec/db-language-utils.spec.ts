@@ -14,7 +14,7 @@ vi.mock('../src/db/common', () => ({
 vi.mock('../src/globals', () => ({
     get_uuid: vi.fn(() => 'test-uuid'),
     get_client_type: vi.fn(() => 'www'),
-    get_host: vi.fn(() => 'https://songs.worshipleaderapp.com'),
+    API_HOST: 'https://songs.worshipleaderapp.com',
     is_firsttime: false,
 }));
 

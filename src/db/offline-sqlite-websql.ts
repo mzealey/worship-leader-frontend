@@ -1,4 +1,5 @@
 import { FavouriteDB } from '~/favourite-db';
+import { BUILD_TYPE } from '../globals';
 import { RejectReason } from '../util';
 import { BindParams, ExecFunction, OfflineSQLiteDB, SQLiteValue } from './offline-sqlite';
 

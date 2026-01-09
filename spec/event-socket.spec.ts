@@ -3,9 +3,9 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { persistentStorage } from '../src/persistent-storage.es5';
 
 vi.mock('../src/globals', () => ({
-    get_main_domain: vi.fn(() => 'https://songs.worshipleaderapp.com'),
-    get_host: vi.fn(() => 'https://songs.worshipleaderapp.com'),
+    EVENT_SOCKET_HOST: 'https://songs.worshipleaderapp.com',
     get_uuid: vi.fn(() => 'test-uuid-123'),
+    DEBUG: false,
 }));
 
 vi.mock('../src/util', () => ({

@@ -1,6 +1,7 @@
 import * as StackTrace from 'stacktrace-js';
 import { DB_AVAILABLE } from './db';
 import { eventSocket } from './event-socket';
+import { APP_VERSION, BUILD_TYPE, DEBUG } from './globals';
 import { app_lang } from './langpack';
 import { persistentStorage } from './persistent-storage.es5';
 

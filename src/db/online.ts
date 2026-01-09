@@ -1,5 +1,5 @@
 import type { DBRequestedItems, DBSearchRunResult } from '../db-search';
-import { DUMP_VERSION, get_db_path, get_host } from '../globals';
+import { API_HOST, DB_PATH, DUMP_VERSION } from '../globals';
 import { get_browser_languages } from '../langdetect.es5';
 import { app_lang } from '../langpack';
 import { persistentStorage } from '../persistent-storage.es5';
@@ -33,7 +33,7 @@ export class OnlineDB extends CommonDB {
     async _initialize_db(): Promise<void> {}
 
     api_url(path: string, params?: Record<string, string | number | boolean | undefined>): string {
-        let ret = get_host() + '/api/' + path;
+        let ret = `${API_HOST}/api/${path}`;
         if (params) ret += '?' + generate_search_params(params as Record<string, string | number | boolean | undefined>);
         return ret;
     }
@@ -166,7 +166,7 @@ export class OnlineDB extends CommonDB {
             const cur_obj = persistentStorage.getObj<{ song_source_info: SongSource[] }>('sourcedb');
             const lastTs = persistentStorage.getObj<number>('sourcedb-ts', 0);
             if (!cur_obj || lastTs + 7 * 24 * 60 * 60 * 1000 < Date.now()) {
-                this._sources_promise = fetch_json(`${get_db_path()}.sources.json`, { cache: 'no-store' });
+                this._sources_promise = fetch_json(`${DB_PATH}.sources.json`, { cache: 'no-store' });
 
                 this._sources_promise.then((sourcedb) => {
                     persistentStorage.setObj('sourcedb', sourcedb);

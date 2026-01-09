@@ -1,4 +1,4 @@
-import { get_host, get_main_domain, get_uuid } from './globals';
+import { DEBUG, EVENT_SOCKET_HOST, get_uuid } from './globals';
 import { persistentStorage } from './persistent-storage.es5';
 import { deferred_promise, fetch_json, type DeferredPromise } from './util';
 
@@ -58,16 +58,9 @@ class EventSocket {
     _is_setup: Promise<void>;
 
     constructor() {
-        let host = get_main_domain();
-        let fallback_host = get_host();
-        if (DEBUG) {
-            host = host.replace(/:3500/, ':3100'); // maybe change the port if on dev
-            fallback_host = host;
-        }
-
         // http -> ws; https -> wss
-        this._ws_endpoint = host.replace(/^http/, 'ws') + '/api/event/ws/' + get_uuid();
-        this._fallback_endpoint = fallback_host + '/api/event/add/' + get_uuid();
+        this._ws_endpoint = `${EVENT_SOCKET_HOST.replace(/^http/, 'ws')}/api/event/ws/${get_uuid()}`;
+        this._fallback_endpoint = `${EVENT_SOCKET_HOST}/api/event/add/${get_uuid()}`;
 
         this._storage_key = 'event-queues';
         this.queues = {};

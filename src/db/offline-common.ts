@@ -1,7 +1,7 @@
 import { on_db_languages_update } from '../db';
 import { send_error_report } from '../error-catcher';
 import type { FavouriteDB } from '../favourite-db';
-import { get_db_path } from '../globals';
+import { DB_PATH } from '../globals';
 import { persistentStorage } from '../persistent-storage.es5';
 import { Song } from '../song';
 import { load_song_languages, refresh_song_languages } from '../song-languages';
@@ -168,7 +168,7 @@ export abstract class OfflineDBCommon extends CommonDB {
         // TODO: Make this by rough number of songs expected to be backlogged in the queue (on mobile devices). This also slows down desktop devices
         let download_errors = 0;
         const download_lang = async (lang: string, required?: boolean): Promise<void> => {
-            const ret: LangPackResponse = await fetch(`${get_db_path()}.${lang}.json`, { cache: 'no-store' })
+            const ret: LangPackResponse = await fetch(`${DB_PATH}.${lang}.json`, { cache: 'no-store' })
                 .then(track_progress((read) => update_loaded_status(lang, STEP_DOWNLOAD, read)))
                 .then((response) => response.json() as Promise<LangPackResponse>);
 

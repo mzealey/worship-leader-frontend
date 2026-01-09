@@ -18,15 +18,14 @@ describe('meta-db module', function () {
         };
 
         mockGlobals = {
-            get_db_path: vi.fn(() => '/test/path'),
+            DB_PATH: '/test/path',
+            BUILD_TYPE: 'www',
         };
 
         mockPersistentStorage = {
             setObj: vi.fn(),
             getObj: vi.fn(),
         };
-
-        (global as any).BUILD_TYPE = 'test';
 
         vi.doMock('../src/util', () => mockUtil);
         vi.doMock('../src/spinner', () => mockSpinner);

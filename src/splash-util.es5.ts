@@ -1,5 +1,6 @@
 // Very lightweight file of functions used in splash screen so we dont need to import a big dependency tree
 import { load as bot_setup } from '@fingerprintjs/botd';
+import { BUILD_TYPE } from './globals';
 import { persistentStorage } from './persistent-storage.es5';
 
 let seems_like_a_bot = false;

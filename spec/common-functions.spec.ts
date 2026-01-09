@@ -7,7 +7,7 @@ import { describe, expect, it, vi } from 'vitest';
 describe('common-functions', () => {
     // Mock imports
     vi.mock('../src/globals', () => ({
-        get_host: vi.fn().mockReturnValue('http://test.host'),
+        API_HOST: 'http://test.host',
     }));
 
     it('exports functions to window', async () => {

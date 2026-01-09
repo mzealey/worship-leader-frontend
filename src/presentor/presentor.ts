@@ -1,3 +1,4 @@
+import { BUILD_TYPE } from '../globals';
 import '../main.scss';
 
 // This is loaded either as a remote presentation OR as an iframe embedded in

@@ -1,6 +1,5 @@
 // TODO:
 // - inline splash if www prod
-// - Check dual screen is working as expected
 // - Play with js minification options?
 // - chrome(+ edge?) build cannot have any inline js in it...
 import { viteCommonjs } from '@originjs/vite-plugin-commonjs';
@@ -38,8 +37,14 @@ export default defineConfig(({ command, mode }) => {
     const build_type = mode == 'development' || mode == 'test' ? 'www' : mode;
     if (!build_type) throw new Error('Must specify build type eg --mode=www');
 
+    // TODO use import.meta.env.PROD and NODE_ENV
     const is_production = command == 'build';
     const is_watch = mode != 'test' && mode != 'serve'; // Bit of a nasty hack as --watch detail is not passed in
+
+    process.env.VITE_BUILD_TYPE = build_type;
+    process.env.VITE_DEBUG = !is_production;
+    process.env.VITE_APP_VERSION = is_production ? package_conf.version : 'debug';
+    //process.env.VITE_API_HOST = is_production ? 'https://songs.worshipleaderapp.com' : process.env.VITE_API_HOST;
 
     const config = {
         //root: 'src',
@@ -49,11 +54,6 @@ export default defineConfig(({ command, mode }) => {
         publicDir: false,
         optimizeDeps: {
             esbuildOptions: {},
-        },
-        define: {
-            BUILD_TYPE: JSON.stringify(build_type),
-            DEBUG: is_production ? 0 : 1,
-            APP_VERSION: JSON.stringify(is_production ? package_conf.version : 'debug'),
         },
         css: {
             preprocessorOptions: {

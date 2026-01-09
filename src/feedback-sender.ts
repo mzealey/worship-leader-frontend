@@ -1,6 +1,6 @@
 import { DB_AVAILABLE } from './db';
 import { eventSocket } from './event-socket';
-import { get_client_type } from './globals';
+import { APP_VERSION, get_client_type } from './globals';
 import { app_lang } from './langpack';
 import { persistentStorage } from './persistent-storage.es5';
 import { jqm_setup } from './startup-promises';

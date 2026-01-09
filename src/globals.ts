@@ -1,5 +1,4 @@
 import { persistentStorage } from './persistent-storage.es5';
-import { gup } from './splash-util.es5';
 
 // Returns random integer in range 0 .. range (not inclusive)
 export function random_int(range = 1) {
@@ -49,6 +48,9 @@ export function match_media_watcher(
 export const get_uuid = () => uuid;
 
 let CLIENT_TYPE = 'www';
+export const BUILD_TYPE = import.meta.env.VITE_BUILD_TYPE!;
+export const DEBUG = import.meta.env.VITE_DEBUG!;
+export const APP_VERSION = import.meta.env.VITE_APP_VERSION!;
 
 if ((BUILD_TYPE == 'chrome' || BUILD_TYPE == 'edge') && window.location.protocol == 'chrome-extension:') CLIENT_TYPE = 'chr';
 
@@ -70,35 +72,14 @@ if (BUILD_TYPE == 'www') {
 
 export const get_client_type = () => CLIENT_TYPE;
 
-// Where do we do ajax requests etc?
-let MAIN_DOMAIN = 'https://songs.worshipleaderapp.com';
-export const get_main_domain = () => MAIN_DOMAIN;
-
-// For debugging on local computer
-//if( DEBUG && window.location.host == 'localhost:3501' ) MAIN_DOMAIN = 'http://localhost:3500';
-
-let HOST: string | undefined;
-export const get_host = () => {
-    if (!HOST) {
-        // localhost:8080 is wkwebview. localhost is android cordova
-        HOST = /^https?:/.test(window.location.protocol) && window.location.host != 'localhost:8080' && window.location.host != 'localhost' ? '' : MAIN_DOMAIN;
-
-        if (DEBUG) {
-            HOST = MAIN_DOMAIN;
-            //HOST = 'http://localhost:3500';
-
-            let online_db = gup('online_db');
-            if (online_db && /^http/.test(online_db)) HOST = online_db;
-        }
-    }
-
-    return HOST;
-};
+export const SHARE_DOMAIN = import.meta.env.VITE_SHARE_DOMAIN!;
+export const API_HOST = import.meta.env.VITE_API_HOST!; // For main API and DB calls
+export const EVENT_SOCKET_HOST = import.meta.env.VITE_API_HOST!; // for event socket (ws_server)
 
 // The dump => version to download from the server
 export const DUMP_VERSION = 2;
 
 // Local testing
-//export const get_db_path = () => `/static/offline/db${DUMP_VERSION}/db`;
+//export const DB_PATH = = `/static/offline/db${DUMP_VERSION}/db`;
 
-export const get_db_path = () => `${get_host()}/db${DUMP_VERSION}/db`;
+export const DB_PATH = `${API_HOST}/db${DUMP_VERSION}/db`;

@@ -1,10 +1,10 @@
-import { update_setting } from './settings';
-
 import { DB, DB_AVAILABLE } from './db';
 import { DBSearch, current_search } from './db-search';
+import { DEBUG } from './globals';
 import { current_page, processHash } from './jqm-util';
 import { force_song_list_page } from './page/search-helpers';
 import { create_goto_set } from './set';
+import { update_setting } from './settings';
 
 let search_timer;
 

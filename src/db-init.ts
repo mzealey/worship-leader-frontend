@@ -3,6 +3,7 @@ import type { CommonDB } from './db/common';
 import { get_db_chosen_langs, save_db_chosen_langs } from './db/common';
 import { OfflineDBCommon } from './db/offline-common';
 import { OnlineDB } from './db/online';
+import { BUILD_TYPE, DEBUG } from './globals';
 import { get_browser_languages } from './langdetect.es5';
 import { refresh_search_all_pages } from './page/search';
 import { persistentStorage } from './persistent-storage.es5';

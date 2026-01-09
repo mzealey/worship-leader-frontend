@@ -5,7 +5,7 @@ import { DB, DB_AVAILABLE } from '../db';
 import { switch_db_api } from '../db-init';
 import { enter_cast_mode } from '../dual-present';
 import { eventSocket } from '../event-socket';
-import { get_client_type, get_uuid } from '../globals';
+import { APP_VERSION, BUILD_TYPE, get_client_type, get_uuid } from '../globals';
 import { refresh_selectmenu } from '../jqm-util';
 import { app_lang, get_language_options, lang_setup, langpack_loaded } from '../langpack';
 import { get_meta_db_update_ts } from '../meta-db';

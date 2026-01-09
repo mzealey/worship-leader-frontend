@@ -1,8 +1,3 @@
-// Global variable declarations from vite
-declare const DEBUG: boolean;
-declare const APP_VERSION: string;
-declare const BUILD_TYPE: string;
-
 // Global variables from cordova
 declare const cordova: any;
 declare const BackgroundTransfer: any;

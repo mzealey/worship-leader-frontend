@@ -1,7 +1,7 @@
 import { DB_AVAILABLE } from './db';
 import { get_db_chosen_langs } from './db/common';
 import { send_error_report } from './error-catcher';
-import { get_client_type, get_host, get_uuid, is_firsttime } from './globals';
+import { API_HOST, get_client_type, get_uuid, is_firsttime } from './globals';
 import { get_default_db_languages, refresh_song_languages } from './song-languages';
 import { unidecode } from './unidecode';
 import { fetch_json, generate_search_params } from './util';
@@ -63,7 +63,7 @@ export async function getDbLangs({
         new Promise<Set<string>>((res) => setTimeout(() => res(defaults), 4000)),
         (async () => {
             try {
-                const ret = await fetch_json<{ languages?: string[] }>(get_host() + '/api/app/default_language_prefs?' + generate_search_params(data));
+                const ret = await fetch_json<{ languages?: string[] }>(`${API_HOST}/api/app/default_language_prefs?${generate_search_params(data)}`);
                 return new Set(ret.languages ?? []);
             } catch (e) {
                 return defaults; // in case of connection error/timeout

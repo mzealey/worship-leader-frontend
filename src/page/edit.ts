@@ -1,4 +1,4 @@
-import { get_host, get_uuid } from '../globals';
+import { API_HOST, get_uuid } from '../globals';
 import { get_translation } from '../langpack';
 import { convert_to_elvanto, convert_to_pre } from '../songxml-util';
 import { fetch_json } from '../util';
@@ -90,7 +90,7 @@ export function init_edit_page() {
             uuid: get_uuid(),
         });
 
-        fetch_json(get_host() + '/api/app/song_upload', {
+        fetch_json(`${API_HOST}/api/app/song_upload`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',

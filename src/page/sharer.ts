@@ -1,5 +1,5 @@
 import { spinner } from '../component/spinner';
-import { get_main_domain } from '../globals';
+import { BUILD_TYPE, SHARE_DOMAIN } from '../globals';
 import { get_translation } from '../langpack';
 import { is_cordova, is_mobile_browser } from '../util';
 
@@ -9,7 +9,7 @@ let share_data;
 // in the end or cancelled, and a 1/0 indicating whether it was done externally
 // or via a jqm dialog (if externally then you will need to close any dialogs)
 export function handle_share(url, title, subject, file?) {
-    if (!/^http/i.test(url)) url = get_main_domain() + '/' + url;
+    if (!/^http/i.test(url)) url = SHARE_DOMAIN + '/' + url;
 
     // SocialSharing-PhoneGap-Plugin
     if (is_cordova() && window.plugins.socialsharing) {

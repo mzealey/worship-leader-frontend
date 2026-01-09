@@ -33,7 +33,16 @@ vi.mock('../src/langpack', () => ({
 vi.mock('../src/persistent-storage.es5', () => ({
     persistentStorage: {
         type: vi.fn().mockReturnValue('mock_storage'),
+        get: vi.fn().mockReturnValue(null),
+        set: vi.fn(),
     },
+}));
+
+vi.mock('../src/globals', () => ({
+    DEBUG: false,
+    BUILD_TYPE: 'test',
+    APP_VERSION: '1.0.0',
+    get_uuid: vi.fn(() => 'test-uuid'),
 }));
 
 describe('error-catcher', () => {
@@ -158,10 +167,19 @@ describe('error-catcher', () => {
     });
 
     it('logs to console when DEBUG is true', async () => {
-        (globalThis as any).DEBUG = true;
+        vi.resetModules();
+
+        vi.doMock('../src/globals', () => ({
+            DEBUG: true,
+            BUILD_TYPE: 'test',
+            APP_VERSION: '1.0.0',
+            get_uuid: vi.fn(() => 'test-uuid'),
+        }));
+
         vi.spyOn(console, 'error').mockImplementation(() => {});
 
-        errorCatcherMod.send_error_report('test', 'data');
+        const { send_error_report } = await import('../src/error-catcher');
+        send_error_report('test', 'data');
 
         await new Promise((resolve) => setTimeout(resolve, 10));
 

@@ -11,7 +11,8 @@ vi.mock('../src/component/spinner', () => ({
     spinner: vi.fn((p) => p),
 }));
 vi.mock('../src/globals', () => ({
-    get_db_path: vi.fn().mockReturnValue('db/'),
+    DB_PATH: 'db/',
+    BUILD_TYPE: 'www',
 }));
 
 describe('song-languages', () => {

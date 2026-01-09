@@ -1,4 +1,4 @@
-import { get_client_type, is_firsttime } from '../globals';
+import { BUILD_TYPE, get_client_type, is_firsttime } from '../globals';
 import { refresh_selectmenu } from '../jqm-util';
 import { app_lang, get_language_options, lang_setup, langpack_loaded } from '../langpack';
 import { persistentStorage } from '../persistent-storage.es5';

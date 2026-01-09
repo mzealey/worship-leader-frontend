@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
+import { BUILD_TYPE, DEBUG } from './globals';
 import { get_page_args } from './jqm-util';
 
 export function maybe_setup_ga() {
