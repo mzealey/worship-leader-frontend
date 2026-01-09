@@ -41,7 +41,9 @@
     "build:test:editor": "vite build --mode editor --outDir build/editor",
     "build:prod:editor": "vite build --mode editor --outDir ../../root/static/editor/js/",
     "build:test:phonegap": "vite build --mode phonegap --outDir build/phonegap",
-    "build:prod:phonegap": "vite build --mode phonegap --outDir ../phonegap/www --emptyOutDir"
+    "build:prod:phonegap": "vite build --mode phonegap --outDir ../phonegap/www --emptyOutDir",
+    "serve:www": "vite preview --outDir build/www --port 8080"
+
   },
   "dependencies": {
     "@fingerprintjs/botd": "^1.9.1",
