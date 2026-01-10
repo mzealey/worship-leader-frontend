@@ -8,6 +8,7 @@ describe('common-functions', () => {
     // Mock imports
     vi.mock('../src/globals', () => ({
         API_HOST: 'http://test.host',
+        BUILD_TYPE: 'editor',
     }));
 
     it('exports functions to window', async () => {

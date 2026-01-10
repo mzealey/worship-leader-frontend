@@ -3,7 +3,7 @@ import { _lang_setup, get_translation } from './langpack';
 import type { SongbookConfig } from './page/page-print-songbook';
 import type { Song } from './song';
 import './songbook-viewer.scss';
-import { format_html_chords, songxml_to_divs } from './songxml-util';
+import { format_html_chords, render_chord, songxml_to_divs, split_songxml_chords } from './songxml-util';
 import { is_rtl, is_vertical } from './util';
 
 export type SongbookSong = Song;
@@ -131,7 +131,7 @@ function renderSongContent(song: SongbookSong, config: SongbookConfig): HTMLElem
     if (config.doubleSpace && showChords) {
         songxmlDiv.classList.add('double-space');
     }
-    songxmlDiv.innerHTML = songxml_to_divs(song.songxml, !showChords);
+    songxmlDiv.innerHTML = split_songxml_chords(songxml_to_divs(song.songxml, !showChords));
     setDirection(songxmlDiv, song.lang, true);
     return songxmlDiv;
 }
@@ -174,6 +174,7 @@ function markSectionsWithChords(): void {
     document.querySelectorAll('.chord').forEach((chord) => {
         const section = chord.closest('.bridge, .chorus, .verse, .prechorus');
         if (section) section.classList.add('has-chords');
+        if (chord.textContent) chord.textContent = render_chord(chord.textContent);
     });
 }
 

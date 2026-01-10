@@ -91,7 +91,7 @@ type TranslationContext = unknown;
 export function get_translation(name: string, e?: TranslationContext) {
     if (/^lang\./.test(name)) return lang_name(name.replace(/^lang\./, ''));
     const parts = name?.split('.');
-    const value = parts?.length == 2 ? translations[parts[0]][parts[1]] : parts ? translations[parts[0]] : undefined;
+    const value = parts?.length == 2 ? translations[parts[0]]?.[parts[1]] : parts ? translations[parts[0]] : undefined;
 
     if (DEBUG && _langpack_loaded_resolved && !value) {
         console.log('No translation found for ', name, e || 'no element passed');
