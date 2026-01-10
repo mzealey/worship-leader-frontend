@@ -3,33 +3,10 @@ import { DB } from '../db';
 import { get_page_args, refresh_selectmenu } from '../jqm-util';
 import { app_lang, get_language_options } from '../langpack';
 import { SET_DB } from '../set-db';
-import type { SongbookSong, SongbookViewerApi } from '../songbook-viewer';
+import type { Song } from '../song';
+import type { Columns, FontSize, PaperSize, SongbookConfig, SongbookViewerApi } from '../songbook-viewer';
 import { gup } from '../splash-util.es5';
 import { timeout } from '../util';
-
-export type PaperSize = 'a4' | 'a5';
-export type FontSize = 10 | 11 | 12;
-export type Columns = 1 | 2 | 3 | 4;
-
-export interface SongbookConfig {
-    paperSize: PaperSize;
-    fontSize: FontSize;
-    columns: Columns;
-    twoside: boolean;
-    wantChords: boolean;
-    doubleSpace: boolean;
-    includeFrontPage: boolean;
-    includeCapo: boolean;
-    includeTranslationSource: boolean;
-    includeSources: boolean;
-    includeTranslationSourceIndex: boolean;
-    includeKeyIndex: boolean;
-    includeAlbums: boolean;
-    includeSrefs: boolean;
-    includeAuthors: boolean;
-    includeId: boolean;
-    songbookLanguage: string;
-}
 
 function getDefaultConfig(): SongbookConfig {
     return {
@@ -102,7 +79,7 @@ function updateDoubleSpaceVisibility(page: JQuery): void {
 
 let viewerWindow: Window | null = null;
 let viewerApi: Comlink.Remote<SongbookViewerApi> | null = null;
-let loadedSongs: SongbookSong[] = [];
+let loadedSongs: Song[] = [];
 let loadedSetName = '';
 
 function closeViewerWindow(): void {
@@ -115,7 +92,7 @@ function closeViewerWindow(): void {
 
 window.addEventListener('beforeunload', closeViewerWindow);
 
-async function loadSongsForSet(setId: number): Promise<SongbookSong[]> {
+async function loadSongsForSet(setId: number): Promise<Song[]> {
     const setSongs = SET_DB.get_songs(setId);
     if (!setSongs.length) return [];
 

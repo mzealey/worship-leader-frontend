@@ -1,15 +1,35 @@
 import * as Comlink from 'comlink';
 import { _lang_setup, get_translation } from './langpack';
-import type { SongbookConfig } from './page/page-print-songbook';
 import type { Song } from './song';
 import './songbook-viewer.scss';
 import { format_html_chords, render_chord, songxml_to_divs, split_songxml_chords } from './songxml-util';
 import { is_rtl, is_vertical } from './util';
 
-export type SongbookSong = Song;
+export type PaperSize = 'a4' | 'a5';
+export type FontSize = 10 | 11 | 12;
+export type Columns = 1 | 2 | 3 | 4;
 
+export interface SongbookConfig {
+    paperSize: PaperSize;
+    fontSize: FontSize;
+    columns: Columns;
+    twoside: boolean;
+    wantChords: boolean;
+    doubleSpace: boolean;
+    includeFrontPage: boolean;
+    includeCapo: boolean;
+    includeTranslationSource: boolean;
+    includeSources: boolean;
+    includeTranslationSourceIndex: boolean;
+    includeKeyIndex: boolean;
+    includeAlbums: boolean;
+    includeSrefs: boolean;
+    includeAuthors: boolean;
+    includeId: boolean;
+    songbookLanguage: string;
+}
 export interface SongbookData {
-    songs: SongbookSong[];
+    songs: Song[];
     config: SongbookConfig;
     setName: string;
 }
@@ -63,7 +83,7 @@ function escapeHtml(text: string): string {
     return div.innerHTML;
 }
 
-function getAuthors(song: SongbookSong): string[] {
+function getAuthors(song: Song): string[] {
     if (!song.info) return [];
 
     const authorTypes = ['words', 'music', 'wordsandmusic'];
@@ -71,13 +91,13 @@ function getAuthors(song: SongbookSong): string[] {
     return song.info.filter((info) => authorTypes.includes(info.type)).map((info) => `${get_translation(info.type)}: ${info.value}`);
 }
 
-function getSources(song: SongbookSong): string[] {
+function getSources(song: Song): string[] {
     if (!song.sources) return [];
 
     return song.sources.filter((source) => source.number > 0).map((source) => `${source.name} ${source.number}`);
 }
 
-function getAlbums(song: SongbookSong): string[] {
+function getAlbums(song: Song): string[] {
     if (!song.albums) return [];
 
     const albumLabel = get_translation('editor.album');
@@ -89,20 +109,20 @@ function getAlbums(song: SongbookSong): string[] {
         });
 }
 
-function getScriptureRefs(song: SongbookSong): string[] {
+function getScriptureRefs(song: Song): string[] {
     if (!song.info) return [];
 
     const srefLabel = get_translation('sref');
     return song.info.filter((info) => info.type === 'sref').map((info) => `${srefLabel}: ${info.value}`);
 }
 
-function getTranslationSources(song: SongbookSong): string[] {
+function getTranslationSources(song: Song): string[] {
     const label = get_translation('editor.translation_of_songbook');
     // TODO: Fetch translation titles if this flag is set - source_song.title
     return [].map((s) => `${label}: ${song.source_title}`);
 }
 
-function renderSongMetadata(song: SongbookSong, config: SongbookConfig): HTMLElement | null {
+function renderSongMetadata(song: Song, config: SongbookConfig): HTMLElement | null {
     const metadataItems: string[] = [];
 
     if (config.includeAuthors) metadataItems.push(...getAuthors(song));
@@ -124,7 +144,7 @@ function renderSongMetadata(song: SongbookSong, config: SongbookConfig): HTMLEle
     return metadataDiv;
 }
 
-function renderSongContent(song: SongbookSong, config: SongbookConfig): HTMLElement {
+function renderSongContent(song: Song, config: SongbookConfig): HTMLElement {
     const songxmlDiv = document.createElement('div');
     const showChords = config.wantChords;
     songxmlDiv.className = `songxml ${showChords ? 'showchords' : ''}`;
@@ -136,7 +156,7 @@ function renderSongContent(song: SongbookSong, config: SongbookConfig): HTMLElem
     return songxmlDiv;
 }
 
-function renderSong(song: SongbookSong, index: number, config: SongbookConfig): HTMLElement {
+function renderSong(song: Song, index: number, config: SongbookConfig): HTMLElement {
     const div = document.createElement('div');
     div.className = 'song';
     div.id = `song-${song.id}`;
@@ -218,7 +238,7 @@ function getIndexSeparator(lang?: string): string {
     return is_rtl(text) ? '\u060C ' : ', ';
 }
 
-function buildMainIndex(songs: SongbookSong[]): LanguageIndex[] {
+function buildMainIndex(songs: Song[]): LanguageIndex[] {
     const languageGroups = new Map<string, IndexEntry[]>();
 
     songs.forEach((song, idx) => {
@@ -253,7 +273,7 @@ function buildMainIndex(songs: SongbookSong[]): LanguageIndex[] {
     return indexes;
 }
 
-function buildKeyIndex(songs: SongbookSong[]): KeyGroup[] {
+function buildKeyIndex(songs: Song[]): KeyGroup[] {
     const keyGroups = new Map<string, IndexEntry[]>();
 
     songs.forEach((song, idx) => {
@@ -281,7 +301,7 @@ function buildKeyIndex(songs: SongbookSong[]): KeyGroup[] {
     return groups;
 }
 
-function buildTranslationSourceIndex(songs: SongbookSong[]): TranslationIndexEntry[] {
+function buildTranslationSourceIndex(songs: Song[]): TranslationIndexEntry[] {
     const entries: TranslationIndexEntry[] = [];
 
     songs.forEach((song, idx) => {
@@ -308,7 +328,7 @@ function renderIndexEntry(entry: IndexEntry): HTMLElement {
     return item;
 }
 
-function renderMainIndex(songs: SongbookSong[]): HTMLElement {
+function renderMainIndex(songs: Song[]): HTMLElement {
     const indexes = buildMainIndex(songs);
     const container = document.createElement('div');
     container.className = 'page-group index-section main-index';
@@ -339,7 +359,7 @@ function renderMainIndex(songs: SongbookSong[]): HTMLElement {
     return container;
 }
 
-function renderKeyIndex(songs: SongbookSong[]): HTMLElement {
+function renderKeyIndex(songs: Song[]): HTMLElement {
     const groups = buildKeyIndex(songs);
     const container = document.createElement('div');
     container.className = 'page-group index-section key-index';
@@ -372,7 +392,7 @@ function renderKeyIndex(songs: SongbookSong[]): HTMLElement {
     return container;
 }
 
-function renderTranslationSourceIndex(songs: SongbookSong[]): HTMLElement {
+function renderTranslationSourceIndex(songs: Song[]): HTMLElement {
     const entries = buildTranslationSourceIndex(songs);
     const container = document.createElement('div');
     container.className = 'page-group index-section translation-source-index';
