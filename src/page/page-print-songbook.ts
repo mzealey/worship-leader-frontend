@@ -3,8 +3,7 @@ import { DB } from '../db';
 import { get_page_args, refresh_selectmenu } from '../jqm-util';
 import { app_lang, get_language_options } from '../langpack';
 import { SET_DB } from '../set-db';
-import type { Song } from '../song';
-import type { Columns, FontSize, PaperSize, SongbookConfig, SongbookViewerApi } from '../songbook-viewer';
+import type { Columns, FontSize, PaperSize, SongbookConfig, SongbookData, SongbookViewerApi } from '../songbook-viewer';
 import { gup } from '../splash-util.es5';
 import { timeout } from '../util';
 
@@ -72,15 +71,9 @@ function setFormFromConfig(page: JQuery, config: SongbookConfig): void {
     page.find('#songbook-language').val(config.songbookLanguage);
 }
 
-function updateDoubleSpaceVisibility(page: JQuery): void {
-    const wantChords = page.find('#songbook-want-chords').is(':checked');
-    page.find('#songbook-double-space-container').toggle(wantChords);
-}
-
 let viewerWindow: Window | null = null;
 let viewerApi: Comlink.Remote<SongbookViewerApi> | null = null;
-let loadedSongs: Song[] = [];
-let loadedSetName = '';
+let baseSongbookData: Partial<SongbookData> = {};
 
 function closeViewerWindow(): void {
     if (viewerWindow && !viewerWindow.closed) {
@@ -88,19 +81,29 @@ function closeViewerWindow(): void {
     }
     viewerWindow = null;
     viewerApi = null;
+    $('#button-preview-songbook').show();
 }
 
 window.addEventListener('beforeunload', closeViewerWindow);
 
-async function loadSongsForSet(setId: number): Promise<Song[]> {
+async function updateSongbookData(setId: number): Promise<void> {
     const setSongs = SET_DB.get_songs(setId);
-    if (!setSongs.length) return [];
+    if (!setSongs.length) {
+        baseSongbookData = {};
+        return;
+    }
+
+    baseSongbookData.setName = await SET_DB.get_set_title(setId);
 
     const songIds = setSongs.map((s) => s.song_id);
     const db = await DB;
-    const songs = await Promise.all(songIds.map((id) => db.get_song(id)));
+    // To get the full detail we have to fetch the songs individually at present. TODO: Add an extended get_songs
+    // method in online db also
+    baseSongbookData.songs = (await Promise.all(songIds.map((id) => db.get_song(id)))).filter((s) => !!s);
 
-    return songs.filter((s) => !!s);
+    // Add in other songs that the window may need
+    const otherSongIds = baseSongbookData.songs.map((song) => song.related_songs.filter((s) => s.type === 'pri').map((s) => s.id)).flat();
+    baseSongbookData.otherSongs = (await Promise.all(otherSongIds.map((id) => db.get_song(id)))).filter((s) => !!s);
 }
 
 async function connectToViewer(win: Window): Promise<Comlink.Remote<SongbookViewerApi>> {
@@ -110,16 +113,6 @@ async function connectToViewer(win: Window): Promise<Comlink.Remote<SongbookView
 }
 
 async function openPreviewWindow(page: JQuery): Promise<void> {
-    const setId = parseInt(get_page_args(page).set_id || gup('set_id'), 10);
-    if (!setId) {
-        console.error('No set_id found');
-        return;
-    }
-
-    if (!loadedSongs.length) {
-        loadedSongs = await loadSongsForSet(setId);
-    }
-
     if (!viewerWindow || viewerWindow.closed) {
         viewerWindow = window.open('songbook-viewer.html', 'songbook-viewer', 'width=800,height=600,scrollbars=yes,resizable=yes');
         if (!viewerWindow) {
@@ -129,6 +122,8 @@ async function openPreviewWindow(page: JQuery): Promise<void> {
         }
 
         viewerWindow.addEventListener('load', async () => {
+            viewerWindow!.addEventListener('unload', () => closeViewerWindow());
+
             try {
                 viewerApi = await connectToViewer(viewerWindow!);
                 $('#button-preview-songbook').hide();
@@ -137,6 +132,7 @@ async function openPreviewWindow(page: JQuery): Promise<void> {
                 console.error('Failed to connect to viewer:', e);
             }
         });
+        // TODO: Handle close and set the viewerApi to null and show visibility of the button
     } else {
         await sendDataToViewer(page);
         viewerWindow.focus();
@@ -149,10 +145,9 @@ async function sendDataToViewer(page: JQuery): Promise<void> {
 
     const config = getConfigFromForm(page);
     await viewerApi.setSongbookData({
-        songs: loadedSongs,
+        ...baseSongbookData,
         config,
-        setName: loadedSetName,
-    });
+    } as SongbookData);
 }
 
 async function updateViewerConfig(page: JQuery): Promise<void> {
@@ -177,7 +172,6 @@ export function init_page_print_songbook(): void {
         setFormFromConfig(page, defaultConfig);
 
         page.find('select, input[type="checkbox"]').on('change', () => {
-            updateDoubleSpaceVisibility(page);
             updateViewerConfig(page);
         });
         page.find('#button-preview-songbook').on('click', () => {
@@ -185,18 +179,13 @@ export function init_page_print_songbook(): void {
         });
     });
 
-    page.on('pagebeforeshow', async () => {
-        loadedSongs = [];
-        loadedSetName = '';
-
+    page.on('pageshow', async () => {
         const setId = parseInt(get_page_args(page).set_id || gup('set_id'), 10);
-        if (setId) {
-            loadedSongs = await loadSongsForSet(setId);
-            loadedSetName = await SET_DB.get_set_title(setId);
+        if (!setId) {
+            console.error('No set_id found');
+            return;
         }
-
-        updateDoubleSpaceVisibility(page);
+        await updateSongbookData(setId);
+        openPreviewWindow(page);
     });
-
-    page.on('pageshow', () => openPreviewWindow(page));
 }

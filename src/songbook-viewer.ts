@@ -32,6 +32,7 @@ export interface SongbookData {
     songs: Song[];
     config: SongbookConfig;
     setName: string;
+    otherSongs: Song[]; // Related songs etc that shouldnt be in by default but may be needed for titles etc
 }
 
 interface IndexEntry {
@@ -52,16 +53,6 @@ interface KeyGroup {
     entries: IndexEntry[];
 }
 
-interface TranslationIndexEntry {
-    id: number;
-    title: string;
-    songbookPosition: number;
-    sourceTitle: string;
-    lang?: string;
-}
-
-let songbookEl: HTMLElement | null = null;
-let loadingEl: HTMLElement | null = null;
 let currentData: SongbookData | null = null;
 
 function setDirection(element: HTMLElement, lang?: string, isBlock = false): void {
@@ -116,10 +107,20 @@ function getScriptureRefs(song: Song): string[] {
     return song.info.filter((info) => info.type === 'sref').map((info) => `${srefLabel}: ${info.value}`);
 }
 
-function getTranslationSources(song: Song): string[] {
-    const label = get_translation('editor.translation_of_songbook');
-    // TODO: Fetch translation titles if this flag is set - source_song.title
-    return [].map((s) => `${label}: ${song.source_title}`);
+function getOriginalSong(song: Song): Song | undefined {
+    // Given a song, returns the original (translation source) song if it exists
+    if (song.is_original) return;
+    // IIRC this is likely flattened so includes all related songs
+    const original_song_id = song.related_songs.find((s) => s.type === 'pri')?.id;
+    if (!original_song_id) return;
+    return currentData!.otherSongs.find((s) => s.id === original_song_id);
+}
+
+function getOriginalSongTitle(song: Song): string[] {
+    const original_song = getOriginalSong(song);
+    if (!original_song) return [];
+
+    return [`${get_translation('editor.translation_of_songbook')}: ${original_song.title}`];
 }
 
 function renderSongMetadata(song: Song, config: SongbookConfig): HTMLElement | null {
@@ -129,7 +130,7 @@ function renderSongMetadata(song: Song, config: SongbookConfig): HTMLElement | n
     if (config.includeSources) metadataItems.push(...getSources(song));
     if (config.includeAlbums) metadataItems.push(...getAlbums(song));
     if (config.includeSrefs) metadataItems.push(...getScriptureRefs(song));
-    if (config.includeTranslationSource) metadataItems.push(...getTranslationSources(song));
+    if (config.includeTranslationSource) metadataItems.push(...getOriginalSongTitle(song));
     if (config.includeCapo && song.songkey) metadataItems.push(`${get_translation('songkey')}: ${song.songkey}`);
     if (config.includeCapo && song.capo) metadataItems.push(`${get_translation('capo')}: ${song.capo}`);
     if (config.includeId) metadataItems.push(`${get_translation('editor.id')}: i${song.id}`);
@@ -253,7 +254,7 @@ function buildMainIndex(songs: Song[]): LanguageIndex[] {
                 languageGroups.get(lang)!.push({
                     id: song.id,
                     title: title,
-                    songbookPosition: idx + 1,
+                    songbookPosition: idx,
                     lang,
                 });
             });
@@ -281,14 +282,16 @@ function buildKeyIndex(songs: Song[]): KeyGroup[] {
         const key = song.songkey;
         if (!keyGroups.has(key)) keyGroups.set(key, []);
 
-        [...song.alternative_titles, song.title].forEach((title) => {
-            keyGroups.get(key)!.push({
-                id: song.id,
-                title: title,
-                songbookPosition: idx + 1,
-                lang: song.lang,
+        [...song.alternative_titles, song.title]
+            .filter((title) => !!title)
+            .forEach((title) => {
+                keyGroups.get(key)!.push({
+                    id: song.id,
+                    title: title,
+                    songbookPosition: idx,
+                    lang: song.lang,
+                });
             });
-        });
     });
 
     const groups: KeyGroup[] = [];
@@ -301,18 +304,23 @@ function buildKeyIndex(songs: Song[]): KeyGroup[] {
     return groups;
 }
 
-function buildTranslationSourceIndex(songs: Song[]): TranslationIndexEntry[] {
-    const entries: TranslationIndexEntry[] = [];
+function buildTranslationSourceIndex(songs: Song[]): IndexEntry[] {
+    const entries: IndexEntry[] = [];
 
     songs.forEach((song, idx) => {
-        if (!song.songxml || !song.source_title) return;
-        entries.push({
-            id: song.id,
-            title: song.title,
-            songbookPosition: idx + 1,
-            sourceTitle: song.source_title,
-            lang: song.lang,
-        });
+        const original_song = getOriginalSong(song);
+        if (!original_song) return;
+
+        [...original_song.alternative_titles, original_song.title]
+            .filter((title) => !!title)
+            .forEach((title) => {
+                entries.push({
+                    id: song.id,
+                    title,
+                    songbookPosition: idx,
+                    lang: original_song.lang,
+                });
+            });
     });
 
     entries.sort((a, b) => a.title.localeCompare(b.title));
@@ -323,7 +331,7 @@ function renderIndexEntry(entry: IndexEntry): HTMLElement {
     const item = document.createElement('li');
     item.className = 'index-entry';
     const separator = getIndexSeparator(entry.lang);
-    item.innerHTML = `<a href="#song-${entry.id}">${escapeHtml(entry.title)}${separator}${entry.songbookPosition}</a>`;
+    item.innerHTML = `<a href="#song-${entry.id}">${escapeHtml(entry.title)}${separator}${entry.songbookPosition + 1}</a>`;
     setDirection(item, entry.lang);
     return item;
 }
@@ -406,13 +414,7 @@ function renderTranslationSourceIndex(songs: Song[]): HTMLElement {
     list.className = 'index-list';
 
     for (const entry of entries) {
-        const item = document.createElement('li');
-        item.className = 'index-entry translation-entry';
-        const separator = getIndexSeparator(entry.lang);
-        const translationLabel = get_translation('editor.translation_of_songbook');
-        item.innerHTML = `<a href="#song-${entry.id}">${escapeHtml(entry.title)}${separator}${entry.songbookPosition}</a> <span class="translation-source">(${translationLabel}: ${escapeHtml(entry.sourceTitle)})</span>`;
-        setDirection(item, entry.lang);
-        list.appendChild(item);
+        list.appendChild(renderIndexEntry(entry));
     }
 
     container.appendChild(list);
@@ -422,6 +424,8 @@ function renderTranslationSourceIndex(songs: Song[]): HTMLElement {
 let currentLanguage = '';
 
 async function renderSongbook(data: SongbookData): Promise<void> {
+    const songbookEl = document.getElementById('songbook');
+
     if (!songbookEl) return;
 
     if (data.config.songbookLanguage && data.config.songbookLanguage !== currentLanguage) {
@@ -468,9 +472,7 @@ async function renderSongbook(data: SongbookData): Promise<void> {
         });
     }, 50);
 
-    if (loadingEl) {
-        loadingEl.style.display = 'none';
-    }
+    document.getElementById('loading')!.style.display = 'none';
 }
 
 async function updateConfig(config: SongbookConfig): Promise<void> {
@@ -497,9 +499,6 @@ export const songbookViewerApi = {
 export type SongbookViewerApi = typeof songbookViewerApi;
 
 function init(): void {
-    songbookEl = document.getElementById('songbook');
-    loadingEl = document.getElementById('loading');
-
     if (window.opener) {
         Comlink.expose(songbookViewerApi, Comlink.windowEndpoint(window.opener));
     }
