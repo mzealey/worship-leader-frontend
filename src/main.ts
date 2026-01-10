@@ -40,6 +40,7 @@ import { init_dialog_set_share } from './page/dialog-set-share';
 import { init_edit_page } from './page/edit';
 import { init_firsttime_welcome } from './page/firsttime-welcome';
 import { init_list } from './page/list';
+import { init_page_print_songbook } from './page/page-print-songbook';
 import { init_search } from './page/search';
 import { init_set_list } from './page/set-list';
 import { init_set_view } from './page/set-view';
@@ -86,6 +87,7 @@ function main_setup() {
         init_set_list,
         init_dialog_set_delete,
         init_dialog_set_share,
+        init_page_print_songbook,
         init_present_dialog,
         init_set_view,
         init_tag_select,

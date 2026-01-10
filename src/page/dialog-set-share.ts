@@ -40,5 +40,9 @@ export function init_dialog_set_share() {
     page.on('pageinit', () => {
         $('#button-set-share-live').click(() => _do_share(1));
         $('#button-set-share-normal').click(() => _do_share(0));
+        $('#button-set-print-songbook').click(() => {
+            const set_id = get_page_args(page).set_id;
+            $.mobile.changePage(`#page-print-songbook?set_id=${set_id}`);
+        });
     });
 }
