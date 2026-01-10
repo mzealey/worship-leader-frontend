@@ -33,13 +33,7 @@ export type AlbumSong = {
 // Minimal information for rendering a link to the song
 export type RelatedSong = {
     id: number;
-    title: string;
-    lang: string;
-    is_original: 0 | 1;
-    has_chord: 0 | 1;
-    has_mp3: 0 | 1;
-    has_sheet: 0 | 1;
-    // TODO: May be other fields?
+    type?: 'pri'; // blank if generally related song, 'pri' if it's the original source song
 };
 
 export type SongInfoEntry = {

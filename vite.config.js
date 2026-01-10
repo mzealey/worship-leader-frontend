@@ -115,6 +115,10 @@ export default defineConfig(({ command, mode }) => {
                     filename: 'presentor.html',
                     template: 'presentor.html',
                 },
+                {
+                    filename: 'songbook-viewer.html',
+                    template: 'songbook-viewer.html',
+                },
             ],
         };
 
@@ -225,6 +229,7 @@ export default defineConfig(({ command, mode }) => {
 
                         'index.html',
                         'presentor.html',
+                        'songbook-viewer.html',
 
                         // Ensure sqlite works offline correctly
                         '**/*.wasm',
