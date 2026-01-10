@@ -95,16 +95,6 @@ function setFormFromConfig(page: JQuery, config: SongbookConfig): void {
     page.find('#songbook-language').val(config.songbookLanguage);
 }
 
-function updateConfigDisplay(page: JQuery): void {
-    const config = getConfigFromForm(page);
-    const setId = get_page_args(page).set_id || gup('set_id');
-    const displayData = {
-        set_id: setId,
-        config: config,
-    };
-    page.find('#songbook-config-display').text(JSON.stringify(displayData, null, 2));
-}
-
 function updateDoubleSpaceVisibility(page: JQuery): void {
     const wantChords = page.find('#songbook-want-chords').is(':checked');
     page.find('#songbook-double-space-container').toggle(wantChords);
@@ -157,12 +147,14 @@ async function openPreviewWindow(page: JQuery): Promise<void> {
         viewerWindow = window.open('songbook-viewer.html', 'songbook-viewer', 'width=800,height=600,scrollbars=yes,resizable=yes');
         if (!viewerWindow) {
             console.error('Failed to open popup window');
+            $('#button-preview-songbook').show();
             return;
         }
 
         viewerWindow.addEventListener('load', async () => {
             try {
                 viewerApi = await connectToViewer(viewerWindow!);
+                $('#button-preview-songbook').hide();
                 await sendDataToViewer(page);
             } catch (e) {
                 console.error('Failed to connect to viewer:', e);
@@ -175,6 +167,7 @@ async function openPreviewWindow(page: JQuery): Promise<void> {
 }
 
 async function sendDataToViewer(page: JQuery): Promise<void> {
+    console.log('Sending data to viewer', viewerApi);
     if (!viewerApi) return;
 
     const config = getConfigFromForm(page);
@@ -207,11 +200,9 @@ export function init_page_print_songbook(): void {
         setFormFromConfig(page, defaultConfig);
 
         page.find('select, input[type="checkbox"]').on('change', () => {
-            updateConfigDisplay(page);
             updateDoubleSpaceVisibility(page);
             updateViewerConfig(page);
         });
-
         page.find('#button-preview-songbook').on('click', () => {
             openPreviewWindow(page);
         });
@@ -220,7 +211,6 @@ export function init_page_print_songbook(): void {
     page.on('pagebeforeshow', async () => {
         loadedSongs = [];
         loadedSetName = '';
-        viewerApi = null;
 
         const setId = parseInt(get_page_args(page).set_id || gup('set_id'), 10);
         if (setId) {
@@ -228,7 +218,8 @@ export function init_page_print_songbook(): void {
             loadedSetName = await SET_DB.get_set_title(setId);
         }
 
-        updateConfigDisplay(page);
         updateDoubleSpaceVisibility(page);
     });
+
+    page.on('pageshow', () => openPreviewWindow(page));
 }

@@ -407,7 +407,6 @@ async function renderSongbook(data: SongbookData): Promise<void> {
     if (data.config.songbookLanguage && data.config.songbookLanguage !== currentLanguage) {
         await _lang_setup(data.config.songbookLanguage);
         currentLanguage = data.config.songbookLanguage;
-        console.log('Changed language to ', currentLanguage, get_translation('worship-leader'));
         document.body.dir = get_translation('langpack_direction');
         document.body.lang = currentLanguage;
     }
