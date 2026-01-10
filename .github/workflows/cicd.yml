@@ -1,0 +1,173 @@
+name: CI/CD
+
+on:
+    push:
+
+permissions:
+    contents: read
+    pages: write
+    id-token: write
+
+concurrency:
+    group: pages-deployment
+    cancel-in-progress: false
+
+jobs:
+    test:
+        runs-on: ubuntu-latest
+
+        steps:
+            - uses: actions/checkout@v4
+              with:
+                  submodules: recursive
+
+            - name: Use Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: '20'
+                  cache: 'yarn'
+
+            - name: Install dependencies
+              run: yarn install --frozen-lockfile
+
+            - name: Run Lint
+              run: yarn lint
+
+            - name: Run Unit Tests
+              run: yarn test:unit
+
+            - name: Get Playwright version
+              id: playwright-version
+              run: echo "version=$(npm ls @playwright/test --json | jq -r '.dependencies["@playwright/test"].version')" >> $GITHUB_OUTPUT
+
+            - name: Cache Playwright Browsers
+              id: playwright-cache
+              uses: actions/cache@v4
+              with:
+                  path: ~/.cache/ms-playwright
+                  key: ${{ runner.os }}-playwright-${{ steps.playwright-version.outputs.version }}
+                  restore-keys: |
+                      ${{ runner.os }}-playwright-
+
+            - name: Install Playwright Browsers
+              if: steps.playwright-cache.outputs.cache-hit != 'true'
+              run: npx playwright install firefox
+
+            - name: Install Playwright dependencies (if cache hit)
+              if: steps.playwright-cache.outputs.cache-hit == 'true'
+              run: npx playwright install-deps
+
+            - name: Run Browser Tests
+              run: yarn test:browser
+              env:
+                  PERF_TIMEOUT_MULTIPLIER: 3
+
+            - name: Extract branch name
+              id: branch
+              run: |
+                  BRANCH_NAME="${GITHUB_REF#refs/heads/}"
+                  SAFE_BRANCH_NAME=$(echo "$BRANCH_NAME" | sed 's/\//-/g')
+                  echo "name=$SAFE_BRANCH_NAME" >> $GITHUB_OUTPUT
+
+            - name: Do prod build to build/www
+              run: yarn build:test:www
+
+            - name: Setup Pages
+              uses: actions/configure-pages@v5
+
+            - name: Get active branches
+              id: branches
+              env:
+                  GH_TOKEN: ${{ github.token }}
+              run: |
+                  gh api "/repos/${{ github.repository }}/branches" --paginate --jq '.[].name' | \
+                    sed 's/\//-/g' | sort -u > active-branches.txt
+                  echo "Active branches:"
+                  cat active-branches.txt
+
+            - name: Download existing pages content
+              continue-on-error: true
+              env:
+                  GH_TOKEN: ${{ github.token }}
+              run: |
+                  mkdir -p pages-root
+
+                  ARTIFACT_ID=$(gh api \
+                    -H "Accept: application/vnd.github+json" \
+                    "/repos/${{ github.repository }}/actions/artifacts?name=github-pages&per_page=1" \
+                    --jq '.artifacts[0].id // empty')
+
+                  if [ -n "$ARTIFACT_ID" ]; then
+                    echo "Downloading artifact $ARTIFACT_ID"
+                    gh api \
+                      -H "Accept: application/vnd.github+json" \
+                      "/repos/${{ github.repository }}/actions/artifacts/$ARTIFACT_ID/zip" \
+                      > pages-artifact.zip
+
+                    unzip -q pages-artifact.zip -d pages-extract || true
+
+                    if [ -f pages-extract/artifact.tar ]; then
+                      tar -xf pages-extract/artifact.tar -C pages-root || true
+                    fi
+                  else
+                    echo "No existing pages artifact found"
+                  fi
+
+            - name: Clean up stale branch builds
+              run: |
+                  for dir in pages-root/*/; do
+                    if [ -d "$dir" ]; then
+                      dirname=$(basename "$dir")
+                      if ! grep -qx "$dirname" active-branches.txt; then
+                        echo "Removing stale build: $dirname"
+                        rm -rf "$dir"
+                      fi
+                    fi
+                  done
+
+            - name: Prepare deployment directory
+              run: |
+                  rm -rf "pages-root/${{ steps.branch.outputs.name }}"
+                  mkdir -p "pages-root/${{ steps.branch.outputs.name }}"
+                  cp -r build/www/* "pages-root/${{ steps.branch.outputs.name }}/"
+
+                  cat > pages-root/index.html << 'INDEXEOF'
+                  <!DOCTYPE html>
+                  <html>
+                  <head>
+                    <title>Worship Leader Frontend - Branch Builds</title>
+                    <style>
+                      body { font-family: system-ui, sans-serif; max-width: 600px; margin: 2rem auto; padding: 0 1rem; }
+                      h1 { color: #333; }
+                      ul { list-style: none; padding: 0; }
+                      li { margin: 0.5rem 0; }
+                      a { color: #0366d6; text-decoration: none; }
+                      a:hover { text-decoration: underline; }
+                    </style>
+                  </head>
+                  <body>
+                    <h1>Worship Leader Frontend - Branch Builds</h1>
+                    <ul>
+                  INDEXEOF
+
+                  for dir in pages-root/*/; do
+                    if [ -d "$dir" ]; then
+                      dirname=$(basename "$dir")
+                      echo "    <li><a href=\"$dirname/\">$dirname</a></li>" >> pages-root/index.html
+                    fi
+                  done
+
+                  cat >> pages-root/index.html << 'INDEXEOF'
+                    </ul>
+                  </body>
+                  </html>
+                  INDEXEOF
+
+            - name: Upload pages artifact
+              uses: actions/upload-pages-artifact@v3
+              with:
+                  path: pages-root
+
+            - name: Deploy to GitHub Pages
+              id: deployment
+              uses: actions/deploy-pages@v4
