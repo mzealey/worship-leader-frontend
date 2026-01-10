@@ -229,6 +229,7 @@ export default defineConfig(({ command, mode }) => {
 
                         'index.html',
                         'presentor.html',
+                        'songbook-viewer.html',
 
                         // Ensure sqlite works offline correctly
                         '**/*.wasm',
