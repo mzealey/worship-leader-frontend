@@ -7,7 +7,7 @@ import { LOCALE_SORT } from './sort-helpers';
 import { deferred_promise, fetch_json, is_rtl } from './util';
 
 // Currently active language translation pack
-let translations: Record<string, unknown> = {};
+let translations: Record<string, string | Record<string, string>> = {};
 let _app_lang; // should be set to the current language of the app
 
 // Now try to load the current translation language pack for this setup
@@ -22,9 +22,8 @@ let _langpack_loaded_resolved = 0;
 _langpack_loaded_promise.then(() => (_langpack_loaded_resolved = 1));
 
 // Load a language pack
-export async function lang_setup(lang = 'en') {
+export async function _lang_setup(lang = 'en') {
     _app_lang = lang || 'en';
-    const new_lang = _app_lang;
 
     // If we are in a live build then see if we previously had the correct langpack injected
     let new_translation: Record<string, unknown> | undefined;
@@ -37,21 +36,13 @@ export async function lang_setup(lang = 'en') {
         // force reload when www client to get latest data. Service worker should do this for us automatically anyway
         if (!new_translation)
             // TODO: force reload when www client to get latest data. Service worker should do this for us automatically anyway
-            new_translation = await fetch_json<Record<string, unknown>>(`langpack/${new_lang}.json`); //, has_service_worker || BUILD_TYPE != 'www' ? { cache: 'no-cache' } : {});
+            new_translation = await fetch_json<Record<string, unknown>>(`langpack/${_app_lang}.json`); //, has_service_worker || BUILD_TYPE != 'www' ? { cache: 'no-cache' } : {});
 
         // Test mode override whene we don't have this set - in prod builds it should be set for all langpacks
         if (!('langpack_direction' in new_translation)) new_translation['langpack_direction'] = 'ltr';
 
         Object.assign(translations, new_translation);
         _langpack_loaded.resolve();
-
-        // Get the special string saying the direction of the language pack
-        $('html, body').attr({
-            dir: get_translation('langpack_direction'),
-            lang: _app_lang,
-        });
-
-        relocalize_page($('body'));
     } catch (_e) {
         // file not found. The only case when this could potentially happen is
         // if we are a webapp running offline and someone goes to an uncached
@@ -68,30 +59,45 @@ export async function lang_setup(lang = 'en') {
             connection: navigator.onLine ? 'online' : 'offline',
             f: `langpack/${_app_lang}.json`,
         });
-        */
         try {
             $('#langpack-not-loaded').popup('open', { history: false });
         } catch (e) {
             // may happen that the app did not load fully yet
         }
+        */
 
         // We should have the en language pack always available - if not, major issues.
-        if (lang != 'en') return await lang_setup('en');
+        if (lang != 'en') await _lang_setup('en');
     }
-    return new_lang;
+}
+
+export async function lang_setup(lang = 'en') {
+    await _lang_setup(lang);
+
+    // JQM-specific stuff
+
+    // Get the special string saying the direction of the language pack
+    $('html, body').attr({
+        dir: get_translation('langpack_direction'),
+        lang: _app_lang,
+    });
+
+    relocalize_page($('body'));
+    return _app_lang;
 }
 
 type TranslationContext = unknown;
 
 export function get_translation(name: string, e?: TranslationContext) {
     if (/^lang\./.test(name)) return lang_name(name.replace(/^lang\./, ''));
+    const parts = name?.split('.');
+    const value = parts?.length == 2 ? translations[parts[0]][parts[1]] : parts ? translations[parts[0]] : undefined;
 
-    if (DEBUG && _langpack_loaded_resolved && !translations[name]) {
+    if (DEBUG && _langpack_loaded_resolved && !value) {
         console.log('No translation found for ', name, e || 'no element passed');
         return `XXX NO TRANSLATION (${name}) XXX`; // debug only
     }
 
-    const value = translations[name];
     return typeof value === 'string' ? value : '';
 }
 

@@ -4,10 +4,9 @@
     "**/*.tsx"
   ],
   "exclude": [
-    "vitest.config.ts",
+    "*.ts",
     "spec/**/*",
-    "tests/**/*",
-    "playwright.config.ts"
+    "tests/**/*"
   ],
   "compilerOptions": {
     "lib": [

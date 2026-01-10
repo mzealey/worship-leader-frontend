@@ -115,6 +115,10 @@ export default defineConfig(({ command, mode }) => {
                     filename: 'presentor.html',
                     template: 'presentor.html',
                 },
+                {
+                    filename: 'songbook-viewer.html',
+                    template: 'songbook-viewer.html',
+                },
             ],
         };
 
