@@ -121,17 +121,11 @@ describe('songxml', function () {
     });
 
     describe('format_html_chords', function () {
-        it('handles null input', function () {
+        it('handles null input', () => {
             expect(() => format_html_chords(null)).not.toThrow();
         });
 
-        it('handles jQuery-like objects with index 0', function () {
-            const elem = document.createElement('div');
-            const jQueryLike = { 0: elem };
-            expect(() => format_html_chords(jQueryLike)).not.toThrow();
-        });
-
-        it('handles direct HTMLElement', function () {
+        it('handles direct HTMLElement', () => {
             const elem = document.createElement('div');
             expect(() => format_html_chords(elem)).not.toThrow();
         });

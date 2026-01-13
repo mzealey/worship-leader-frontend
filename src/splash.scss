@@ -1,13 +1,16 @@
 // Initial style needed for load splash screen
 
-.show-splash,
-.show-splash body {
-    overflow: hidden;
-    width: 100%;
-    height: 100%;
-    margin: 0; /* android defaults to non-0 */
+html.splash-available {
+    &,
+    body {
+        overflow: hidden;
+        width: 100%;
+        height: 100%;
+        margin: 0; /* android defaults to non-0 */
+    }
 }
 #load-splash-screen {
+    pointer-events: none;
     position: fixed;
     top: 0;
     bottom: 0;
@@ -15,7 +18,8 @@
     right: 0;
     overflow: hidden;
     z-index: 10000000;
-    background-color: black !important;
+    background-color: white !important;
+
     text-align: center;
     font: 0/0 a;
     opacity: 0;
@@ -26,23 +30,98 @@
     transition:
         opacity linear 500ms,
         visibility 0s linear 500ms;
+
+    .splash-contain {
+        vertical-align: middle;
+        display: table-cell;
+        padding: 10px;
+    }
+    #splash-text {
+        font-size: 16px;
+        color: #666;
+        @media (prefers-color-scheme: dark) {
+            color: #aaa;
+        }
+        padding-top: 26px;
+        font-family: Rosario, sans-serif;
+        letter-spacing: 5px;
+    }
+
+    @media (prefers-color-scheme: dark) {
+        background-color: #222 !important;
+    }
 }
-.show-splash #load-splash-screen {
+
+html.show-splash #load-splash-screen {
     opacity: 1;
     visibility: visible;
 }
-#load-splash-screen .splash-contain {
-    vertical-align: middle;
-    display: table-cell;
-    padding: 10px;
+
+#load-splash-screen > .bg {
+    svg {
+        position: absolute;
+        z-index: -1; // place behind any main images
+        transform: matrix(1, 0, 0, 1, 0, 0);
+        animation-timing-function: linear;
+        animation-duration: 10s;
+        animation-iteration-count: infinite;
+    }
+
+    #botright {
+        height: 80vh;
+        width: 60vw;
+        bottom: -20%;
+        left: -20%;
+        animation-name: movement;
+    }
+    #dot1 {
+        left: 30%;
+        bottom: 20%;
+        max-width: 10vw;
+        max-height: 20vh;
+        animation-name: movement;
+    }
+
+    #dot2 {
+        left: 42%;
+        bottom: 1%;
+        max-width: 5vw;
+        max-height: 5vh;
+        animation-name: movement;
+    }
+
+    #right {
+        height: 150vh;
+        width: 50vw;
+        top: -30%;
+        right: -5%;
+        animation-name: movement;
+    }
+    #rightdot {
+        height: 10vh;
+        width: 10vw;
+        top: 35%;
+        right: 15%;
+        animation-name: movement;
+    }
+
+    #top {
+        height: 80vh;
+        width: 100vw;
+        top: -60%;
+        left: 15%;
+        animation-name: movement;
+    }
 }
-#load-splash-screen img {
-    vertical-align: middle;
-    max-width: 100%;
-    max-height: 100%;
-    opacity: 0;
-}
-#load-splash-screen img.img-loaded {
-    opacity: 1;
-    transition: opacity linear 500ms;
+
+@keyframes movement {
+    0% {
+        transform: matrix(1, 0, 0, 1, 0, 0);
+    }
+    30% {
+        transform: matrix(1.05, 0.05, 0, 1, 0, 0);
+    }
+    70% {
+        transform: matrix(1, 0, 0.05, 1.05, 0, 0);
+    }
 }

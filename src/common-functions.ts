@@ -22,5 +22,5 @@ window.HOST = API_HOST;
 
 // Legacy string formatting hack
 (String.prototype as any).format = function (...arg: unknown[]) {
-    return format_string(this as string, ...arg);
+    return format_string(this as unknown as string, ...arg);
 };

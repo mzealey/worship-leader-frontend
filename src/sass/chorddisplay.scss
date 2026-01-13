@@ -35,38 +35,49 @@
 
 .showchords .chord {
     display: inline-block;
-    font-size: 80%;
-    font-style: normal;
-    font-weight: bold;
     overflow: visible;
     position: relative;
-    top: -1.2em;
-    white-space: nowrap;
+    top: -1em;
     width: 0;
+
+    > .chord-inner {
+        font-size: 0.8rem;
+        font-style: normal;
+        font-weight: bold;
+        white-space: nowrap;
+        //background-color: red;    // TODO
+        padding: 0 2px;
+        border-radius: 2px;
+        position: relative;
+    }
 }
 
 // Make a block to allow pressing on chord to happen more easily
-.showchords.setting-show-fingering.rendered .chord:after {
+.showchords.setting-show-fingering.rendered .chord-inner:after {
     content: '';
     display: block;
     position: absolute;
-    top: 0;
-    width: 30px;
-    height: 30px;
+    //background-color: blue;   // for debug
+    top: -10px;
+    left: -10px;
+    right: -10px;
+    bottom: -10px;
 }
 
-.vertical-lr.showchords.setting-show-fingering .chord:after {
-    top: unset;
-    left: 3px;
+.songxml.setting-show-fingering .chord-inner:after {
+    cursor: pointer;
 }
 
 /* In vertical script, we don't change text properties but we do need to change
  * the html positioning as these dimensions do not change */
 .vertical-lr.showchords .chord {
     top: 0;
-    left: -1.2em;
+    left: -1em;
     width: auto;
     height: 0;
+    > .chord-inner {
+        padding: 2px 0;
+    }
 }
 
 .word-with-chord {

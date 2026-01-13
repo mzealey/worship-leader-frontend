@@ -1,11 +1,1 @@
-// same as jquery.mobile-1.4.5.css
-@import '../jquery-mobile/jquery.mobile.icons-1.4.5.css';
-@import '../jqm-extra-icons/icon-pack-custom.css';
-
-// Save ~100k by killing unused inlined svg & png icons
-@import './sass/kill-unused-jqm-icons';
-
-@import '../jquery-mobile/jquery.mobile.theme-1.4.5.css';
-@import '../jquery-mobile/jquery.mobile.structure-1.4.5.css';
-
 @import './sass/index';

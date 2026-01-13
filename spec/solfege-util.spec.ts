@@ -17,29 +17,29 @@ vi.mock('../src/langpack', () => ({
     }),
 }));
 
-vi.mock('../src/settings', () => ({
-    is_set: vi.fn(),
+vi.mock('../src/settings-store', () => ({
+    getSetting: vi.fn(),
 }));
 
 describe('solfege-util', function () {
-    let is_set: Mock<typeof import('../src/settings').is_set>;
+    let getSetting: Mock<typeof import('../src/settings-store').getSetting>;
 
     beforeEach(async function () {
-        const settingsStore = await import('../src/settings');
-        is_set = settingsStore.is_set as Mock<typeof import('../src/settings').is_set>;
+        const settingsStore = await import('../src/settings-store');
+        getSetting = settingsStore.getSetting as Mock<typeof import('../src/settings-store').getSetting>;
         vi.clearAllMocks();
     });
 
     describe('maybe_convert_solfege', function () {
         it('returns original value when solfege is disabled', function () {
-            is_set.mockReturnValue(false);
+            getSetting.mockReturnValue(false);
 
             expect(maybe_convert_solfege('C D E')).toBe('C D E');
             expect(maybe_convert_solfege('Am Bm')).toBe('Am Bm');
         });
 
         it('converts notes to solfege when enabled', function () {
-            is_set.mockReturnValue(true);
+            getSetting.mockReturnValue(true);
 
             expect(maybe_convert_solfege('C')).toBe('Do');
             expect(maybe_convert_solfege('D')).toBe('Re');
@@ -51,14 +51,14 @@ describe('solfege-util', function () {
         });
 
         it('converts multiple notes in a string', function () {
-            is_set.mockReturnValue(true);
+            getSetting.mockReturnValue(true);
 
             expect(maybe_convert_solfege('C D E')).toBe('Do Re Mi');
             expect(maybe_convert_solfege('F G A B')).toBe('Fa Sol La Si');
         });
 
         it('only converts word-boundary notes', function () {
-            is_set.mockReturnValue(true);
+            getSetting.mockReturnValue(true);
 
             // Should convert standalone letters but not those within words
             expect(maybe_convert_solfege('C')).toBe('Do');
@@ -68,13 +68,13 @@ describe('solfege-util', function () {
         });
 
         it('converts Russian H notation to B', function () {
-            is_set.mockReturnValue(true);
+            getSetting.mockReturnValue(true);
 
             expect(maybe_convert_solfege('H')).toBe('Si'); // H -> B -> Si
         });
 
         it('preserves chord modifiers', function () {
-            is_set.mockReturnValue(true);
+            getSetting.mockReturnValue(true);
 
             // This tests the behavior but may need adjustment based on actual implementation
             // The function only replaces single uppercase letters A-H at word boundaries
@@ -83,30 +83,30 @@ describe('solfege-util', function () {
         });
 
         it('handles empty string', function () {
-            is_set.mockReturnValue(true);
+            getSetting.mockReturnValue(true);
 
             expect(maybe_convert_solfege('')).toBe('');
         });
 
         it('handles string with no notes', function () {
-            is_set.mockReturnValue(true);
+            getSetting.mockReturnValue(true);
 
             expect(maybe_convert_solfege('hello world')).toBe('hello world');
         });
 
         it('handles mixed case', function () {
-            is_set.mockReturnValue(true);
+            getSetting.mockReturnValue(true);
 
             // Only uppercase letters should be converted
             expect(maybe_convert_solfege('C c')).toBe('Do c');
         });
 
         it('checks use-solfege setting', function () {
-            is_set.mockReturnValue(false);
+            getSetting.mockReturnValue(false);
 
             maybe_convert_solfege('C D E');
 
-            expect(is_set).toHaveBeenCalledWith('setting-use-solfege');
+            expect(getSetting).toHaveBeenCalledWith('use-solfege');
         });
     });
 });
