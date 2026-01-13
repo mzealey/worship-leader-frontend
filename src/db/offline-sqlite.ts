@@ -1,6 +1,6 @@
 import type { DBRequestedItems, DBSearchRunResult } from '../db-search';
 import { persistentStorage } from '../persistent-storage.es5';
-import { Album, Song, SongSource } from '../song';
+import { Album, Song, SongShortData, SongSource } from '../song';
 import { _SearchMetaResult, type DBFilters, type SearchMetaFilters } from './common';
 import { get_array_field, get_decompressed_key, get_number_field, maybe_recursive_decompress } from './compressed-key-map';
 import { OfflineDBCommon, type LangPackResponse } from './offline-common';
@@ -29,7 +29,7 @@ interface DBQuery {
 
 // Base class providing general offline SQLite details shared between WebSQL
 // and SQLite-WASM implementations
-export abstract class OfflineSQLiteDB extends OfflineDBCommon {
+export abstract class OfflineSQLiteDB extends OfflineDBCommon<DBQuery> {
     fts_table?: string;
 
     // Stuff that child-classes need to implement
@@ -190,7 +190,7 @@ export abstract class OfflineSQLiteDB extends OfflineDBCommon {
                 ['DELETE FROM album_songs WHERE song_id = ?', [song.id]],
             );
 
-            this._add_songs(exec, [song as Record<string, unknown>]);
+            this._add_songs(exec, [song as unknown as Record<string, unknown>]);
         });
     }
 
@@ -407,7 +407,7 @@ export abstract class OfflineSQLiteDB extends OfflineDBCommon {
         const importData = [...((to_import.data as Song[]) ?? [])];
         const import_ids = new Set<number>(
             importData
-                .map((song) => Number(get_decompressed_key(is_compressed, song as Record<string, unknown>, 'id')))
+                .map((song) => Number(get_decompressed_key(is_compressed, song as unknown as Record<string, unknown>, 'id')))
                 .filter((id): id is number => Number.isFinite(id)),
         );
         const ids_to_delete = current_ids.filter((id) => !import_ids.has(id));
@@ -462,7 +462,7 @@ export abstract class OfflineSQLiteDB extends OfflineDBCommon {
                 // slows down the load process
                 //await this.rw_trans(exec => this._add_songs(exec, to_import.data.splice(0, this._import_batch_size), is_compressed));
 
-                this._add_songs(exec, importData.splice(0, this._import_batch_size), is_compressed);
+                this._add_songs(exec, importData.splice(0, this._import_batch_size) as unknown as Array<Record<string, unknown>>, is_compressed);
                 if (rows_loaded_callback) rows_loaded_callback(len - importData.length, len);
             }
         });
@@ -558,21 +558,21 @@ export abstract class OfflineSQLiteDB extends OfflineDBCommon {
         return { albums, sources };
     }
 
-    handle_returned_songs(rows: Record<string, any>[]): Song[] {
+    handle_returned_songs<T = SongShortData>(rows: Record<string, any>[]): T[] {
         rows.forEach((item) => {
             // expand serialized entries into objects
             ['alternative_titles', 'related_songs', 'info', 'files'].forEach((field) => {
                 if (item[field]) item[field] = JSON.parse(item[field]);
             });
         });
-        return rows as Song[];
+        return rows as T[];
     }
 
     async get_song(id: number, ajax_fallback = false): Promise<Song | null> {
         if (!id) return null;
 
         const main_table = this.single_query<any[]>('SELECT * FROM songs WHERE id = ?', [id])
-            .then(this.handle_returned_songs)
+            .then(this.handle_returned_songs<Song>)
             .then((res) => (res ? res[0] : null));
 
         const source_list_lookup = this.single_query<any>(
@@ -803,7 +803,7 @@ export abstract class OfflineSQLiteDB extends OfflineDBCommon {
         return { data: this.handle_returned_songs(rows) };
     }
 
-    async _get_songs(ids: number[], ajax_fallback?: boolean): Promise<Song[]> {
+    async _get_songs(ids: number[], ajax_fallback?: boolean): Promise<SongShortData[]> {
         // Full sql statement now
         // select * can be slow on mobiles so dont fetch everything
         const do_query = () => {

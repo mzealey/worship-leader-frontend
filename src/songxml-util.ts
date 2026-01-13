@@ -1,4 +1,5 @@
 import GraphemeSplitter from 'grapheme-splitter';
+import { maybe_convert_solfege } from './solfege-util';
 import { is_rtl, is_vertical } from './util';
 
 let splitter = new GraphemeSplitter();
@@ -318,4 +319,27 @@ export function songxml_to_divs(songxml: string | null | undefined, without_chor
     if (!/\S/.test(result.replace(/<[^>]+>/g, ''))) return '';
 
     return result;
+}
+
+export function split_songxml_chords(songxml: string): string {
+    // split into multiple chord blocks so each only has 1 chord in it. We
+    // do this simalar to the songxml_to_divs() function, but as that is
+    // shared with the editor we don't want to split there to make it
+    // easier to edit correctly.
+    return songxml.replace(/(<chord>)(.*?)(<\/chord>)/gi, (_, start, chord_content, end) => {
+        return chord_content
+            .replace(/\u202D/g, '') // Hopefully no zwj's in here yet.
+            .replace(/^\s+|\s+$/g, '') // kill spacing
+            .split(/\s+/)
+            .map((chord) => `${start}${chord}${end}`)
+            .join('');
+    });
+}
+
+export function render_chord(chord: string): string {
+    // Map # and &/b into sharp/flat symbols
+    chord = chord.replace(/[&b]/, '\u266D').replace(/#/, '\u266F');
+
+    // Ensure each chord has 1 and 1 only utf8 ltr forcer
+    return '\u202D' + maybe_convert_solfege(chord);
 }

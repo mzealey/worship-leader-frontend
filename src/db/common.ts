@@ -2,7 +2,7 @@ import type { DBRequestedItems, DBSearchRunResult } from '../db-search';
 import type { FavouriteDB } from '../favourite-db';
 import { get_meta_db } from '../meta-db';
 import { persistentStorage } from '../persistent-storage.es5';
-import { Album, MaybeLoadedSong, NotLoadedSong, Song, SongSource } from '../song';
+import { Album, MaybeLoadedSong, NotLoadedSong, Song, SongShortData, SongSource } from '../song';
 import { LOCALE_SORT, SORT_TITLE_SORT } from '../sort-helpers';
 import { deferred_promise, type DeferredPromise } from '../util';
 
@@ -41,7 +41,7 @@ export interface _SearchMetaResult {
 }
 
 // Base class for all database implementations
-export abstract class CommonDB {
+export abstract class CommonDB<PreparedQuery> {
     _db_initialized: DeferredPromise<void>;
     db_initialized: Promise<void>;
     _db_populated: DeferredPromise<void>;
@@ -56,14 +56,14 @@ export abstract class CommonDB {
     FAVOURITE_DB: FavouriteDB;
 
     abstract _search_meta(filters: SearchMetaFilters): Promise<_SearchMetaResult>;
-    abstract _get_songs(ids: number[], ajax_fallback?: boolean): Promise<Song[]>;
+    abstract _get_songs(ids: number[], ajax_fallback?: boolean): Promise<SongShortData[]>;
 
     abstract get_song_sources(): Promise<SongSource[]>;
     abstract get_song(song_id: number, ajax_fallback?: boolean, with_dump?: boolean): Promise<Song | null>;
 
-    abstract _run_search(query: unknown, requested_items: DBRequestedItems): Promise<DBSearchRunResult>;
-    abstract _get_total(query: unknown): Promise<number>;
-    abstract _prepare_query(filters: DBFilters): unknown;
+    abstract _run_search(query: PreparedQuery, requested_items: DBRequestedItems): Promise<DBSearchRunResult>;
+    abstract _get_total(query: PreparedQuery): Promise<number>;
+    abstract _prepare_query(filters: DBFilters): PreparedQuery;
 
     // Some databases may want to record favourite information to help with additional filtering
     async set_favourite(_song_id: number, _value: 1 | 0): Promise<void> {}
@@ -183,8 +183,8 @@ export abstract class CommonDB {
     }
 
     async get_songs(ids: number[], include_empties: true, ajax_fallback?: boolean): Promise<MaybeLoadedSong[]>;
-    async get_songs(ids: number[], include_empties?: false, ajax_fallback?: boolean): Promise<Song[]>;
-    async get_songs(ids: number[], include_empties?: boolean, ajax_fallback?: boolean): Promise<Song[] | MaybeLoadedSong[]> {
+    async get_songs(ids: number[], include_empties?: false, ajax_fallback?: boolean): Promise<SongShortData[]>;
+    async get_songs(ids: number[], include_empties?: boolean, ajax_fallback?: boolean): Promise<SongShortData[] | MaybeLoadedSong[]> {
         // Handle null/undefined input
         if (!ids) return [];
 
@@ -193,13 +193,13 @@ export abstract class CommonDB {
 
         if (!ids.length) return [];
 
-        let results: Song[] = await this._get_songs(ids, ajax_fallback);
+        let results: SongShortData[] = await this._get_songs(ids, ajax_fallback);
         if (!include_empties || ids.length == results.length) return results;
 
         // Add in any missing ids with not_loaded tag
         const id_map: Record<number, 1> = {};
         ids.forEach((id) => (id_map[id] = 1));
-        results.forEach((song: Song) => delete id_map[song.id]);
+        results.forEach((song: SongShortData) => delete id_map[song.id]);
         return (results as MaybeLoadedSong[]).concat(
             Object.keys(id_map).map(
                 (id) =>
@@ -209,5 +209,12 @@ export abstract class CommonDB {
                     },
             ),
         );
+    }
+
+    // Run the actual search against the database. DBSearch class would be typically preferred to handle querying and
+    // updates correctly
+    async search(filters: DBFilters, pager: DBRequestedItems): Promise<DBSearchRunResult> {
+        const query = this._prepare_query(filters);
+        return this._run_search(query, pager);
     }
 }

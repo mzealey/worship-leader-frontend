@@ -62,7 +62,7 @@ const track_progress = (callback_fn: (read: number, total: number) => void) => {
 };
 
 // Base class for offline database implementations
-export abstract class OfflineDBCommon extends CommonDB {
+export abstract class OfflineDBCommon<PreparedQuery> extends CommonDB<PreparedQuery> {
     MAX_DB_AGE = 60 * 60 * 24 * 7 * 1000; // update db every week
     _type = 'offline';
     online_db: OnlineDB;
@@ -303,9 +303,4 @@ export abstract class OfflineDBCommon extends CommonDB {
     ): Promise<void>;
 
     abstract add_song(song: Song): Promise<void>;
-}
-
-// TODO: Remove this fn
-export function is_offline_db(db: CommonDB): db is OfflineDBCommon {
-    return db.type() === 'offline';
 }

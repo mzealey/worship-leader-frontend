@@ -3,6 +3,8 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { CommonDB, get_db_chosen_langs, save_db_chosen_langs } from '../src/db/common';
 
+type TestPreparedQuery = Record<string, any>;
+
 describe('db/common utility functions', function () {
     beforeEach(() => {
         vi.clearAllMocks();
@@ -41,7 +43,7 @@ describe('db/common utility functions', function () {
 
     describe('CommonDB constructor', function () {
         // Create a concrete implementation for testing
-        class TestCommonDB extends CommonDB {
+        class TestCommonDB extends CommonDB<TestPreparedQuery> {
             async _initialize_db(): Promise<void> {}
             get_version_string(): string {
                 return 'test';
@@ -65,7 +67,7 @@ describe('db/common utility functions', function () {
             async _get_total(): Promise<number> {
                 return 0;
             }
-            _prepare_query(): any {
+            _prepare_query(): TestPreparedQuery {
                 return {};
             }
         }
@@ -73,7 +75,7 @@ describe('db/common utility functions', function () {
         it('creates a new CommonDB instance', function () {
             const db = new TestCommonDB(null as any);
 
-            expect(db).toBeInstanceOf(CommonDB);
+            expect(db).toBeInstanceOf(CommonDB<any>);
         });
 
         it('initializes deferred promises', function () {
@@ -107,7 +109,7 @@ describe('db/common utility functions', function () {
 
     describe('CommonDB prototype methods', function () {
         // Create a concrete implementation for testing
-        class TestCommonDB extends CommonDB {
+        class TestCommonDB extends CommonDB<TestPreparedQuery> {
             async _initialize_db(): Promise<void> {}
             get_version_string(): string {
                 return 'test';

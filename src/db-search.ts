@@ -5,7 +5,7 @@ import type { CommonDB, DBFilters } from './db/common';
 import { eventSocket } from './event-socket';
 import { filter_sources } from './filter-sources';
 import { get_translation, langpack_loaded } from './langpack';
-import { Album, JQueryPage, Song, SongSource } from './song';
+import { Album, JQueryPage, SongShortData, SongSource } from './song';
 import { update_song_list } from './songlist';
 import { filter_tags } from './tag';
 import { unidecode } from './unidecode';
@@ -15,7 +15,7 @@ export type SourceFilterMap = Record<number, 0 | 1 | undefined>;
 export type TagFilterMap = DBFilters['advanced_tags'];
 
 export interface DBSearchRunResult {
-    data: Song[];
+    data: SongShortData[];
     total?: number;
 }
 
@@ -236,7 +236,7 @@ interface DBSearchState {
 
 export class DBSearch {
     filters: DBFilters;
-    db: CommonDB;
+    db: CommonDB<any>;
     state: Subject<DBSearchState>;
     search!: Promise<string>;
     prepared_query!: Promise<unknown>;
@@ -245,7 +245,7 @@ export class DBSearch {
     page: JQueryPage;
     private _pager_timeout?: ReturnType<typeof setTimeout>;
 
-    constructor(db: CommonDB, page: JQueryPage) {
+    constructor(db: CommonDB<any>, page: JQueryPage) {
         this.pager = new Pager(page);
         this.filters = get_filters(page); // Cache original filters to send with feedback details
         this.db = db;
@@ -264,7 +264,7 @@ export class DBSearch {
     }
 
     // Is a new query needed on the given page for the specified db type?
-    isEqual(cur_db: CommonDB, page: JQueryPage): boolean {
+    isEqual(cur_db: CommonDB<any>, page: JQueryPage): boolean {
         return cur_db.query_validity() == this.query_validity && isEqual(get_filters(page), this.filters);
     }
 
@@ -303,7 +303,7 @@ export class DBSearch {
                 return Promise.all(promises);
             })
             .then(([songs, meta]) => {
-                let song_list: (Song | SongSource | Album)[] = [].concat(songs.data);
+                let song_list: (SongShortData | SongSource | Album)[] = [].concat(songs.data);
 
                 // If we had the 1 extra row then throw it away - just shows we
                 // can go onto the next page.

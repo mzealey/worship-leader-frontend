@@ -4,6 +4,7 @@ import * as path from 'path';
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { OfflineSQLiteDB, type BindParams, type ExecFunction } from '../src/db/offline-sqlite';
 import { persistentStorage } from '../src/persistent-storage.es5';
+import type { Song } from '../src/song';
 
 const FIXTURES_DIR = path.resolve(__dirname, 'fixtures');
 const EN_SONG_COUNT = 3394;
@@ -757,7 +758,7 @@ describe('OfflineSQLiteDB', () => {
                 },
             ];
 
-            const result = testDB.handle_returned_songs(rows);
+            const result = testDB.handle_returned_songs<Song>(rows);
 
             expect(result[0].alternative_titles).toEqual(['Alt 1', 'Alt 2']);
             expect(result[0].related_songs).toEqual([1, 2, 3]);

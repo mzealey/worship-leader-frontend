@@ -3,7 +3,7 @@ import { API_HOST, DB_PATH, DUMP_VERSION } from '../globals';
 import { get_browser_languages } from '../langdetect.es5';
 import { app_lang } from '../langpack';
 import { persistentStorage } from '../persistent-storage.es5';
-import { Song, SongSource } from '../song';
+import { Song, SongShortData, SongSource } from '../song';
 import { fetch_json, generate_search_params, type AbortablePromise } from '../util';
 import { CommonDB, get_db_chosen_langs, type DBFilters, type _SearchMetaResult } from './common';
 
@@ -23,8 +23,8 @@ type GridQuery = BaseQuery & {
 };
 
 // Fallback for web browsers not supporting Web SQL
-export class OnlineDB extends CommonDB {
-    private search_query: AbortablePromise<{ data: Song | Song[]; total?: number }> | null = null;
+export class OnlineDB extends CommonDB<BaseQuery> {
+    private search_query: AbortablePromise<{ data: SongShortData | SongShortData[]; total?: number }> | null = null;
     private count_query: AbortablePromise<{ total: number }> | null = null;
     //song_query = null;
     _type = 'online';
@@ -107,7 +107,7 @@ export class OnlineDB extends CommonDB {
         return query;
     }
 
-    async _get_total(query: { filters: string; query: string }): Promise<number> {
+    async _get_total(query: BaseQuery): Promise<number> {
         // Abort any pending query before starting a new one
         if (this.count_query) this.count_query.abort();
 
@@ -141,7 +141,7 @@ export class OnlineDB extends CommonDB {
             */
 
         // Save the query promise so we can abort it above
-        this.search_query = fetch_json<{ data: Song | Song[]; total?: number }>(
+        this.search_query = fetch_json<{ data: SongShortData | SongShortData[]; total?: number }>(
             this.api_url('grid', query as Record<string, string | number | boolean | undefined>),
         );
 
@@ -153,8 +153,8 @@ export class OnlineDB extends CommonDB {
         return { data, total: ret.total };
     }
 
-    async _get_songs(ids: number[]): Promise<Song[]> {
-        const ret = await fetch_json<{ data?: Song | Song[] }>(this.api_url('grid', { query: '', filters: JSON.stringify({ id: ids }) }));
+    async _get_songs(ids: number[]): Promise<SongShortData[]> {
+        const ret = await fetch_json<{ data?: SongShortData | SongShortData[] }>(this.api_url('grid', { query: '', filters: JSON.stringify({ id: ids }) }));
         if (!ret.data) return [];
         return Array.isArray(ret.data) ? ret.data : [ret.data];
     }

@@ -33,13 +33,7 @@ export type AlbumSong = {
 // Minimal information for rendering a link to the song
 export type RelatedSong = {
     id: number;
-    title: string;
-    lang: string;
-    is_original: 0 | 1;
-    has_chord: 0 | 1;
-    has_mp3: 0 | 1;
-    has_sheet: 0 | 1;
-    // TODO: May be other fields?
+    type?: 'pri'; // blank if generally related song, 'pri' if it's the original source song
 };
 
 export type SongInfoEntry = {
@@ -58,11 +52,21 @@ export type SongFile = {
 };
 
 // TODO: Convert into a class
-export type Song = {
+export interface SongShortData {
+    // short/key data for listing heading etc, as returned by grid/get_songs
     id: number;
     lang: string;
     title: string;
+    alternative_titles: string[];
+    copyright_restricted: 0 | 1;
     source_title: string;
+    is_original: 0 | 1;
+    has_chord: 0 | 1;
+    has_sheet: 0 | 1;
+    has_mp3: 0 | 1;
+}
+
+export interface Song extends SongShortData {
     search_title: string;
     alternative_search_titles: string;
     search_text: string;
@@ -71,7 +75,6 @@ export type Song = {
     rating: number;
     songkey: string;
     capo: number;
-    alternative_titles: string[];
     info: SongInfoEntry[];
     files: SongFile[];
     related_songs: RelatedSong[];
@@ -80,17 +83,12 @@ export type Song = {
     song_ts: number;
     year: number;
     favourite: number;
-    is_original: 0 | 1;
-    copyright_restricted: 0 | 1;
-    has_chord: 0 | 1;
-    has_sheet: 0 | 1;
-    has_mp3: 0 | 1;
     sort_title: string;
 
     sources: SongSource[];
     tags: number[]; // tag ids
     albums: AlbumSong[];
-};
+}
 
 export type NotLoadedSong = {
     id: number;
