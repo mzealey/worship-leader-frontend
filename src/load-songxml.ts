@@ -11,10 +11,10 @@ export function load_songxml_into(elem, songdata, force_chords_off?) {
 }
 
 export function _load_songxml_into(elem, songdata, force_chords_off?) {
-    let songxml = elem.find('.songxml');
+    const songxml = elem.find('.songxml');
     songxml.toggleClass('setting-show-fingering', is_set('setting-show-fingering'));
     // No chords in the songs or we don't want them displayed
-    let show_chords = !!(!force_chords_off && /<chord>/i.test(songdata.songxml) && is_set('setting-display-chords'));
+    const show_chords = !!(!force_chords_off && /<chord>/i.test(songdata.songxml) && is_set('setting-display-chords'));
 
     let content = songdata.songxml;
     if (show_chords) content = split_songxml_chords(content);
@@ -51,14 +51,14 @@ export function _load_songxml_into(elem, songdata, force_chords_off?) {
     render_chords(elem);
 }
 
-let trans = new Transpose();
+const trans = new Transpose();
 export function render_chords(elem) {
-    let songxml = elem.find('.songxml');
-    let details = $('#primary-song').data('keychange') || {};
+    const songxml = elem.find('.songxml');
+    const details = $('#primary-song').data('keychange') || {};
 
     songxml.find('.chord').each((i, el) => {
         el = $(el);
-        let chord = trans.getNewChord(el.data('chord'), (details.delta || 0) - (details.capo || 0) + (details.song_capo || 0), details.key, details.is_minor);
+        const chord = trans.getNewChord(el.data('chord'), (details.delta || 0) - (details.capo || 0) + (details.song_capo || 0), details.key, details.is_minor);
         el.data('cur_chord', chord); // for fingering to use
 
         el.text(render_chord(chord));

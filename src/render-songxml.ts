@@ -18,8 +18,8 @@ export function resize_for_print() {
     // within the media query so that the score is not rendered very large or
     // very small because it has been rendered according to the screen.
     if (current_page().is('#songinfo') && current_page().data('show-score')) {
-        let songdata = current_page().data('song');
-        let [abc_score] = (songdata.files || []).filter((file) => file.type == 'abccache');
+        const songdata = current_page().data('song');
+        const [abc_score] = (songdata.files || []).filter((file) => file.type == 'abccache');
         load_score_into($('#primary-song'), abc_score.abc, songdata, 1000);
         resized_for_print = true;
 
@@ -28,7 +28,7 @@ export function resize_for_print() {
 }
 
 export function render_primary_songxml(songdata?, show_score?) {
-    let page = $('#songinfo');
+    const page = $('#songinfo');
     resized_for_print = false;
 
     // May be called from a resize or so
@@ -43,9 +43,9 @@ export function render_primary_songxml(songdata?, show_score?) {
     if (show_score === undefined) show_score = page.data('show-score');
     else page.data('show-score', show_score);
 
-    let pri_song = $('#primary-song');
-    let display_lyrics = is_set('setting-display-lyrics');
-    let copyright_restrict = 0; //is_copyright(songdata);
+    const pri_song = $('#primary-song');
+    const display_lyrics = is_set('setting-display-lyrics');
+    const copyright_restrict = 0; //is_copyright(songdata);
     if (copyright_restrict) show_score = false;
     pri_song
         .parents('.ui-content')
@@ -59,7 +59,7 @@ export function render_primary_songxml(songdata?, show_score?) {
     let promise;
     if (show_score) {
         song_feedback('sheet_view', songdata.id);
-        let [abc_score] = (songdata.files || []).filter((file) => file.type == 'abccache');
+        const [abc_score] = (songdata.files || []).filter((file) => file.type == 'abccache');
         file_feedback('sheet_view', songdata.id, abc_score.id);
 
         promise = load_score_into(pri_song, abc_score.abc, songdata);

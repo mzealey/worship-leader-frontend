@@ -11,7 +11,7 @@ export function is_copyright(song) {
 }
 
 export function set_direction(elem, lang, is_main_block?) {
-    let dir = is_rtl(elem.text()) ? 'rtl' : 'ltr';
+    const dir = is_rtl(elem.text()) ? 'rtl' : 'ltr';
 
     // Set the vertical-lr class if mongolian (traditional) and is the song block
     elem.attr({ lang, dir }).toggleClass('vertical-lr vertical-lr-scroll', !!(is_main_block && is_vertical_lang(lang)));
@@ -20,7 +20,7 @@ export function set_direction(elem, lang, is_main_block?) {
 }
 
 export function setup_meta_link(list, info) {
-    let item = $('<a href="#" class="list-search-link">').addClass(`type-${info._type}`);
+    const item = $('<a href="#" class="list-search-link">').addClass(`type-${info._type}`);
     let text = '';
     switch (info._type) {
         case 'album':
@@ -49,7 +49,7 @@ export function get_text_title(song) {
 export function get_full_title(song, prefix?) {
     let title = get_text_title(song);
 
-    let ret = $('<span>');
+    const ret = $('<span>');
     title = set_direction($('<span>').text(title).attr('title', title), song.lang);
 
     // If prefix is set we'll hide the actual title and direction under a
@@ -61,7 +61,7 @@ export function get_full_title(song, prefix?) {
 
     ret.append(title);
 
-    let extra: string[] = [];
+    const extra: string[] = [];
     if (FAVOURITE_DB.get_favourite(song.id)) extra.push(' &#x2665;');
 
     if (song.is_original) extra.push('&#x2605;');
@@ -107,14 +107,14 @@ export function setup_list_link(list, song, prefix?) {
         }
 
         if (is_set('setting-show-key-in-list')) {
-            let key_items: string[] = [];
+            const key_items: string[] = [];
             if (song.songkey) key_items.push(get_translation('songkey') + ': ' + song.songkey);
 
             if (song.info) {
-                let timesig = song.info.filter((d) => d.type == 'timesignature')[0];
+                const timesig = song.info.filter((d) => d.type == 'timesignature')[0];
                 if (timesig) key_items.push(timesig.value);
 
-                let tempo = song.info.filter((d) => d.type == 'tempo')[0];
+                const tempo = song.info.filter((d) => d.type == 'tempo')[0];
                 if (tempo) key_items.push(get_translation('tempo') + ': ' + tempo.value);
             }
 
@@ -159,16 +159,16 @@ export function update_song_list(page, items, requested_items) {
 
     // Don't try scrolling to this as it may affect the position of the pager
     // buttons that the user expects...
-    let current_song_id = page.data('song_id');
+    const current_song_id = page.data('song_id');
     if (current_song_id) try_highlight_songid(page, current_song_id);
 }
 
 export function try_highlight_songid(page, song_id, scroll_to = false) {
     // Update highlighting to see which song has been selected
-    let ul = page.find('.songlist');
+    const ul = page.find('.songlist');
     ul.find('li .ui-btn-active').removeClass('ui-btn-active');
 
-    let to_highlight = ul
+    const to_highlight = ul
         .children('.songid-' + song_id)
         .find('.ui-btn')
         .addClass('ui-btn-active');

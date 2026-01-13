@@ -45,8 +45,8 @@ export function init_set_view() {
 }
 
 function _update_set_view(set_id) {
-    let songs = SET_DB.get_songs(set_id);
-    let order = {};
+    const songs = SET_DB.get_songs(set_id);
+    const order = {};
     songs.forEach((s, idx) => {
         order[s.song_id] = idx;
     });
@@ -70,7 +70,7 @@ function update_set_view(set_id) {
     page.find('#share-set-btn').attr('href', `#dialog-set-share?set_id=${set_id}`);
 
     return Promise.all([_update_set_view(set_id), SET_DB.get_set(set_id)]).then(([songs, set]) => {
-        let title = get_translation(set.live ? 'set_title_live' : 'set_title') + ': ' + set.name;
+        const title = get_translation(set.live ? 'set_title_live' : 'set_title') + ': ' + set.name;
         page.find('.set-name').text(title);
         set_title(title);
 

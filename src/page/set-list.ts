@@ -17,9 +17,9 @@ function update_page_set_list() {
     generate_list_of_sets(set_list).then(
         (sets) => {
             sets.forEach((set) => {
-                let li = $('<li>');
+                const li = $('<li>');
                 page.find('.no-sets').hide();
-                let text_entry = $(`<a href="#page-set-view?set_id=${set.id}">`).text(set.name).append(`<span class="ui-li-count">${set.total}</span>`);
+                const text_entry = $(`<a href="#page-set-view?set_id=${set.id}">`).text(set.name).append(`<span class="ui-li-count">${set.total}</span>`);
 
                 if (set.shared_live || set.live) text_entry.append(`<span class="live-shared ui-icon-rss"></span>`);
 

@@ -3,7 +3,7 @@ import { persistentStorage } from './persistent-storage.es5';
 // Returns random integer in range 0 .. range (not inclusive)
 export function random_int(range = 1) {
     let d = Date.now();
-    let p = window.performance;
+    const p = window.performance;
     if (typeof p !== 'undefined' && typeof p.now === 'function') d += p.now(); // use high-precision timer if available
 
     return Math.floor((Math.random() * range + d) % range);

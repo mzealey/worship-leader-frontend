@@ -27,8 +27,8 @@ function setup_listeners() {
      * previously.
      */
     $(window).bind('pagechange', function (event, options) {
-        let page = options.toPage;
-        let opts = get_page_args(page);
+        const page = options.toPage;
+        const opts = get_page_args(page);
 
         // Any pages that take custom arguments should hook in here:
         if (page.attr('id') == 'page-set-list') {
@@ -61,7 +61,7 @@ function setup_listeners() {
 
         if (typeof data.toPage !== 'string') return;
 
-        let d = processHash(data.toPage);
+        const d = processHash(data.toPage);
         page = $(d.cleanHash);
         //console.log('beforechange', d.cleanHash);
         if (!page.length)
@@ -98,7 +98,7 @@ function setup_listeners() {
     });
     $(document).on('pageinit', (e) => {
         // XXX this will always show initializing page because it waits above for the langpack to load.
-        let page_id = $(e.target).attr('id');
+        const page_id = $(e.target).attr('id');
         if (!is_setup() && !showed_initializing_page) {
             console.log('not setup pageinit', page_id);
             if (page_id != 'page-db-langs')
@@ -122,8 +122,8 @@ function setup_initial_location() {
 
 export function jqm_startup() {
     // startup page of something like http://localhost:3501/#page-settings&ui-state=dialog breaks jqm
-    let loc = window.location.href;
-    let loc_no_ampersand = loc.replace(/(#[^?]*)&.*?$/, '$1');
+    const loc = window.location.href;
+    const loc_no_ampersand = loc.replace(/(#[^?]*)&.*?$/, '$1');
     if (loc !== loc_no_ampersand) window.location.href = loc_no_ampersand;
 
     setup_listeners();

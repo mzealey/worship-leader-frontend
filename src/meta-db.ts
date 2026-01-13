@@ -37,7 +37,7 @@ export async function refresh_meta_db(with_spinner = false): Promise<MetaDb> {
 
     // If we are in a live build then see if we had metadb injected
     if (BUILD_TYPE == 'www') {
-        let elem = document.getElementById(`json-metadb`);
+        const elem = document.getElementById(`json-metadb`);
         if (elem) loading_meta_promise = Promise.resolve(JSON.parse(elem.innerHTML) as MetaDb);
     }
 

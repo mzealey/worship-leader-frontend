@@ -10,7 +10,7 @@ export const on_set_db_update = new Subject<void>();
 
 function generateUUID(): string {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
-        let r = random_int(16);
+        const r = random_int(16);
         return (c === 'x' ? r : (r & 0x3) | 0x8).toString(16);
     });
 }
@@ -174,11 +174,11 @@ export class SetDB {
     }
 
     async find_adjacent_songids_in_set(set_id: number, song_id: number): Promise<AdjacentSongIds> {
-        let ret: AdjacentSongIds = {};
+        const ret: AdjacentSongIds = {};
 
-        let details = this.find_song_position_in_set(set_id, song_id);
+        const details = this.find_song_position_in_set(set_id, song_id);
         if (details) {
-            let set = details.set;
+            const set = details.set;
 
             if (details.position > 0) ret.prev_id = set.songs[details.position - 1].song_id;
 

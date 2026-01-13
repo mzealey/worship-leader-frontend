@@ -71,7 +71,7 @@ export async function switch_db_api(try_offline_db?: boolean, save_setting?: boo
     if (try_offline_db) {
         if (!DB_API && supports_cordova_sqlite) {
             try {
-                let db = window.sqlitePlugin.openDatabase({ name: 'songs', location: 'default' });
+                const db = window.sqlitePlugin.openDatabase({ name: 'songs', location: 'default' });
                 if (db) DB_API = new OfflineWebSQLDB(FAVOURITE_DB, db);
             } catch (e) {
                 db_load_errs += `sqlitePlugin open err ${e}; `;
@@ -113,7 +113,7 @@ export async function switch_db_api(try_offline_db?: boolean, save_setting?: boo
         // If we are on an older version of the app where the chosen languages were only stored in the database,
         // attempt to migrate that over to the new format.
         // Remove after Jul 2026
-        let existingLangSelection = get_db_chosen_langs();
+        const existingLangSelection = get_db_chosen_langs();
         if (!existingLangSelection.length && DB_API instanceof OfflineDBCommon) {
             const langs = await DB_API.list_loaded_langs();
             if (langs.length) save_db_chosen_langs(langs);

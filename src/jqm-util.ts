@@ -29,13 +29,13 @@ export function current_page() {
 
 // Helper function that splits a URL just the way we want it
 export function processHash(url) {
-    let parsed = $.mobile.path.parseUrl(url),
+    const parsed = $.mobile.path.parseUrl(url),
         queryParameters = {},
         hashQuery = parsed.hash.split('?');
 
     // Create name: value pairs from the query parameters
     $.each((hashQuery.length > 1 ? hashQuery[1] : '').split('&'), function () {
-        let pair = this.split('=');
+        const pair = this.split('=');
 
         if (pair.length > 0 && pair[0]) {
             queryParameters[pair[0]] = pair.length > 1 ? decode_uri_parameter(pair[1]) : true;

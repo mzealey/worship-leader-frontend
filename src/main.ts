@@ -59,7 +59,7 @@ function update_usage_counter() {
 function main_setup() {
     if (is_touch_device()) $('html').addClass('touch');
 
-    let setup_fns = [
+    const setup_fns = [
         // Key init functions
         cordova_setup,
         update_usage_counter,

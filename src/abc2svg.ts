@@ -94,7 +94,7 @@ export class ABC {
                       const loadPromise: Promise<ArrayBuffer> =
                           !window.fetch || window.location.protocol == 'file:'
                               ? new Promise((res, rej) => {
-                                    let req = new window.XMLHttpRequest();
+                                    const req = new window.XMLHttpRequest();
                                     req.onload = () => {
                                         if (req.status < 200 || req.status >= 300) return rej();
                                         /* To support ie9 etc we should use the below
@@ -153,7 +153,7 @@ export class ABC {
             }
 
             // Cancel active any notes from the pause
-            for (let note_id in this._active_notes) this.abc_set_note(note_id, false);
+            for (const note_id in this._active_notes) this.abc_set_note(note_id, false);
 
             // in _current_audio [0] is index, [1] is
             // start time (in seconds) so we can actually seek to a certain

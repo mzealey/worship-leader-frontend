@@ -13,7 +13,7 @@ export function init_firsttime_welcome() {
         // app_lang value properly.
         Promise.all([get_language_options(), langpack_loaded()]).then(
             ([options]) => {
-                let select = page.find('select');
+                const select = page.find('select');
                 select.append(...options);
 
                 select
@@ -83,12 +83,12 @@ function show_pwa_prompt(pwa_prompt) {
 
 function should_show_prompt() {
     const APP_PROMPT_KEY = 'last-app-prompt';
-    let PROMPT_FREQUENCY = 25 * 24 * 60 * 60 * 1000; // prompt once a month, but only after the first few uses.
+    const PROMPT_FREQUENCY = 25 * 24 * 60 * 60 * 1000; // prompt once a month, but only after the first few uses.
     //PROMPT_FREQUENCY = 0;     // for dev
     if (persistentStorage.getObj('uses', 0) < 5) return;
 
-    let now = Date.now();
-    let last_prompt = persistentStorage.getObj(APP_PROMPT_KEY, 0);
+    const now = Date.now();
+    const last_prompt = persistentStorage.getObj(APP_PROMPT_KEY, 0);
     if (last_prompt) {
         if (now - last_prompt < PROMPT_FREQUENCY) return;
     }
@@ -131,7 +131,7 @@ function need_to_show_firsttime_welcome_message() {
     // about getting the app
     if (BUILD_TYPE != 'www' || get_client_type() != 'www') return;
 
-    let link = get_app_dl_link();
+    const link = get_app_dl_link();
     if (!link) return;
 
     if (!should_show_prompt()) return;

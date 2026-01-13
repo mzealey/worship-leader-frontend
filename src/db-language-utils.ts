@@ -28,7 +28,7 @@ export async function getDbLangs({
 
         if ('onLine' in navigator && !navigator.onLine) return Promise.reject();
 
-        let ret: DbLangEntry[] = [];
+        const ret: DbLangEntry[] = [];
         for (const [code, info] of Object.entries(available_langs)) {
             ret.push({
                 code,
@@ -41,11 +41,11 @@ export async function getDbLangs({
         return ret;
     }
 
-    let defaults: Set<string> = new Set(get_default_db_languages());
+    const defaults: Set<string> = new Set(get_default_db_languages());
 
     // Additional languages that should be near the top as they are typical in
     // this country (gotten from the server based on our IP address)
-    let data = {
+    const data = {
         uuid: get_uuid(),
         client_type: get_client_type(),
 
@@ -59,7 +59,7 @@ export async function getDbLangs({
     };
 
     // 4s timeout to not freeze the page if there is an API issue
-    let preferred_langs_promise: Promise<Set<string>> = Promise.race([
+    const preferred_langs_promise: Promise<Set<string>> = Promise.race([
         new Promise<Set<string>>((res) => setTimeout(() => res(defaults), 4000)),
         (async () => {
             try {
@@ -72,7 +72,7 @@ export async function getDbLangs({
     ]);
 
     // The current (or default) database languages to load as an array
-    let loaded_langs: string[] = get_db_chosen_langs(Array.from(defaults));
+    const loaded_langs: string[] = get_db_chosen_langs(Array.from(defaults));
 
     // Combine all the promises together to generate the page with the data
     // they have fetched.

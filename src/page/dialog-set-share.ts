@@ -5,7 +5,7 @@ import { handle_share } from './sharer';
 
 export function do_set_share(set_id, live_share) {
     return SET_DB.get_set(set_id).then((set) => {
-        let params: Record<string, string> = {};
+        const params: Record<string, string> = {};
 
         // If sharing live then the following should be enough, but in
         // order to support legacy clients or opening without an

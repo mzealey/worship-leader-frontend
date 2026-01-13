@@ -49,7 +49,7 @@ export function init_settings() {
 
         Promise.all([get_language_options(), langpack_loaded()]).then(
             ([options]) => {
-                let select = page.find('#setting-lang');
+                const select = page.find('#setting-lang');
                 select.append(...options);
 
                 select
@@ -78,7 +78,7 @@ export function init_settings() {
             checkbox_storage_update(this);
         });
 
-        let zoom = page
+        const zoom = page
             .find('#setting-song-zoom')
             .val(get_setting('setting-song-zoom'))
             .change(function () {
@@ -87,7 +87,7 @@ export function init_settings() {
         refresh_selectmenu(zoom);
 
         function update_chord_visibility(elem: HTMLInputElement) {
-            let chords = $('#setting-display-chords') as JQuery<HTMLInputElement>;
+            const chords = $('#setting-display-chords') as JQuery<HTMLInputElement>;
             $('#container-display-chords, #container-sidebyside').toggle(elem.checked);
             update_chord_color_visibility(elem.checked && chords[0].checked);
         }
@@ -137,7 +137,7 @@ function date_as_utc(date) {
 }
 
 function update_db_version_string() {
-    let lines = [
+    const lines = [
         `persistent storage: ${persistentStorage.type()}`,
         `code: ${get_uuid()}`,
         `client: ${get_client_type()}`,

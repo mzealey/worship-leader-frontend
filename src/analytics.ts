@@ -50,7 +50,7 @@ export function maybe_setup_ga() {
 
     $(window).bind('pagechange', (event, options) => {
         let page = options.toPage[0].id;
-        let args = get_page_args(options.toPage);
+        const args = get_page_args(options.toPage);
 
         if (page == 'songinfo' && args.song_id) page += '/' + args.song_id;
 

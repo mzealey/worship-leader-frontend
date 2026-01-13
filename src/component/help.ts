@@ -4,14 +4,14 @@ import { JQueryPage } from '../song';
 export function init_help() {
     // Help text
     $(document.body).on('click', '.helptext', function () {
-        let e = $(this);
+        const e = $(this);
         e.toggleClass('full');
         if (e.hasClass('ui-footer-fixed')) e.toolbar('updatePagePadding');
     });
 
     // This should only exec once on a given page
     $(document).on('pagebeforecreate', (e) => {
-        let p = $(e.target);
+        const p = $(e.target);
 
         p.find('.helptext').attr({
             'data-tap-toggle': 'false',

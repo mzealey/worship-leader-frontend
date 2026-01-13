@@ -19,7 +19,7 @@ export function is_bot(): boolean {
 }
 
 export function get_setting(setting) {
-    let default_settings = {
+    const default_settings = {
         'order-by': 'default',
         'filter-language': 'all',
         'setting-show-help': 'true',
@@ -62,13 +62,13 @@ export const decode_uri_parameter = (param) => decodeURIComponent(param).replace
 export function gup(name, loc?) {
     if (loc) loc = loc.replace(/^.*?#/, '');
     else loc = window.location.hash;
-    let [, query] = loc.match(/[^?]*\?(.*)/) || [];
+    const [, query] = loc.match(/[^?]*\?(.*)/) || [];
     if (!query) return;
 
-    let vars = query.split('&');
-    let hash_args = {};
+    const vars = query.split('&');
+    const hash_args = {};
     for (let i = 0; i < vars.length; i++) {
-        let [key, val] = vars[i].split('=');
+        const [key, val] = vars[i].split('=');
         if (!key.length) continue;
         hash_args[decode_uri_parameter(key)] = decode_uri_parameter(val);
     }

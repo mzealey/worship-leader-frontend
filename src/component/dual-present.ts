@@ -16,7 +16,7 @@ export function send_dual_present_song() {
         // Note this wraps all the songxml details in a <div> rather than
         // updating the parent song details itself, but doesn't seem to affect
         // the general rendering of it
-        let content = $('<div>').html(songxml_to_divs(songinfo.songxml, true));
+        const content = $('<div>').html(songxml_to_divs(songinfo.songxml, true));
         set_direction(content, songinfo.lang);
         html = content[0].outerHTML; // no jq support
     }

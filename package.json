@@ -17,9 +17,9 @@
   ],
   "scripts": {
     "lint": "yarn lint:prettier && yarn lint:eslint:fix && yarn lint:typescript && yarn lint:typescript:spec",
-    "lint:prettier": "prettier --write {spec,src}/**/*.{js,jsx,ts,tsx,css,scss} *.{js,mjs,ts,jsx,tsx} --experimental-cli",
-    "lint:eslint": "eslint src/ spec/",
-    "lint:eslint:fix": "eslint --fix src/ spec/",
+    "lint:prettier": "prettier --write {spec,src,tests}/**/*.{js,jsx,ts,tsx,css,scss} *.{js,mjs,ts,jsx,tsx} --experimental-cli",
+    "lint:eslint": "eslint src/ spec/ tests/",
+    "lint:eslint:fix": "eslint --fix src/ spec/ tests/",
     "lint:typescript": "tsc --noEmit",
     "lint:typescript:spec": "tsc --noEmit --project tsconfig.spec.json",
     "lint:typescript:tools": "tsc --noEmit --project tsconfig.playwright.json",

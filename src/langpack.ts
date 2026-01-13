@@ -7,7 +7,7 @@ import { LOCALE_SORT } from './sort-helpers';
 import { deferred_promise, fetch_json, is_rtl } from './util';
 
 // Currently active language translation pack
-let translations: Record<string, string | Record<string, string>> = {};
+const translations: Record<string, string | Record<string, string>> = {};
 let _app_lang; // should be set to the current language of the app
 
 // Now try to load the current translation language pack for this setup
@@ -24,7 +24,7 @@ export async function _lang_setup(lang = 'en') {
     // If we are in a live build then see if we previously had the correct langpack injected
     let new_translation: Record<string, unknown> | undefined;
     if (BUILD_TYPE == 'www') {
-        let elem = document.getElementById(`json-langpack-${lang}`);
+        const elem = document.getElementById(`json-langpack-${lang}`);
         if (elem) new_translation = JSON.parse(elem.innerHTML);
     }
 
@@ -101,7 +101,7 @@ export function get_translation(name: string, e?: TranslationContext) {
 export function lang_name(lang_id: string) {
     // The data fetched from the server should always be up to date and more
     // correct than the language pack distributed with this app build.
-    let langs = song_language_translations();
+    const langs = song_language_translations();
     if (langs && langs[lang_id] && langs[lang_id]?.name?.[_app_lang]) return langs[lang_id].name[_app_lang];
 
     // Fallback to our inbuilt translation or just the language id by itself
@@ -123,7 +123,7 @@ export function relocalize_page(page: JQueryPage) {
 
     page.find('[data-localize]').each((i, e) => {
         e = $(e);
-        let translation = get_translation(e.attr('data-localize'), e);
+        const translation = get_translation(e.attr('data-localize'), e);
 
         e.html(translation); // note .html is required for allowing <> tags etc in the translation
         e.attr('title', translation);
@@ -148,10 +148,10 @@ export function sorted_language_codes(languages: string[]) {
 
 export function get_language_options() {
     // Order the list
-    let languages = Object.keys(LANGPACK_INDEX);
+    const languages = Object.keys(LANGPACK_INDEX);
     languages.sort((a, b) => LOCALE_SORT(LANGPACK_INDEX[a], LANGPACK_INDEX[b]));
 
-    let options = languages.map((key) =>
+    const options = languages.map((key) =>
         $('<option>')
             .attr({ value: key, dir: is_rtl(LANGPACK_INDEX[key]) ? 'rtl' : 'ltr' })
             .text(LANGPACK_INDEX[key]),

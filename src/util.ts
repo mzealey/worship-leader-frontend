@@ -46,7 +46,7 @@ export function _ensure_visible(elem: HTMLElement, parent?: HTMLElement, animate
     const child_top = parent_top + elem.getBoundingClientRect().top - parent_offset_top;
     const child_btm = child_top + elem.clientHeight;
     if (child_top < parent_top || child_btm > parent_btm) {
-        let pos = child_top - parent_height / 2 + elem.clientHeight / 2;
+        const pos = child_top - parent_height / 2 + elem.clientHeight / 2;
         scroll_to(parentElem, pos, animate_time);
     }
 }
@@ -91,7 +91,7 @@ export function is_mobile_browser() {
     // TODO: this fn is very old, basically only used to figure out if we have
     // whatsapp: and sms: support, but we mostly do this via cordova plugins
     // anyway so perhaps we can scrap this?
-    let a = navigator.userAgent || navigator.vendor || window.opera;
+    const a = navigator.userAgent || navigator.vendor || window.opera;
 
     return (
         /(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows (ce|phone)|xda|xiino/i.test(
@@ -164,7 +164,7 @@ export function get_youtube_id(file: MediaFile) {
     if (file.type != 'video' || !/youtu/.test(file.path)) return;
 
     // for v=YYY or youtu.be/YYY
-    let [, , youtube_id] = file.path.match(/([?&]v=|be\/)([^&]+)/) || [];
+    const [, , youtube_id] = file.path.match(/([?&]v=|be\/)([^&]+)/) || [];
     return youtube_id;
 }
 

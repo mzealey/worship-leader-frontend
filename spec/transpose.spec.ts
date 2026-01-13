@@ -120,45 +120,45 @@ describe('common function', function () {
 
     describe('getNewKey', function () {
         it('transposes keys correctly with delta', function () {
-            let result = t.getNewKey('C', 2);
+            const result = t.getNewKey('C', 2);
             expect(result.name).toBe('D');
             expect(result.value).toBe(6);
         });
 
         it('wraps around octave correctly', function () {
-            let result = t.getNewKey('A', 3); // A + 3 = C
+            const result = t.getNewKey('A', 3); // A + 3 = C
             expect(result.name).toBe('C');
             expect(result.value).toBe(4);
         });
 
         it('handles negative deltas', function () {
-            let result = t.getNewKey('D', -2); // D - 2 = C
+            const result = t.getNewKey('D', -2); // D - 2 = C
             expect(result.name).toBe('C');
             expect(result.value).toBe(4);
         });
 
         it('handles large positive deltas', function () {
-            let result = t.getNewKey('C', 14); // C + 14 = D (wraps)
+            const result = t.getNewKey('C', 14); // C + 14 = D (wraps)
             expect(result.name).toBe('D');
             expect(result.value).toBe(6);
         });
 
         it('handles large negative deltas', function () {
-            let result = t.getNewKey('D', -14); // D - 14 = C (wraps)
+            const result = t.getNewKey('D', -14); // D - 14 = C (wraps)
             expect(result.name).toBe('C');
             expect(result.value).toBe(4);
         });
 
         it('prefers target key type when provided', function () {
-            let targetKey = t.getKeyByName('Eb'); // Flat key
-            let result = t.getNewKey('G#', 2, targetKey); // G# + 2 could be Bb or A#
+            const targetKey = t.getKeyByName('Eb'); // Flat key
+            const result = t.getNewKey('G#', 2, targetKey); // G# + 2 could be Bb or A#
             expect(result.name).toBe('Bb'); // Should prefer flat
         });
 
         it('considers minor scale preferences', function () {
-            let targetKey = t.getKeyByName('G');
-            let result1 = t.getNewKey('G#', 2, targetKey, false); // major scale
-            let result2 = t.getNewKey('G#', 2, targetKey, true); // minor scale
+            const targetKey = t.getKeyByName('G');
+            const result1 = t.getNewKey('G#', 2, targetKey, false); // major scale
+            const result2 = t.getNewKey('G#', 2, targetKey, true); // minor scale
             // Results may differ based on the target key's major/minor preferences
             expect(result1.value).toBe(2); // Both should be value 2 (Bb/A#)
             expect(result2.value).toBe(2);
@@ -167,7 +167,7 @@ describe('common function', function () {
 
     describe('keys array structure', function () {
         it('contains all expected keys', function () {
-            let keyNames = t.keys.map((k) => k.name);
+            const keyNames = t.keys.map((k) => k.name);
             expect(keyNames).toContain('C');
             expect(keyNames).toContain('C#');
             expect(keyNames).toContain('Db');
@@ -194,7 +194,7 @@ describe('common function', function () {
         });
 
         it('includes German notation keys', function () {
-            let keyNames = t.keys.map((k) => k.name);
+            const keyNames = t.keys.map((k) => k.name);
             expect(keyNames).toContain('H'); // German B
             expect(keyNames).toContain('Hb'); // German Bb
         });

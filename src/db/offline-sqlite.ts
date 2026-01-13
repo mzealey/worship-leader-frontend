@@ -518,7 +518,7 @@ export abstract class OfflineSQLiteDB extends OfflineDBCommon<DBQuery> {
 
     async search_meta_sources(search: string, lang: string): Promise<SongSource[]> {
         let query = 'abbreviation LIKE ?';
-        let params = [`${search}%`]; // abbrev only at beginning of word
+        const params = [`${search}%`]; // abbrev only at beginning of word
 
         if (search.length >= 3) {
             query += ' OR searchdata LIKE ? OR searchdata LIKE ?';
@@ -539,7 +539,7 @@ export abstract class OfflineSQLiteDB extends OfflineDBCommon<DBQuery> {
         let query = `SELECT albums.data
                 FROM albums
                 WHERE (searchdata LIKE ? OR searchdata LIKE ?)`;
-        let params = [`${search}%`, `% ${search}%`]; // either at beginning or beginning of word
+        const params = [`${search}%`, `% ${search}%`]; // either at beginning or beginning of word
 
         if (lang) {
             query += ' AND lang = ?';
@@ -628,7 +628,7 @@ export abstract class OfflineSQLiteDB extends OfflineDBCommon<DBQuery> {
     }
 
     _prepare_query(_filters: DBFilters): DBQuery {
-        let q: DBQuery = {
+        const q: DBQuery = {
             from: 'FROM songs',
             where: '1=1',
             params: [],
@@ -636,11 +636,11 @@ export abstract class OfflineSQLiteDB extends OfflineDBCommon<DBQuery> {
             order_params: [],
             fallback_fetch: [],
         };
-        let search = _filters.search;
+        const search = _filters.search;
         let filters: Partial<DBFilters> = { ..._filters }; // copy so we can manipulate it
         delete filters.search;
         delete filters.order_by;
-        let default_order_by = !q.order_by || q.order_by == 'default';
+        const default_order_by = !q.order_by || q.order_by == 'default';
 
         // Add =? or IN (?,?...) and append the object to parameters for the query
         const add_item = (obj: Array<string | number> | string | number): string => {
@@ -680,7 +680,7 @@ export abstract class OfflineSQLiteDB extends OfflineDBCommon<DBQuery> {
             // Don't worry if we have incomplete songxml; should be put to the bottom anyway
             //where += ' AND LENGTH(songxml) > 30';     // may be like <verse><br /></verse>
         } else if (/^\s*(i\d+[\s,]+)+$/.test(search + ' ')) {
-            let song_ids = search.match(/\d+/g);
+            const song_ids = search.match(/\d+/g);
             if (song_ids) {
                 q.where += ' AND songs.id IN ' + _generate_in_placeholders(song_ids.length);
                 q.params = q.params.concat(song_ids);
@@ -689,7 +689,7 @@ export abstract class OfflineSQLiteDB extends OfflineDBCommon<DBQuery> {
             }
         } else if (/\D/.test(search)) {
             // Handle wildcards
-            let like_search = search.replace(/\*/g, '%').replace(/\./g, '_');
+            const like_search = search.replace(/\*/g, '%').replace(/\./g, '_');
 
             // Order by title beginning matches first, then titles
             // alphabetically. Can't do a LIKE against title as it probably
@@ -710,14 +710,14 @@ export abstract class OfflineSQLiteDB extends OfflineDBCommon<DBQuery> {
                     q.params.push(`"${search}*"`);
                 } else if (this.fts_table == 'fts5') {
                     // wildcards need to be outside of quotes here
-                    let wildcards = search.split(/\*/);
+                    const wildcards = search.split(/\*/);
                     wildcards.push(''); // last term always a wildcard
                     q.params.push(wildcards.map((term) => `"${term}"`).join('* '));
                 }
             } else {
                 q.where +=
                     ' AND ( songs.search_title LIKE ? OR songs.alternative_search_titles LIKE ? OR songs.search_text LIKE ? OR songs.search_meta LIKE ? )';
-                let a = `%${like_search}%`;
+                const a = `%${like_search}%`;
                 q.params.push(a, a, a, a);
             }
         } else {
@@ -783,12 +783,12 @@ export abstract class OfflineSQLiteDB extends OfflineDBCommon<DBQuery> {
     async _run_search(q: DBQuery, pager: DBRequestedItems): Promise<DBSearchRunResult> {
         // Full sql statement now
         // select * can be slow on mobiles so dont fetch everything
-        let sql =
+        const sql =
             `SELECT songs.id, songs.lang, songs.alternative_titles, songs.copyright_restricted, songs.title, songs.source_title, songs.is_original,
                         songs.has_chord, songs.has_mp3, songs.has_sheet, songs.year, songs.songkey, songs.info` +
             ` ${q.from} WHERE ${q.where} ORDER BY ${q.order_by} LIMIT ${pager.start},${pager.size}`;
 
-        let params = [...q.params, ...q.order_params];
+        const params = [...q.params, ...q.order_params];
         console.log(sql, params);
 
         const rows = await this.single_query<any[]>(sql, params);
@@ -807,7 +807,7 @@ export abstract class OfflineSQLiteDB extends OfflineDBCommon<DBQuery> {
         // Full sql statement now
         // select * can be slow on mobiles so dont fetch everything
         const do_query = () => {
-            let sql =
+            const sql =
                 `SELECT songs.id, songs.lang, songs.alternative_titles, songs.copyright_restricted, songs.title, songs.source_title, songs.is_original,
                             songs.has_chord, songs.has_mp3, songs.has_sheet
                         FROM songs` +
@@ -826,7 +826,7 @@ export abstract class OfflineSQLiteDB extends OfflineDBCommon<DBQuery> {
         // but let's at least try to do it.
 
         // first let's get a list of missing ids
-        let missing_ids: { [id: number]: 1 } = {};
+        const missing_ids: { [id: number]: 1 } = {};
         ids.forEach((id) => (missing_ids[id] = 1));
         for (let i = 0; i < rows.length; i++) delete missing_ids[rows[i].id];
 

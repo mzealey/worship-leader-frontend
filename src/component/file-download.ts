@@ -2,7 +2,7 @@ import { delete_downloaded_file, download_file, DownloadState, get_downloaded_fi
 import { get_translation } from '../langpack';
 
 export function setup_download_btn(song, file, file_key, set_src) {
-    let btn = $('<div class="btn ui-btn-icon-right">')
+    const btn = $('<div class="btn ui-btn-icon-right">')
         .addClass(file.download_path ? 'ui-icon-forward' : 'ui-icon-download')
         .attr('title', get_translation('download_link'))
         .click(() => {

@@ -22,7 +22,7 @@ export function init_search() {
     $(document).on('pageshow do_new_search', '#page-list, #songinfo', (e) => do_new_search($(e.target)));
 
     // Update check/select boxes on change
-    let body = $(document.body);
+    const body = $(document.body);
     body.on('change', 'select.order-by, select.filter-language, .filter-favourites, .filter-mp3, .filter-sheet, .filter-chord, .filter-original', function () {
         do_new_search($(this).parents('.ui-page').last());
     });
@@ -72,7 +72,7 @@ function setup_infinite_scrolling() {
     const generate_debouncer = (page, get_details) =>
         debounce(
             () => {
-                let [scroll_top, container_height, content_height] = get_details();
+                const [scroll_top, container_height, content_height] = get_details();
                 const bottom_scroll_top = content_height - container_height;
 
                 let perc_scroll = scroll_top / bottom_scroll_top;
@@ -84,7 +84,7 @@ function setup_infinite_scrolling() {
                     if (!applied_spinner && perc_scroll > 0.95) applied_spinner = spinner(cur_infinite_promise);
                 } else if (perc_scroll > 0.8) {
                     // Only trigger if we don't already have an in-fly infinite scroller
-                    let cur_search = current_search(page);
+                    const cur_search = current_search(page);
                     if (cur_search) {
                         cur_infinite_promise = cur_search.infinite_scroll();
                         // Do after set to avoid a race when rejected straight off
@@ -96,7 +96,7 @@ function setup_infinite_scrolling() {
             { leading: true, trailing: true },
         );
 
-    let sidebar_resizers: Record<string, () => void> = {};
+    const sidebar_resizers: Record<string, () => void> = {};
     $('.sidebar-container').each((i, origE) => {
         const e = $(origE);
         const page = $(e).parents('[data-role=page]').last(); // not yet initialized so cannot use .ui-page
@@ -106,11 +106,11 @@ function setup_infinite_scrolling() {
         $(e).on('scroll', debouncer);
     });
     $(window).bind('throttledresize', () => {
-        let page = current_page();
+        const page = current_page();
         if (page) {
             const pageId = page.attr('id');
             if (pageId) {
-                let resizer = sidebar_resizers[pageId];
+                const resizer = sidebar_resizers[pageId];
                 if (resizer) resizer();
             }
         }
@@ -123,7 +123,7 @@ function setup_infinite_scrolling() {
     });
 }
 
-let inited_search_areas: JQuery[] = [];
+const inited_search_areas: JQuery[] = [];
 export function init_search_area(page) {
     // prevent pages from being inited twice
     if (page.data('searcharea_inited')) return;
@@ -139,7 +139,7 @@ export function init_search_area(page) {
 
     // ensure that newly created search boxes also have the same search text
     if (inited_search_areas.length) {
-        let [prev_page] = inited_search_areas;
+        const [prev_page] = inited_search_areas;
 
         // Require a refresh of the data first load...
         //page.data({ prev_search: prev_page.data('prev_search') });
@@ -156,8 +156,8 @@ export function init_search_area(page) {
             '.filter-sheet',
             '.filter-chord',
         ].forEach((selector) => {
-            let element = page.find(selector);
-            let prev_element = prev_page.find(selector);
+            const element = page.find(selector);
+            const prev_element = prev_page.find(selector);
             if (element.is('.tristate')) return element.tristateSetState(prev_element.data('state'));
 
             element.val(prev_element.val());
@@ -180,7 +180,7 @@ export function refresh_search_all_pages(force) {
 // Init search box on the songinfo page but only when it would be displayed (ie
 // by a resize or page show function
 export function init_songinfo_search_box() {
-    let page = $('#songinfo');
+    const page = $('#songinfo');
 
     if (page.children('#sidebar').css('display') != 'block') return;
 
@@ -188,7 +188,7 @@ export function init_songinfo_search_box() {
 }
 
 export async function update_language_filter_list() {
-    let lang_filter = $('select.filter-language');
+    const lang_filter = $('select.filter-language');
 
     const loaded_langs = get_db_chosen_langs([]);
 

@@ -15,10 +15,10 @@ export function do_new_search(page, force = false) {
     DB.then((db) => {
         // Be lazy about getting/comparing the data, only do it after we can
         // execute the query straight away.
-        let cur_search = current_search(page);
+        const cur_search = current_search(page);
         if (!force && cur_search && cur_search.isEqual(db, page)) return;
 
-        let query = new DBSearch(db, page);
+        const query = new DBSearch(db, page);
         query.run();
     });
 }
@@ -29,7 +29,7 @@ export function run_search_timer(elem) {
 
     // Check for some clever keyword type things that we handle internally and if so abort the search
     if (elem.hasClass('search')) {
-        let input = elem.val() || '';
+        const input = elem.val() || '';
         if (/^nocopyright$/i.test(input)) {
             update_setting('observe-copyright', 'false');
             elem.val('');
@@ -38,7 +38,7 @@ export function run_search_timer(elem) {
             elem.val('');
         } else if (/\bsong_id=\d+/i.test(input)) {
             // someone pasted a url of a single song
-            let [, song_id] = input.match(/song_id=(\d+)/i) || [];
+            const [, song_id] = input.match(/song_id=(\d+)/i) || [];
             elem.val(`i${song_id}`);
         } else if (/^\s*http.*#page-set-list.*/i.test(input)) {
             // Someone pasted set url in to the search box...
@@ -61,7 +61,7 @@ export function run_search_timer(elem) {
         }
     }
 
-    let page = elem.parents('.ui-page').last(); // main page that it is on
+    const page = elem.parents('.ui-page').last(); // main page that it is on
     if (elem.val() == '')
         // probably triggered from clicking the x button - search straight away
         do_new_search(page);
@@ -83,7 +83,7 @@ export function run_search_timer(elem) {
 
 // Set the search text, run the search straight away, and switch the site to song listing page if required
 export function set_search_text(question: string) {
-    let page = force_song_list_page();
+    const page = force_song_list_page();
 
     page.find('.search').val(question).trigger('change');
     do_new_search(page);

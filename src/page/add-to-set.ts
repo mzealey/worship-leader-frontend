@@ -23,8 +23,8 @@ export function init_add_to_set() {
         page.find('#set-name').on('keyup change', update_form_submit);
         page.find('[name=set-add]').submit((e) => {
             e.preventDefault();
-            let elem = page.find('#set-name');
-            let set_name = elem.val() as string;
+            const elem = page.find('#set-name');
+            const set_name = elem.val() as string;
             SET_DB.create_set(set_name)
                 .then((new_set_id) => add_song_to_set(song_id, new_set_id))
                 .finally(() => page.dialog('close'));
@@ -47,10 +47,10 @@ export function init_add_to_set() {
             // Abort if no song_id loaded
             window.history.back();
 
-        let set_list = page.find('.setlist');
+        const set_list = page.find('.setlist');
         generate_list_of_sets(set_list, true).then((sets) => {
             sets.forEach((set) => {
-                let li = $('<li>');
+                const li = $('<li>');
                 li.append($('<a>').html(`${set.name} <span class="ui-li-count">${set.total}</span>`).data({ set_id: set.id }));
                 set_list.append(li);
             });

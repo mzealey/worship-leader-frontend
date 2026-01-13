@@ -5,7 +5,7 @@ import { handle_share } from '../page/sharer';
 import { setup_download_btn } from './file-download';
 
 function parseTime(seconds: number) {
-    let mins = Math.floor((seconds % 3600) / 60)
+    const mins = Math.floor((seconds % 3600) / 60)
         .toFixed(0)
         .toString();
     let secs = Math.floor(seconds % 60)
@@ -31,7 +31,7 @@ r.readAsArrayBuffer(file);
 */
 
 function largest_load_timestamp(audio_elem) {
-    let b = audio_elem.buffered;
+    const b = audio_elem.buffered;
     let max = 0;
     // Don't bother about the range intracies just get the furthest along that was buffered
     for (let i = 0; i < b.length; i++) {
@@ -41,10 +41,10 @@ function largest_load_timestamp(audio_elem) {
 }
 
 function handle_sticky_scrolling() {
-    let active_audio = $('.audio-player.active');
+    const active_audio = $('.audio-player.active');
     if (!active_audio.length) return $('.audio-player').removeClass('sticky');
 
-    let is_sticky = active_audio.hasClass('sticky');
+    const is_sticky = active_audio.hasClass('sticky');
     if (!is_sticky) {
         const offset = active_audio.offset();
         if (offset) active_audio.data('sticky_threshold', offset.top);
@@ -56,8 +56,8 @@ function handle_sticky_scrolling() {
 export function setup_audio_player() {
     // Download progress
     function progress_update(e) {
-        let audio_elem = e.target;
-        let player = $(audio_elem).parent();
+        const audio_elem = e.target;
+        const player = $(audio_elem).parent();
         if (!player.hasClass('audio-player')) return;
 
         if (audio_elem.readyState && audio_elem._start_position) {
@@ -65,7 +65,7 @@ export function setup_audio_player() {
             delete audio_elem._start_position;
         }
 
-        let duration = audio_elem.duration || player.data('audio').file.duration || null;
+        const duration = audio_elem.duration || player.data('audio').file.duration || null;
         player.find('.buffered').css('width', ((largest_load_timestamp(audio_elem) / duration) * 100).toFixed(2) + '%');
     }
 
@@ -73,9 +73,9 @@ export function setup_audio_player() {
     document.addEventListener('progress', progress_update, true);
     document.addEventListener('canplaythrough', progress_update, true);
 
-    let body = $(document.body);
+    const body = $(document.body);
     body.on('click', '.audio-player > .share', function () {
-        let data = $(this).parent().data('audio');
+        const data = $(this).parent().data('audio');
         file_feedback('share', data.song.id, data.file.id);
         handle_share(`song.html?song_id=${data.song.id}`, get_translation('share_title'), get_translation('share_subject'), data.file.path);
     });
@@ -87,7 +87,7 @@ export function create_audio_player(song, file) {
     const down_file_key = song.id + '-' + file.id; // silly js not auto-vivifying entries
 
     // TODO: Add aria-label to all of these elements to help screen reader support?
-    let player = $(
+    const player = $(
         '<div class="audio-player">' +
             '<audio preload="none"></audio>' +
             '<div class="btn play-btn"></div>' +
@@ -101,14 +101,14 @@ export function create_audio_player(song, file) {
     );
     player.data('audio', { song, file, down_file_key });
 
-    let audio = player.find('audio');
-    let audio_elem = audio.get(0) as (HTMLAudioElement & { _start_position?: number }) | undefined;
+    const audio = player.find('audio');
+    const audio_elem = audio.get(0) as (HTMLAudioElement & { _start_position?: number }) | undefined;
     if (!audio_elem || !audio_elem.play || !audio_elem.pause)
         // some browsers/crawlers that dont support playback
         return;
 
-    let play_btn = player.find('.play-btn');
-    let track = player.find('.track');
+    const play_btn = player.find('.play-btn');
+    const track = player.find('.track');
 
     // TODO: Try to move these event closures down to bubble events to avoid wasting space
     let playing;
@@ -177,7 +177,7 @@ export function create_audio_player(song, file) {
             if (!pos && e.originalEvent.targetTouches && e.originalEvent.targetTouches[0]) pos = e.originalEvent.targetTouches[0].pageX;
 
             const offset = track.offset();
-            let click_pos = pos - (offset?.left || 0);
+            const click_pos = pos - (offset?.left || 0);
             let perc = click_pos / (track.width() || 1);
             if (perc < 0) perc = 0;
             else if (perc > 1) perc = 1;

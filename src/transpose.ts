@@ -240,8 +240,8 @@ export class Transpose {
         return text.replace(/([^\s\/()]+)/g, (oldChord) => {
             // May be invalid chords etc here - just skip ones that are not good
             try {
-                let oldChordRoot = this.getChordRoot(oldChord);
-                let newChordRoot = this.getNewKey(oldChordRoot, delta, targetKey, is_minor);
+                const oldChordRoot = this.getChordRoot(oldChord);
+                const newChordRoot = this.getNewKey(oldChordRoot, delta, targetKey, is_minor);
                 return newChordRoot.name + oldChord.substring(oldChordRoot.length);
             } catch (e) {
                 console.log(e);

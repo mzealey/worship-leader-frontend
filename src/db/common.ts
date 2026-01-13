@@ -193,7 +193,7 @@ export abstract class CommonDB<PreparedQuery> {
 
         if (!ids.length) return [];
 
-        let results: SongShortData[] = await this._get_songs(ids, ajax_fallback);
+        const results: SongShortData[] = await this._get_songs(ids, ajax_fallback);
         if (!include_empties || ids.length == results.length) return results;
 
         // Add in any missing ids with not_loaded tag

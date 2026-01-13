@@ -130,7 +130,7 @@ export abstract class OfflineDBCommon<PreparedQuery> extends CommonDB<PreparedQu
     async add_languages(languages: string[], in_background?: boolean, progress_tracker?: ProgressTracker): Promise<void> {
         const download_promises: Promise<unknown>[] = [];
 
-        let start_ts = Date.now();
+        const start_ts = Date.now();
         console.log('Adding the following languages to the database', in_background ? 'in background' : 'in foreground', languages);
 
         // Download all the required files

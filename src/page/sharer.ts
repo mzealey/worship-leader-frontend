@@ -13,7 +13,7 @@ export function handle_share(url, title, subject, file?) {
 
     // SocialSharing-PhoneGap-Plugin
     if (is_cordova() && window.plugins.socialsharing) {
-        let options: Record<string, any> = {
+        const options: Record<string, any> = {
             message: `${subject}: ${url}`,
             url,
             subject,
@@ -47,7 +47,7 @@ export function handle_share(url, title, subject, file?) {
     };
 
     if (BUILD_TYPE != 'www' && 'share' in window.navigator) {
-        let options = { title, url, text: subject };
+        const options = { title, url, text: subject };
         if (file) {
             options.text += ` ${url}`;
             options.url = file;
@@ -84,7 +84,7 @@ export function init_sharer() {
             share_data.url = share_data.file;
         }
 
-        let url_and_msg = `${share_data.subject}: ${share_data.url}`;
+        const url_and_msg = `${share_data.subject}: ${share_data.url}`;
 
         // mailto doesn't seem to like uri-encoded stuff in kmail but tbird etc work ok
         $('#share-email').attr('href', 'mailto:?' + $.param({ subject: share_data.subject, body: share_data.url }));

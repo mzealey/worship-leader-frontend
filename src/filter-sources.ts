@@ -36,7 +36,7 @@ export function toggle_filter_source(source_id, state = !(source_id in filter_so
 
 // Set the search text, run the search straight away, and switch the site to song listing page if required
 export function set_filter_source(source_id, state = !(source_id in filter_sources)) {
-    let page = force_song_list_page();
+    const page = force_song_list_page();
 
     page.find('.search').val('');
     clear_filter_source();

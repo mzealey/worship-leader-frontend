@@ -8,7 +8,7 @@ function update_edit_songdata() {
 
     const input = $('#page-edit-textarea .textarea');
     if (input.data('type') == 'change') {
-        let songdata = $('#primary-song .songxml').data('songdata');
+        const songdata = $('#primary-song .songxml').data('songdata');
         if (songdata) {
             cont += get_translation('edit_song_title') + ': ' + songdata.title + '\n\n';
             cont += get_translation('edit_lyrics') + ':\n\n';
@@ -60,8 +60,8 @@ export function init_edit_page() {
     });
 
     submit_button.click(function () {
-        let song = page.find('.textarea');
-        let success = () => {
+        const song = page.find('.textarea');
+        const success = () => {
             page.dialog('close');
 
             // timeout to allow transitions to finish
@@ -74,9 +74,9 @@ export function init_edit_page() {
             return success();
 
         let send_data = song.html();
-        let orig_title = $('#primary-song .songxml').data('songdata').title;
+        const orig_title = $('#primary-song .songxml').data('songdata').title;
         if (song.data('type') == 'change') {
-            let prepend = 'song_id: ' + $('#songinfo').data('song_id') + '\n' + 'orig_title: ' + orig_title + '\n' + '\n';
+            const prepend = 'song_id: ' + $('#songinfo').data('song_id') + '\n' + 'orig_title: ' + orig_title + '\n' + '\n';
             send_data = prepend + send_data;
             orig = prepend + orig;
         } else orig = '';

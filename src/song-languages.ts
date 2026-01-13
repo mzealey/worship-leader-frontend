@@ -33,7 +33,7 @@ export function refresh_song_languages(with_spinner = false): Promise<Record<str
 
     // If we are in a live build then see if we had song language db injected
     if (BUILD_TYPE == 'www') {
-        let elem = document.getElementById(`json-song_lang_db`);
+        const elem = document.getElementById(`json-song_lang_db`);
         if (elem) _song_languages_last_promise = Promise.resolve(JSON.parse(elem.innerHTML));
     }
 

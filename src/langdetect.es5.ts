@@ -4,11 +4,11 @@ import { get_setting, gup } from './splash-util.es5';
 // always include at least one valid language. This needs to be instant (ie
 // cannot use ajax) as it is used to influence the splash screen.
 export function get_browser_languages(extra?: string[]) {
-    let languages: string[] = [];
+    const languages: string[] = [];
 
-    let add_lang = function (...args: (string | undefined | null)[]) {
+    const add_lang = function (...args: (string | undefined | null)[]) {
         for (let i = 0; i < args.length; i++) {
-            let lang = args[i];
+            const lang = args[i];
             if (lang && languages.indexOf(lang) == -1) languages.push(lang);
         }
     };

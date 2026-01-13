@@ -24,7 +24,7 @@ export function init_db_langs() {
 
         $('#button-update-db-langs').click(async () => {
             const checked_inputs = page.find('.db_langs:checked').toArray() as HTMLInputElement[];
-            let languages_to_load = checked_inputs.map((e) => e.value);
+            const languages_to_load = checked_inputs.map((e) => e.value);
 
             if (!languages_to_load.length) return $('#db-langs-select-one').popup('open', { history: false });
 
@@ -54,7 +54,7 @@ function page_db_langs_try_load(page) {
     page.find('#database-languages').empty();
 
     const generate_group = (items) => {
-        let group = $('<fieldset data-role="controlgroup">');
+        const group = $('<fieldset data-role="controlgroup">');
         sorted_language_codes(Object.keys(items)).forEach((lang_code) => {
             group.append(...items[lang_code]);
         });

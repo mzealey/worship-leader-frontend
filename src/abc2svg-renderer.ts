@@ -47,9 +47,9 @@ export class AbcRenderer {
     private abc_audio = ToAudio();
 
     abc_render(details: AbcRenderRequest): AbcRenderResult {
-        let start = Date.now();
+        const start = Date.now();
         let svg_buffer = '';
-        let abc_svg = new (abc2svg.Abc as unknown as Abc2SvgConstructor)({
+        const abc_svg = new (abc2svg.Abc as unknown as Abc2SvgConstructor)({
             errmsg(...args: unknown[]) {
                 console.log(args);
             },

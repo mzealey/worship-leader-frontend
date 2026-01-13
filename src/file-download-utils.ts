@@ -117,7 +117,7 @@ export interface DownloadedFileDetails {
     file_name?: string;
     [key: string]: MediaFileAdditionalData;
 }
-let downloaded_files = persistentStorage.getObj<Record<string, DownloadedFileDetails>>('downloaded-files', {});
+const downloaded_files = persistentStorage.getObj<Record<string, DownloadedFileDetails>>('downloaded-files', {});
 export const save_downloaded_files = () => persistentStorage.setObj('downloaded-files', downloaded_files);
 
 export const get_downloaded_files = () => downloaded_files;
@@ -377,7 +377,7 @@ export async function remove_file(file_entry: DownloadedFileDetails): Promise<vo
     const entry = await get_file(file_entry);
     if (file_entry.download_id && is_cordova() && 'BackgroundTransfer' in window) {
         // cordova plugin. NOTE: Also deletes the file as well, probably
-        let downloader = new BackgroundTransfer.BackgroundDownloader();
+        const downloader = new BackgroundTransfer.BackgroundDownloader();
         downloader.removeDownload(file_entry.download_id);
     }
 

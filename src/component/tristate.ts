@@ -11,7 +11,7 @@ export function setup_tristate_fns() {
         }
     };
     $.fn.tristateSetState = function (state) {
-        let elem = $(this);
+        const elem = $(this);
 
         elem.data('state', state);
         elem.removeClass('ui-icon-check ui-icon-minus').addClass('ui-btn-icon-left');
@@ -23,7 +23,7 @@ export function setup_tristate_fns() {
 
     // tristate controls
     $('body').on('click', '.tristate', function () {
-        let elem = $(this);
+        const elem = $(this);
 
         // 0 unknown, 1 yes, 2 no
         let state = elem.data('state') || 0;

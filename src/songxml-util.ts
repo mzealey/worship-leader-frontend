@@ -2,7 +2,7 @@ import GraphemeSplitter from 'grapheme-splitter';
 import { maybe_convert_solfege } from './solfege-util';
 import { is_rtl, is_vertical } from './util';
 
-let splitter = new GraphemeSplitter();
+const splitter = new GraphemeSplitter();
 
 function preprocess_songxml(songxml: string): Document {
     // Handle repeats. Doesn't allow nesting unfortunately

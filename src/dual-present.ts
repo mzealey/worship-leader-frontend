@@ -212,7 +212,7 @@ class PresentationCordova extends PresentationCommon {
     }
 
     enter_cast_mode() {
-        let c = (this._connection = (
+        const c = (this._connection = (
             navigator as unknown as { presentation: { requestSession: (url: string) => PresentationSession } }
         ).presentation.requestSession('presentor.html') as PresentationSession);
         c.onmessage = (msg: MessageEvent) => this.handle_message(msg.data);

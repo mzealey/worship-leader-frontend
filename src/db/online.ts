@@ -91,7 +91,7 @@ export class OnlineDB extends CommonDB<BaseQuery> {
             query: _filters.search,
             ...this._get_lang_details(),
         };
-        let filters: Partial<DBFilters> = { ..._filters }; // copy so we can manipulate it
+        const filters: Partial<DBFilters> = { ..._filters }; // copy so we can manipulate it
         if (filters.order_by && filters.order_by != 'default') [query.sort, query.dir] = filters.order_by.split(/ /);
 
         delete filters.search;

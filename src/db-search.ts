@@ -32,30 +32,30 @@ const send_search_event = eventSocket.add_queue('search', 100, 30 * 24 * 60 * 60
 export function get_filters(page: JQueryPage): DBFilters {
     let has_custom_value = 0;
 
-    let filters: Partial<DBFilters> = {
+    const filters: Partial<DBFilters> = {
         order_by: page.find('select.order-by').val(),
     };
 
     // Handle passing key=val into the search function
-    let search = page.find('.search').val() || '';
+    const search = page.find('.search').val() || '';
     filters.search = search.replace(/\b([^= ]+)=([^ ]+)/g, function (match, key, value) {
         filters[key] = value;
         return '';
     });
     filters.search = filters.search!.replace(/^\s+|\s+$/g, '');
 
-    let filter_lang = page.find('select.filter-language').val();
+    const filter_lang = page.find('select.filter-language').val();
     if (filter_lang && filter_lang != 'all') filters.lang = filter_lang;
 
     // Shallow copy
     filters.advanced_tags = {};
-    for (let tag_id in filter_tags) {
+    for (const tag_id in filter_tags) {
         filters.advanced_tags[tag_id] = filter_tags[tag_id];
         has_custom_value = 1;
     }
 
-    let sources: string[] = [];
-    for (let source_id in filter_sources) {
+    const sources: string[] = [];
+    for (const source_id in filter_sources) {
         if (!filter_sources[source_id]) continue;
 
         sources.push(source_id);
@@ -69,11 +69,11 @@ export function get_filters(page: JQueryPage): DBFilters {
     filters.has_sheet = page.find('.filter-sheet').tristateValue();
     filters.has_chord = page.find('.filter-chord').tristateValue();
 
-    let songkey = page.find('.songkey').val();
+    const songkey = page.find('.songkey').val();
     if (songkey) filters.songkey = songkey;
 
     // check to see if custom value or not
-    for (let key in filters) {
+    for (const key in filters) {
         if (key == 'advanced_tags' || key == 'search' || key == 'order_by') continue;
 
         if (filters[key] !== undefined) has_custom_value = 1;
@@ -110,7 +110,7 @@ export class Pager {
     }
 
     clone(): Pager {
-        let p = new Pager(this.page);
+        const p = new Pager(this.page);
         Object.assign(p, this);
         return p;
     }
@@ -190,7 +190,7 @@ export class Pager {
 
         // total must be greater than this number - don't display it, but we
         // can use it to see whether we have next pages or not.
-        let min_total = requested_items.start + on_cur_page;
+        const min_total = requested_items.start + on_cur_page;
         if (min_total > this.min_total) this.min_total = min_total;
     }
 
@@ -211,7 +211,7 @@ export class Pager {
     } // Either no results at all, or still loading
 
     update_pager_display(): void {
-        let pagers = this.page.find('.pager');
+        const pagers = this.page.find('.pager');
         pagers.toggle(this.last_end_update != 0);
         pagers.find('.pager-prev').toggle(this.last_start_update > 0);
         pagers.find('.pager-next').toggle(this.last_end_update < Math.max(this.total, this.min_total));
@@ -289,8 +289,8 @@ export class DBSearch {
 
         let promise = Promise.all([this.search, this.prepared_query])
             .then(([search, prepared_query]) => {
-                let start_ts = Date.now();
-                let promises: Promise<any>[] = [
+                const start_ts = Date.now();
+                const promises: Promise<any>[] = [
                     this.db._run_search(prepared_query, requested_items).then((ret) => {
                         time_taken = Date.now() - start_ts;
                         this.db.add_timing_stat(time_taken);
@@ -303,7 +303,7 @@ export class DBSearch {
                 return Promise.all(promises);
             })
             .then(([songs, meta]) => {
-                let song_list: (SongShortData | SongSource | Album)[] = [].concat(songs.data);
+                const song_list: (SongShortData | SongSource | Album)[] = [].concat(songs.data);
 
                 // If we had the 1 extra row then throw it away - just shows we
                 // can go onto the next page.
@@ -351,12 +351,12 @@ export class DBSearch {
                 // We figured the total out somehow without needing a direct pager query
                 if (songs.total) return songs;
 
-                let make_pager_query = () => {
+                const make_pager_query = () => {
                     if (!this._is_active())
                         // don't worry if the query went stale
                         return Promise.resolve(songs);
 
-                    let _pager_start = Date.now();
+                    const _pager_start = Date.now();
                     return this.db._get_total(prepared_query).then((total) => {
                         pager_time_taken = Date.now() - _pager_start;
                         console.log(`Pager query took ${pager_time_taken}ms`);
@@ -382,7 +382,7 @@ export class DBSearch {
         }
 
         promise.finally(() => {
-            let feedback: any = { ...this.filters };
+            const feedback: any = { ...this.filters };
             if (requested_items.start > 0) feedback.p = requested_items.start;
 
             // Log stats about how long it took, how many results were found or if it was an error

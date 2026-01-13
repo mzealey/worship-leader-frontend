@@ -61,14 +61,14 @@ export function init_sheet_music() {
 export async function load_score_into(elem, abc_score, songdata, requested_width?) {
     elem.addClass('showing-score').removeClass('showing-songxml').data('songdata', songdata).data('abc', abc_score);
 
-    let sheet_elem = elem.find('.sheet-music').empty();
+    const sheet_elem = elem.find('.sheet-music').empty();
 
     elem.find('.songxml').empty();
 
     const abc = new ABC(
         (note_id: string, is_start: boolean) => {
-            let $note = sheet_elem.find('svg #i' + note_id);
-            let note = $note.get(0);
+            const $note = sheet_elem.find('svg #i' + note_id);
+            const note = $note.get(0);
             if (note) {
                 note.style.fillOpacity = is_start ? 0.4 : 0;
                 if (is_start) ensure_visible($note.parents('svg'));
@@ -80,7 +80,7 @@ export async function load_score_into(elem, abc_score, songdata, requested_width
     );
     sheet_elem.data('ABC', abc);
 
-    let render_params: AbcRenderRequest = {
+    const render_params: AbcRenderRequest = {
         abc: abc_score,
 
         // If sheet_elem is not displayed (which should never happen but might
@@ -89,14 +89,14 @@ export async function load_score_into(elem, abc_score, songdata, requested_width
         width: requested_width || sheet_elem.width() * 1.25 || $(window).width(),
     };
 
-    let details = $('#primary-song').data('keychange');
+    const details = $('#primary-song').data('keychange');
     if (details) render_params.delta = details.delta;
 
     // TODO: Handle timeout if web worker load failed for some reason as not always reflected correctly
     const res = await abc.abc_render(render_params);
     abc.set_audio(res.audio);
 
-    let start = Date.now();
+    const start = Date.now();
     sheet_elem.html(res.svg);
     if (DEBUG) console.log('rendering svg took', Date.now() - start, 'ms');
 

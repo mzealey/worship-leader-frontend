@@ -25,13 +25,13 @@ export function init_page_localization() {
     });
 
     $(document).one('pageinit', () => {
-        let [valid_packs] = get_app_languages().filter((lang) => lang in LANGPACK_INDEX);
+        const [valid_packs] = get_app_languages().filter((lang) => lang in LANGPACK_INDEX);
 
         lang_setup(valid_packs).finally(() => jqm_setup_completed());
     });
 
     $(document).on('pagebeforeshow', function (e) {
-        let page = $(e.target);
+        const page = $(e.target);
 
         // Hack rather than use jqm data-title as it doesnt work well with translations
         set_title(get_translation(page.attr('data-localize-title') || 'worship-leader', page));

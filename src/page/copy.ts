@@ -2,7 +2,7 @@ import { convert_to_pre } from '../songxml-util';
 
 function update_copy_songdata() {
     let cont = '';
-    let songdata = $('#primary-song .songxml').data('songdata');
+    const songdata = $('#primary-song .songxml').data('songdata');
     if (songdata) {
         const type = $('#page-copy-textarea [name=copy-type]:checked').val();
         cont += convert_to_pre(songdata.songxml, type == 'opensong', true);

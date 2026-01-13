@@ -115,7 +115,7 @@ class EventSocket {
             // Special first message to allow server to calculate the skew
             this._ws = ws;
             this._ws_send([this._get_time_skew_event()]);
-            let pubsub = this._generate_pubsub_to_send();
+            const pubsub = this._generate_pubsub_to_send();
             if (pubsub.length) this._ws_send(pubsub);
             this._ws_send_messages();
 

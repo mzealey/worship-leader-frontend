@@ -12,15 +12,15 @@ export function init_source_select() {
     const page = $('#page-source-select');
 
     page.on('click', 'li[data-role=list-divider]', function () {
-        let show = $(this).hasClass('ui-icon-carat-d');
+        const show = $(this).hasClass('ui-icon-carat-d');
         $(this).toggleClass('ui-icon-carat-d', !show).toggleClass('ui-icon-carat-u', show);
 
         $(this).nextUntil('li[data-role=list-divider]').not('.ui-btn-active').toggle(!!show);
     });
 
     page.on('click', 'li', function () {
-        let li = $(this);
-        let source_id = li.data('id');
+        const li = $(this);
+        const source_id = li.data('id');
         if (!source_id) return;
 
         toggle_filter_source(source_id);
@@ -35,20 +35,20 @@ export function init_source_select() {
         source_list.empty();
 
         Promise.all([DB.then((db) => db.get_song_sources()), jqm_setup]).then(([sources]) => {
-            let source_langs = {};
+            const source_langs = {};
             sources.forEach((source) => {
                 if (!source_langs[source.lang]) source_langs[source.lang] = [];
                 source_langs[source.lang].push(source);
             });
 
             sorted_language_codes(Object.keys(source_langs)).forEach((lang) => {
-                let sources = source_langs[lang];
+                const sources = source_langs[lang];
                 sources.sort((a, b) => SORT_TITLE_SORT(a, b) || LOCALE_SORT(a.name, b.name));
 
                 source_list.append($('<li class="ui-btn ui-btn-icon-right ui-icon-carat-d ui-btn-b" data-role="list-divider">').text(lang_name(lang)));
 
                 sources.forEach((source) => {
-                    let item = $('<li class="ui-btn ui-btn-icon-right">')
+                    const item = $('<li class="ui-btn ui-btn-icon-right">')
                         .text(source.name)
                         .data('id', source.id)
                         .toggle(source.id in filter_sources);

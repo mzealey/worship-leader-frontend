@@ -11,7 +11,7 @@ const _send_error_report = eventSocket.add_queue('error');
 type ErrorReport = Record<string, unknown>;
 export type ErrorObject = unknown;
 
-let send_report = (error_report: ErrorReport): void => {
+const send_report = (error_report: ErrorReport): void => {
     if (DEBUG) console.error(error_report);
     else _send_error_report(error_report);
 };

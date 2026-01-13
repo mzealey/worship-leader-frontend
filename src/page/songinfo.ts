@@ -36,18 +36,18 @@ const rating_event = eventSocket.add_queue('rating', 500);
 
 let prefer_score;
 
-let load_sec_song = () => {
+const load_sec_song = () => {
     return DB.then((db) => db.get_song($('#sec-selector').val() as number)).then((res) => load_songxml_into($('#secondary-song'), res));
 };
 
-let trans = new Transpose();
+const trans = new Transpose();
 function reload_song() {
     load_song($('#songinfo').data('song'));
 }
 
 function transposeSong(key?: string, capo?: number | string) {
-    let pri = $('#primary-song'); // fix this...
-    let details = pri.data('keychange');
+    const pri = $('#primary-song'); // fix this...
+    const details = pri.data('keychange');
     if (!details)
         // Not sure why this may be the case but is on occasion
         return;
@@ -76,14 +76,14 @@ function transposeSong(key?: string, capo?: number | string) {
 }
 
 function transpose_song_score(elem) {
-    let abc = elem.data('abc');
+    const abc = elem.data('abc');
     if (!abc) return;
 
     return load_score_into(elem, abc, elem.data('songdata'));
 }
 
 function setup_transpose_details(songdata, elem) {
-    let transpose_details: Record<string, any> = {
+    const transpose_details: Record<string, any> = {
         delta: 0,
     };
     transpose_details.capo = transpose_details.song_capo = parseInt(songdata.capo || 0);
@@ -103,22 +103,22 @@ function setup_transpose_details(songdata, elem) {
 }
 
 function load_song(songdata?) {
-    let pending_promises: Promise<unknown>[] = [];
-    let page = $('#songinfo');
+    const pending_promises: Promise<unknown>[] = [];
+    const page = $('#songinfo');
     page.data('song', songdata); // cache currently loaded song
 
     $('#main-page').toggleClass('song-not-found', !songdata);
 
-    let alttitles = $('.songalttitles');
+    const alttitles = $('.songalttitles');
     alttitles.hide();
 
     if (!songdata) {
-        let requested_id = page.data('song_id');
+        const requested_id = page.data('song_id');
         if (requested_id) {
             // not found - perhaps was removed from the db but more likely user
             // is offline and using offlinedb that doesn't have this language
             // in it
-            let trans = get_translation('unknown-song') + ` (i${requested_id})`;
+            const trans = get_translation('unknown-song') + ` (i${requested_id})`;
             $('.songtitle').text(trans);
             page.find('.songnotfound p').text(trans);
             set_title(trans);
@@ -164,16 +164,16 @@ function load_song(songdata?) {
     pending_promises.push(render_promise);
     $('html, body, #songinfo').animate({ scrollTop: 0 }); // #songinfo for presentation mode
 
-    let cont_pri = pri_song.parents('.ui-content');
+    const cont_pri = pri_song.parents('.ui-content');
     cont_pri.removeClass('sidebyside-display').addClass('normal-display');
 
     if (songdata.alternative_titles && songdata.alternative_titles.length) {
         alttitles.empty().show();
-        let a = songdata.alternative_titles;
+        const a = songdata.alternative_titles;
         set_direction(alttitles.append(a.map((title, idx) => $('<span class="subtitle">').text(title + (idx != a.length - 1 ? ', ' : '')))), songdata.lang);
     }
 
-    let links = $('#songlinks').empty();
+    const links = $('#songlinks').empty();
     const use_sidebyside = is_set('setting-sidebyside') && display_lyrics && !show_score;
     if (songdata.related_songs && (use_sidebyside || !page.data('set_id'))) {
         pending_promises.push(
@@ -190,7 +190,7 @@ function load_song(songdata?) {
                 if (use_sidebyside) {
                     cont_pri.removeClass('normal-display').addClass('sidebyside-display');
 
-                    let sidebyside_select = $('#sec-selector').empty();
+                    const sidebyside_select = $('#sec-selector').empty();
 
                     sidebyside_select.append(
                         songsWithLang.map((song) =>
@@ -200,7 +200,7 @@ function load_song(songdata?) {
                         ),
                     );
 
-                    let wanted_id = page.data('sec_id');
+                    const wanted_id = page.data('sec_id');
                     if (wanted_id && songsWithLang.filter((s) => wanted_id == s.id).length) sidebyside_select.val(wanted_id);
 
                     sidebyside_select.selectmenu('refresh');
@@ -223,14 +223,14 @@ function load_song(songdata?) {
                     });
 
                     if (display_songs.length != songsWithLang.length) {
-                        let show_all_links = function () {
+                        const show_all_links = function () {
                             links.empty();
                             songsWithLang.forEach((res) => {
                                 setup_list_link(links, res, res._lang_txt + ': ');
                             });
                             links.listview('refresh');
                         };
-                        let expand_list = $('<a href="#" class="mini" />')
+                        const expand_list = $('<a href="#" class="mini" />')
                             .append($('<h3 />').text(format_string(get_translation('show_all_related_songs'), songs.length)))
                             .click(show_all_links);
                         links.append($('<li />').append(expand_list));
@@ -244,10 +244,10 @@ function load_song(songdata?) {
 
     // Render a section including title etc
     function _render_section(e) {
-        let content_count = e.find('.entries').children().length;
+        const content_count = e.find('.entries').children().length;
         e.toggle(!!content_count);
         if (content_count) {
-            let title = e.data('localize-title');
+            const title = e.data('localize-title');
             if (title)
                 e.find('h3')
                     .empty()
@@ -256,9 +256,9 @@ function load_song(songdata?) {
         }
     }
 
-    let info_top = $('#song-info-top').empty();
+    const info_top = $('#song-info-top').empty();
     $('#song-right .entries').empty();
-    let info = $('#song-info > .entries');
+    const info = $('#song-info > .entries');
 
     (songdata.sources || []).forEach((source) => {
         // Don't include random sources that are not proper songbooks
@@ -300,12 +300,12 @@ function load_song(songdata?) {
     if (songdata.lang) info.append($('<div>').text(get_translation('language') + ': ' + lang_name(songdata.lang)));
 
     if (songdata.tags && songdata.tags.length) {
-        let tags_elem = $('#tags');
+        const tags_elem = $('#tags');
         pending_promises.push(
             get_meta_db().then(function (meta_db) {
-                let translated_tags: Array<{ t: string; id: number; code: string }> = [];
+                const translated_tags: Array<{ t: string; id: number; code: string }> = [];
                 songdata.tags.forEach((tag_id) => {
-                    let tag_code = (meta_db.tag_mappings[tag_id] || {}).tag_code;
+                    const tag_code = (meta_db.tag_mappings[tag_id] || {}).tag_code;
                     if (tag_code)
                         translated_tags.push({
                             t: (meta_db.tags[tag_code] || {})[app_lang()] || tag_code,
@@ -338,7 +338,7 @@ function load_song(songdata?) {
         songdata.albums
             .filter((a) => a.album)
             .forEach((album_song) => {
-                let entry = $('<div class="album-entry clearfix">');
+                const entry = $('<div class="album-entry clearfix">');
                 if (album_song.album.image_path)
                     entry.addClass('has-img').append(
                         $(`<img class="album">`).attr({
@@ -360,7 +360,7 @@ function load_song(songdata?) {
         _render_section($('#albums'));
     }
 
-    let links_done = {};
+    const links_done = {};
     (songdata.files || []).forEach((d) => {
         // In 99% of cases, replace the file path with whatever our main host
         // is set to to allow using cdn to work around network restrictions.
@@ -387,7 +387,7 @@ function load_song(songdata?) {
                 if (dl_href in links_done) return;
                 links_done[dl_href] = 1;
 
-                let download_link = $('<button class="ui-btn ui-btn-inline ui-mini ui-extra-icon ui-icon-download ui-btn-icon-left">')
+                const download_link = $('<button class="ui-btn ui-btn-inline ui-mini ui-extra-icon ui-icon-download ui-btn-icon-left">')
                     .text(get_translation('download_link'))
                     .click(() => {
                         file_feedback('download', songdata.id, d.id);
@@ -400,7 +400,7 @@ function load_song(songdata?) {
                 icon = 'video',
                 text = 'watch_video';
 
-            let v = d.video_details; // broken down into canonicalized details by the server
+            const v = d.video_details; // broken down into canonicalized details by the server
             if (v) {
                 if (v.type == 'youtube') {
                     // Custom setup for youtube as previously
@@ -413,7 +413,7 @@ function load_song(songdata?) {
                 // TODO: Handle other video path canonicalization here
             }
 
-            let row = $(`<a class="ui-btn ui-btn-inline ui-mini ui-extra-icon ui-icon-${icon} ui-btn-icon-left" data-ajax="false" target="_blank">`)
+            const row = $(`<a class="ui-btn ui-btn-inline ui-mini ui-extra-icon ui-icon-${icon} ui-btn-icon-left" data-ajax="false" target="_blank">`)
                 .text(get_translation(text))
                 .click(() => file_feedback('watch', songdata.id, d.id)) // change this stat when we have inline watching
                 .attr({ href: url, title: get_translation(text) });
@@ -432,12 +432,12 @@ function load_song(songdata?) {
 
     // Don't bother with changing the key/capo selection boxes if we wont be showing chords/music
     if (setup_chord_boxes) {
-        let transpose_details = pri_song.data('keychange');
+        const transpose_details = pri_song.data('keychange');
 
         $('#capo-select').val(transpose_details.song_capo).selectmenu('refresh');
         $('#song-capo').attr('data-value', transpose_details.song_capo); // for masking with css during prints
 
-        let select = $('#chord_select').empty();
+        const select = $('#chord_select').empty();
 
         const startKey = transpose_details.startKeyName;
         if (startKey) {
@@ -446,7 +446,7 @@ function load_song(songdata?) {
                 .filter((item) => item.name == startKey || (!item.hidden && (transpose_details.is_minor ? 'minor' : 'major') in item))
                 .map((item) => item.name)
                 .forEach((val) => {
-                    let opttext = maybe_convert_solfege(val) + (transpose_details.is_minor ? 'm' : '');
+                    const opttext = maybe_convert_solfege(val) + (transpose_details.is_minor ? 'm' : '');
 
                     select.append($(`<option value="${val}">`).html(opttext + (val == startKey ? ' ' + get_translation('original_key') : '')));
                 });
@@ -456,7 +456,7 @@ function load_song(songdata?) {
             select.val(0);
         }
 
-        let text = get_translation(startKey ? 'key_text' : 'semitone_text');
+        const text = get_translation(startKey ? 'key_text' : 'semitone_text');
         $('#chord_dropdown label').text(text);
         select.attr('title', text);
 
@@ -471,7 +471,7 @@ function load_song(songdata?) {
             .then((details) => {
                 if (!details) return;
 
-                let select = $('#chord_select');
+                const select = $('#chord_select');
                 if ('song_key' in details) {
                     console.log('song key loaded: ', details.song_key);
                     select.val(details.song_key);
@@ -489,9 +489,9 @@ function load_song(songdata?) {
 
 function update_set_next_prev(set_id, song_id) {
     const page = $('#songinfo');
-    let next = page.find('.set-next').addClass('hidden');
-    let prev = page.find('.set-prev').addClass('hidden');
-    let promises: Promise<unknown>[] = [];
+    const next = page.find('.set-next').addClass('hidden');
+    const prev = page.find('.set-prev').addClass('hidden');
+    const promises: Promise<unknown>[] = [];
     if (set_id) {
         // displaying songs from a set
         promises.push(
@@ -502,7 +502,7 @@ function update_set_next_prev(set_id, song_id) {
             }),
             SET_DB.get_set_title(set_id).then((title) => {
                 // TODO: Not sure this happens but sometimes we cannot find the song in the set.
-                let details = SET_DB.find_song_position_in_set(set_id, song_id) || { position: 0 };
+                const details = SET_DB.find_song_position_in_set(set_id, song_id) || { position: 0 };
                 page.find('.prevnext h1').text(format_string(get_translation('set_title') + ': {0} ({1})', title, details.position + 1));
             }),
         );
@@ -524,7 +524,7 @@ export function load_songinfo_page(opts) {
     // Strip bad parts of urls like song_id=123. or whatever.
     if (opts.song_id) opts.song_id = opts.song_id.toString().replace(/[^0-9]+/g, '');
 
-    let promises: Array<Promise<unknown> | void> = [];
+    const promises: Array<Promise<unknown> | void> = [];
     if (opts.song_id) {
         // save page.data song_id and set_id if there are
         page.data(opts);
@@ -544,7 +544,7 @@ export function load_songinfo_page(opts) {
 }
 
 function switch_song_page(args) {
-    let path = '#songinfo?' + $.param(args);
+    const path = '#songinfo?' + $.param(args);
 
     // Don't display a transition if it's a switch between the songinfo page
     if ($.mobile.activePage[0].id == 'songinfo') {
@@ -558,9 +558,9 @@ function switch_song_page(args) {
 }
 
 function song_link_click(this: HTMLElement) {
-    let li = $(this).parents('li');
-    let ul = li.parents('ul');
-    let song_id = li.data('song_id');
+    const li = $(this).parents('li');
+    const ul = li.parents('ul');
+    const song_id = li.data('song_id');
     if (song_id) switch_song_page({ song_id, set_id: ul.data('set_id') });
 }
 
@@ -588,7 +588,7 @@ function update_refresh_button_visibility() {
     DB.then((db) => {
         if (db instanceof OfflineDBCommon) {
             _cur_refresh_handler = () => {
-                let current = page.data('song');
+                const current = page.data('song');
                 if (current && current.id)
                     db.refresh_song_from_db(current.id).then((song) => {
                         page.data('song', song);
@@ -601,12 +601,12 @@ function update_refresh_button_visibility() {
 }
 
 export function init_songinfo() {
-    let body = $(document.body);
+    const body = $(document.body);
     const page = $('#songinfo');
     setup_hide_cursor();
     body.on('click', '.song-link-click', song_link_click);
     body.on('click', 'a.search-link, a.list-search-link', function () {
-        let searchtext = $(this).data('searchtext');
+        const searchtext = $(this).data('searchtext');
         if (searchtext) set_search_text(searchtext);
     });
     body.on('click', 'a.ui-icon-youtube, a.ui-icon-download', () => song_feedback('download', page.data('song_id')));
@@ -669,7 +669,7 @@ export function init_songinfo() {
         page.find('#sharebtn').on('click', () => {
             song_feedback('share', page.data('song_id'));
 
-            let song_id = page.data('song_id');
+            const song_id = page.data('song_id');
             handle_share(`song.html?song_id=${song_id}`, get_translation('share_title'), get_translation('share_subject'));
         });
 
@@ -712,7 +712,7 @@ export function init_songinfo() {
 
         // Escape is not passed in chrome at least when exiting full screen mode so we need to catch it here
         $(document).on('webkitfullscreenchange mozfullscreenchange fullscreenchange MSFullscreenChange', () => {
-            let fullscreenElement =
+            const fullscreenElement =
                 document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement || document.msFullscreenElement;
             if (!fullscreenElement) exit_single_presentor_mode();
         });
@@ -723,7 +723,7 @@ export function init_songinfo() {
         page.find('.rating').raty({
             starType: 'i',
             click: (score) => {
-                let song_id = page.data('song_id');
+                const song_id = page.data('song_id');
                 FAVOURITE_DB.set_rating(song_id, score);
                 rating_event([song_id, score], song_id);
             },
@@ -731,7 +731,7 @@ export function init_songinfo() {
 
         // We don't use a native popover because it messes with the enter/leave things
         let last_chord, last_chord_close;
-        let chord_popup = $('#chord-display-popup');
+        const chord_popup = $('#chord-display-popup');
 
         page.on('mouseleave', '.songxml .chord, #chord-display-popup', () => {
             // Set a small timeout in case it is just flipping between the popup and the chord
@@ -755,12 +755,12 @@ export function init_songinfo() {
                 .replace(/min?/, 'm') // Eg Amin or Ami are the same as Am
                 .replace(/[()\s.]/g, ''); // kill useless chars too
 
-            let display = $('#chord-display').empty();
+            const display = $('#chord-display').empty();
 
             if (!_chord_data) _chord_data = fetch_json('chords.json');
 
             return _chord_data.then((chords) => {
-                let fingerings = chords[chord];
+                const fingerings = chords[chord];
                 if (!fingerings) {
                     console.log('could not find fingering for chord "' + chord + '"');
                     return Promise.reject();
@@ -769,7 +769,7 @@ export function init_songinfo() {
                 page.find('#chord-next, #chord-prev').toggle(fingerings.length > 1);
 
                 if (idx < 0) idx += fingerings.length;
-                let diagram = new Chord('', fingerings[idx % fingerings.length]).getDiagram(3);
+                const diagram = new Chord('', fingerings[idx % fingerings.length]).getDiagram(3);
                 if (diagram) {
                     display.append($('<h4>').text($(element).text()), diagram);
                     chord_idx = idx;
@@ -811,7 +811,7 @@ export function init_songinfo() {
         });
 
         page.on('click', '.tag-btn', function () {
-            let tag_id = $(this).data('tag_id');
+            const tag_id = $(this).data('tag_id');
 
             // No negation here
             if (filter_tags[tag_id]) delete filter_tags[tag_id];
@@ -825,7 +825,7 @@ export function init_songinfo() {
         });
 
         function refresh_collapsed(section) {
-            let btn = section.find('.collapse-widget');
+            const btn = section.find('.collapse-widget');
 
             if (is_set('collapsed-' + section.attr('id'))) {
                 section.addClass('collapsed');
@@ -836,7 +836,7 @@ export function init_songinfo() {
             }
         }
         page.on('click', '.collapsable-section h3, .collapsable-section .collapse-widget', function () {
-            let section = $(this).parents('.collapsable-section');
+            const section = $(this).parents('.collapsable-section');
             update_setting('collapsed-' + section.attr('id'), section.hasClass('collapsed') ? 'false' : 'true');
             refresh_collapsed(section);
         });
@@ -859,7 +859,7 @@ export function init_songinfo() {
         transposeSong($(this).val() as string);
     });
     $('#capo-select').on('change', function () {
-        let value = $(this).val() as number;
+        const value = $(this).val() as number;
         $('#song-capo').attr('data-value', value); // for masking with css during prints
         if (SET_DB) SET_DB.update_song_in_set(page.data('set_id'), page.data('song_id'), undefined, value);
         transposeSong(undefined, value);
@@ -877,8 +877,8 @@ export function init_songinfo() {
 
 // Handle key events from within a presentation
 function presentor_key_event(e) {
-    let in_presentation = $('html').hasClass('presentation');
-    let is_input = $(e.target).is('input, textarea, [contenteditable]');
+    const in_presentation = $('html').hasClass('presentation');
+    const is_input = $(e.target).is('input, textarea, [contenteditable]');
     if (!is_input && !e.altKey && e.keyCode == 37) {
         // left
         e.preventDefault();
@@ -953,7 +953,7 @@ function wrap_song_loading(cb, keep_title_shown) {
     // Hide page while rendering
     $('#main-page').addClass(keep_title_shown ? 'same-song-loading' : 'song-loading');
 
-    let reveal = () => {
+    const reveal = () => {
         if (song_load_count > 0) song_load_count--;
 
         if (use_spinner) hide_spinner();
@@ -963,7 +963,7 @@ function wrap_song_loading(cb, keep_title_shown) {
         }
     };
 
-    let promise = cb();
+    const promise = cb();
     if (promise) promise.finally(reveal);
     else reveal();
 }
@@ -975,7 +975,7 @@ export function display_songid(song_id) {
 
     wrap_song_loading(() => {
         // Track an ID so that we know which is the last request made and drop any others coming back
-        let my_req_id = ++last_req_id;
+        const my_req_id = ++last_req_id;
 
         // A success from the promise chain means that the last song has
         // loaded; rejection means that one we didn't want to unmask has loaded
@@ -1001,9 +1001,9 @@ export function display_songid(song_id) {
 function onprinthandler() {
     // Is probably called multiple times per print request and we don't know
     // how many sheets it output anyway so just send 1 per song id.
-    let cur_page = current_page();
+    const cur_page = current_page();
     if (!cur_page) return;
 
-    let song_id = cur_page.data('song_id');
+    const song_id = cur_page.data('song_id');
     if (song_id) song_feedback('print', song_id);
 }
