@@ -31,7 +31,7 @@ export default defineConfig(({ command, mode }) => {
     if (!build_type) throw new Error('Must specify build type eg --mode=www');
 
     // TODO use import.meta.env.PROD and NODE_ENV
-    const is_production = command == 'build';
+    const is_production = /^build:prod/.test(command);
     const is_watch = mode != 'test' && mode != 'serve'; // Bit of a nasty hack as --watch detail is not passed in
 
     process.env.VITE_BUILD_TYPE = build_type;
