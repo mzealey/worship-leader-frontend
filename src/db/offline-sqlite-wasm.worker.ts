@@ -152,7 +152,7 @@ export class SQLiteWorker {
                 songxml,
                 get_decompressed_key(is_compressed, song, 'songkey') ?? null,
                 get_decompressed_key(is_compressed, song, 'capo') ?? null,
-                JSON.stringify(altTitles),
+                JSON.stringify(altTitles.filter(t => t !== '')),
                 JSON.stringify(relatedSongs),
                 JSON.stringify(info),
                 JSON.stringify(files),

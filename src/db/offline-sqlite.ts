@@ -124,7 +124,7 @@ export abstract class OfflineSQLiteDB extends OfflineDBCommon<DBQuery> {
                 songxml ?? null,
                 get_decompressed_key(compressed, song, 'songkey') ?? null,
                 get_decompressed_key(compressed, song, 'capo') ?? null,
-                JSON.stringify(alternativeTitles),
+                JSON.stringify(alternativeTitles.filter(t => t !== '')),
                 JSON.stringify(relatedSongs),
                 JSON.stringify(info),
                 JSON.stringify(files),
