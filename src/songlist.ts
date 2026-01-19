@@ -102,8 +102,8 @@ export function setup_list_link(list, song, prefix?) {
     item.data('song_id', song.id);
 
     if (!song.not_loaded) {
-        if (song.alternative_titles && song.alternative_titles.filter(t => t !== '').length) {
-            item.find('a').append(set_direction($('<p class="wrappable">').text(song.alternative_titles.filter(t => t !== '').join(', ')), song.lang));
+        if (song.alternative_titles && song.alternative_titles.filter((t) => t !== '').length) {
+            item.find('a').append(set_direction($('<p class="wrappable">').text(song.alternative_titles.filter((t) => t !== '').join(', ')), song.lang));
         }
 
         if (is_set('setting-show-key-in-list')) {
