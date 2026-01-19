@@ -17,6 +17,7 @@ import { current_page } from '../jqm-util';
 import { app_lang, get_translation, lang_name } from '../langpack';
 import { load_songxml_into, render_chords } from '../load-songxml';
 import { get_meta_db } from '../meta-db';
+import { handlePrint } from '../print-util';
 import { render_primary_songxml, resize_for_print } from '../render-songxml';
 import { set_search_text } from '../search';
 import { on_set_db_update, SET_DB } from '../set-db';
@@ -28,7 +29,7 @@ import { is_setup } from '../startup-promises';
 import { filter_tags, refresh_tag_button_status, update_filter_tag_btn } from '../tag';
 import { set_title } from '../title';
 import { Transpose } from '../transpose';
-import { fetch_json, format_string, is_cordova, try_to_run_fn } from '../util';
+import { fetch_json, format_string, try_to_run_fn } from '../util';
 import { force_song_list_page, get_song_list_page } from './search-helpers';
 import { handle_share } from './sharer';
 
@@ -673,34 +674,12 @@ export function init_songinfo() {
             handle_share(`song.html?song_id=${song_id}`, get_translation('share_title'), get_translation('share_subject'));
         });
 
-        let handle_print = () => {
-            // Desktop browsers, safari (mobile) all support the standard
-            // window.print. These days even android chrome seems to support it
-            // well - woohoo!
-            try {
-                window.print(); // note this is synchronus
-                onprinthandler();
-            } catch (e) {
-                // Rarely browsers (edge, perhaps IE with no printer drivers) do an err if print was cancelled
-            }
-        };
-
-        if (is_cordova() && cordova.plugins && cordova.plugins.printer) {
-            // Cordova webviews doesn't support printing natively so we need to use a plugin
-            handle_print = () => {
-                cordova.plugins.printer.print('', {}, (res) => {
-                    if (res) onprinthandler();
-                });
-            };
-        }
-
         page.find('#print-btn').click(() => {
             // For some reason we need to do this to allow page layout to complete
             // in eg mobile chrome. However on safari it prompts to see if you are
             // sure about printing the webpage so only do it if we had to reflow
             // the view.
-            if (resize_for_print()) setTimeout(handle_print, 0);
-            else handle_print();
+            handlePrint(onprinthandler, () => !!resize_for_print());
         });
 
         page.find('#present-btn').click(() => {

@@ -1,5 +1,6 @@
 import * as Comlink from 'comlink';
 import { _lang_setup, get_translation } from './langpack';
+import { handlePrint } from './print-util';
 import type { Song, SongShortData } from './song';
 import './songbook-viewer.scss';
 import { format_html_chords, render_chord, songxml_to_divs, split_songxml_chords } from './songxml-util';
@@ -473,6 +474,12 @@ async function renderSongbook(data: SongbookData): Promise<void> {
         currentLanguage = data.config.songbookLanguage;
         document.body.dir = get_translation('langpack_direction');
         document.body.lang = currentLanguage;
+
+        // Update print button text with new language
+        const printBtn = document.getElementById('print-btn');
+        if (printBtn) {
+            printBtn.textContent = get_translation('print-btn');
+        }
     }
 
     currentData = data;
@@ -538,12 +545,30 @@ export const songbookViewerApi = {
 
 export type SongbookViewerApi = typeof songbookViewerApi;
 
+function setupPrintButton(): void {
+    const printBtn = document.getElementById('print-btn');
+    if (printBtn) {
+        // Localize the button text
+        printBtn.textContent = get_translation('print-btn');
+
+        // Add click handler
+        printBtn.addEventListener('click', () => {
+            handlePrint();
+        });
+    }
+}
+
 function init(): void {
+    // Expose API for both popup window (window.opener) and iframe (window.parent) scenarios
     if (window.opener) {
         Comlink.expose(songbookViewerApi, Comlink.windowEndpoint(window.opener));
+    } else if (window.parent && window.parent !== window) {
+        Comlink.expose(songbookViewerApi, Comlink.windowEndpoint(window.parent));
     }
 
     (window as unknown as { songbookViewerApi: typeof songbookViewerApi }).songbookViewerApi = songbookViewerApi;
+
+    setupPrintButton();
 }
 
 if (document.readyState === 'loading') {

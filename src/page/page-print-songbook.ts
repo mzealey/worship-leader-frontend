@@ -33,22 +33,11 @@ function getConfigFromForm(page: JQuery): SongbookConfig {
     };
 }
 
-let viewerWindow: Window | null = null;
+let viewerIframe: HTMLIFrameElement | null = null;
 let viewerApi: Comlink.Remote<SongbookViewerApi> | null = null;
 let baseSongbookData: Partial<SongbookData> = {
     translationMap: {},
 };
-
-function closeViewerWindow(): void {
-    if (viewerWindow && !viewerWindow.closed) {
-        viewerWindow.close();
-    }
-    viewerWindow = null;
-    viewerApi = null;
-    $('#button-preview-songbook').show();
-}
-
-window.addEventListener('beforeunload', closeViewerWindow);
 
 async function updateSongbookData(setId: number): Promise<void> {
     const setSongs = SET_DB.get_songs(setId);
@@ -98,36 +87,51 @@ async function updateTranslationSongs(config: SongbookConfig): Promise<void> {
     baseSongbookData.translationMap = newMap;
 }
 
-async function connectToViewer(win: Window): Promise<Comlink.Remote<SongbookViewerApi>> {
-    const api = Comlink.wrap<SongbookViewerApi>(Comlink.windowEndpoint(win));
+async function connectToViewer(iframe: HTMLIFrameElement): Promise<Comlink.Remote<SongbookViewerApi>> {
+    if (!iframe.contentWindow) {
+        throw new Error('Iframe contentWindow not available');
+    }
+    const api = Comlink.wrap<SongbookViewerApi>(Comlink.windowEndpoint(iframe.contentWindow));
     await timeout(api.ping(), 5000);
     return api;
 }
 
-async function openPreviewWindow(page: JQuery): Promise<void> {
-    if (!viewerWindow || viewerWindow.closed) {
-        viewerWindow = window.open('songbook-viewer.html', 'songbook-viewer', 'width=800,height=600,scrollbars=yes,resizable=yes');
-        if (!viewerWindow) {
-            console.error('Failed to open popup window');
-            $('#button-preview-songbook').show();
-            return;
-        }
+async function createViewerIframe(page: JQuery): Promise<void> {
+    viewerIframe = document.getElementById('songbook-viewer-iframe') as HTMLIFrameElement;
 
-        viewerWindow.addEventListener('load', async () => {
-            viewerWindow!.addEventListener('unload', () => closeViewerWindow());
+    if (!viewerIframe) {
+        console.error('Songbook viewer iframe not found');
+        return;
+    }
 
-            try {
-                viewerApi = await connectToViewer(viewerWindow!);
-                $('#button-preview-songbook').hide();
-                await sendDataToViewer(page);
-            } catch (e) {
-                console.error('Failed to connect to viewer:', e);
-            }
-        });
-        // TODO: Handle close and set the viewerApi to null and show visibility of the button
-    } else {
+    if (viewerApi) {
+        // Already connected, just update data
         await sendDataToViewer(page);
-        viewerWindow.focus();
+        return;
+    }
+
+    // Wait for iframe to be fully loaded
+    const waitForLoad = new Promise<void>((resolve) => {
+        if (viewerIframe!.contentDocument?.readyState === 'complete') {
+            // Already loaded
+            resolve();
+        } else {
+            // Wait for load event
+            viewerIframe!.addEventListener('load', () => resolve(), { once: true });
+        }
+    });
+
+    await waitForLoad;
+
+    // Add a small delay to ensure the script has initialized
+    await new Promise((resolve) => setTimeout(resolve, 100));
+
+    // Connect to the iframe
+    try {
+        viewerApi = await connectToViewer(viewerIframe);
+        await sendDataToViewer(page);
+    } catch (e) {
+        console.error('Failed to connect to viewer:', e);
     }
 }
 
@@ -144,7 +148,7 @@ async function sendDataToViewer(page: JQuery): Promise<void> {
 }
 
 async function updateViewerConfig(page: JQuery): Promise<void> {
-    if (!viewerApi || !viewerWindow || viewerWindow.closed) return;
+    if (!viewerApi || !viewerIframe) return;
 
     const config = getConfigFromForm(page);
     await viewerApi.updateConfig(config);
@@ -164,9 +168,6 @@ export function init_page_print_songbook(): void {
 
         page.find('select, input[type="checkbox"]').on('change', () => {
             updateViewerConfig(page);
-        });
-        page.find('#button-preview-songbook').on('click', () => {
-            openPreviewWindow(page);
         });
 
         const lang_filter = page.find('#songbook-sidebyside');
@@ -198,6 +199,6 @@ export function init_page_print_songbook(): void {
             return;
         }
         await updateSongbookData(setId);
-        openPreviewWindow(page);
+        createViewerIframe(page);
     });
 }
