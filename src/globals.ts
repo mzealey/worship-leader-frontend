@@ -73,7 +73,7 @@ if (BUILD_TYPE == 'www') {
 export const get_client_type = () => CLIENT_TYPE;
 
 export const SHARE_DOMAIN = import.meta.env.VITE_SHARE_DOMAIN!;
-export const API_HOST = import.meta.env.VITE_API_HOST!; // For main API and DB calls
+export const API_HOST = BUILD_TYPE === 'editor' ? '' : import.meta.env.VITE_API_HOST!; // For main API and DB calls
 export const EVENT_SOCKET_HOST = import.meta.env.VITE_API_HOST!; // for event socket (ws_server)
 
 // The dump => version to download from the server
