@@ -6,8 +6,7 @@
   "exclude": [
     "*.ts",
     "spec/**/*",
-    "tests/**/*",
-    "src/page/page-print-songbook.ts"
+    "tests/**/*"
   ],
   "compilerOptions": {
     "lib": [

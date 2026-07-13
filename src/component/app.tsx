@@ -13,6 +13,7 @@ import { PageEditTextarea } from '../page/edit';
 import { PageFirsttimeWelcome } from '../page/firsttime-welcome';
 import { PageList } from '../page/list';
 import { PageNativePrompter } from '../page/native-prompter';
+import { PagePrintSongbook } from '../page/page-print-songbook';
 import { PageSetList } from '../page/set-list';
 import { PageSetView } from '../page/set-view';
 import { PageSettings } from '../page/settings';
@@ -31,6 +32,11 @@ function PageSongInfoWrapper() {
 function PageSetViewWrapper() {
     const { set_id } = useParams();
     return <PageSetView set_id={set_id ? parseInt(set_id) : 0} />;
+}
+
+function PagePrintSongbookWrapper() {
+    const { set_id } = useParams();
+    return <PagePrintSongbook set_id={set_id ? parseInt(set_id) : 0} />;
 }
 
 function OldSongInfo() {
@@ -226,6 +232,7 @@ export const App = () => {
                             <Route path="/settings" element={<PageSettings />} />
                             <Route path="/set-list" element={<PageSetList />} />
                             <Route path="/set-view/:set_id" element={<PageSetViewWrapper />} />
+                            <Route path="/print-songbook/:set_id" element={<PagePrintSongbookWrapper />} />
                             <Route path="/add-song" element={<PageEditTextarea type="new" />} />
 
                             {/* Handle legacy routes shared from jqm */}
