@@ -82,7 +82,7 @@ function SearchAreaBase(props: SearchAreaProps) {
                 px: 1.25,
             })}
         >
-            {redirect && <Navigate {...redirect} />}
+            {redirect ? <Navigate {...redirect} /> : null}
             <DelayedDBInput
                 placeholder={t('search_placeholder')}
                 title={t('search_placeholder')}
@@ -107,7 +107,7 @@ function SearchAreaBase(props: SearchAreaProps) {
                 }
             />
 
-            {show_dropdown && <SearchFilters thin={thin} />}
+            {show_dropdown ? <SearchFilters thin={thin} /> : null}
         </Box>
     );
 }

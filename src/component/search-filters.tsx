@@ -142,7 +142,7 @@ export function SearchFilters(props: SearchFiltersProps) {
                 <ButtonGroup>
                     <Button style={{ flexGrow: 1 }} onClick={() => setShowTagSelector(true)}>
                         {t('tag_str')}
-                        {tags_text && `: ${tags_text}`}
+                        {tags_text ? `: ${tags_text}` : null}
                     </Button>
                     {Object.keys(tags).length > 0 && (
                         <Button onClick={() => resetTags()}>
@@ -150,17 +150,15 @@ export function SearchFilters(props: SearchFiltersProps) {
                         </Button>
                     )}
                 </ButtonGroup>
-                {show_tag_selector && (
-                    <Theme section="Base">
+                {show_tag_selector ? <Theme section="Base">
                         <PageTagSelect onClose={() => setShowTagSelector(false)} />
-                    </Theme>
-                )}
+                    </Theme> : null}
             </Grid>
             <Grid>
                 <ButtonGroup>
                     <Button style={{ flexGrow: 1 }} onClick={() => setShowSourceSelector(true)}>
                         {t('source_str')}
-                        {sources_text && `: ${sources_text}`}
+                        {sources_text ? `: ${sources_text}` : null}
                     </Button>
                     {Object.keys(sources).length > 0 && (
                         <Button onClick={() => resetSources()}>
@@ -168,11 +166,9 @@ export function SearchFilters(props: SearchFiltersProps) {
                         </Button>
                     )}
                 </ButtonGroup>
-                {show_source_selector && (
-                    <Theme section="Base">
+                {show_source_selector ? <Theme section="Base">
                         <PageSourceSelect onClose={() => setShowSourceSelector(false)} />
-                    </Theme>
-                )}
+                    </Theme> : null}
             </Grid>
             <Grid>
                 <SongKeyInput fullWidth onChange={(v: string) => updateFilter({ songkey: v == '' ? undefined : v })} />

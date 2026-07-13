@@ -172,10 +172,10 @@ export const PageSetView = ({ set_id }: PageSetViewProps) => {
                 </ImageButton>
             </TopBar>
 
-            {shareSetDialog && <PageSetShare set={set} onClose={() => setShareSetDialog(false)} />}
-            {shareSetLink && <PageSharer url={shareSetLink} title={t('share_title')} subject={t('share_set_subject')} onClose={() => setShareSetLink(null)} />}
+            {shareSetDialog ? <PageSetShare set={set} onClose={() => setShareSetDialog(false)} /> : null}
+            {shareSetLink ? <PageSharer url={shareSetLink} title={t('share_title')} subject={t('share_set_subject')} onClose={() => setShareSetLink(null)} /> : null}
 
-            {isLoading && <CircularProgress />}
+            {isLoading ? <CircularProgress /> : null}
 
             <SetViewSortable
                 songs={songs || []}

@@ -103,7 +103,7 @@ export const DialogAddToSet = ({ song_id, transpose, onClose }: DialogAddToSetPr
 
             <AddToSetList add_to_set={(set_id) => addSongToSet(set_id).then(handleClose, () => setDuplicate(true))} />
 
-            {duplicate && <Alert message={t('already_in_set')} onClose={() => setDuplicate(false)} />}
+            {duplicate ? <Alert message={t('already_in_set')} onClose={() => setDuplicate(false)} /> : null}
         </Dialog>
     );
 };

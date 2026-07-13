@@ -35,7 +35,7 @@ export const PageSetShare = (props: PageSetShareProps) => {
             <DialogContent>
                 <DialogContentText>{t('share_set_title')}</DialogContentText>
             </DialogContent>
-            {shareLink && <PageSharer url={shareLink} title={t('share_title')} subject={t('share_set_subject')} onClose={handleClose} />}
+            {shareLink ? <PageSharer url={shareLink} title={t('share_title')} subject={t('share_set_subject')} onClose={handleClose} /> : null}
             <DialogActions>
                 <Button onClick={handleClose}>{t('cancel_btn')}</Button>
                 <Button onClick={printSongbook} startIcon={<Icon.Print />}>

@@ -278,6 +278,7 @@ export const SongXMLDisplay: ComponentType<SongXMLDisplayProps> = ({ song, trans
         refresh_songxml();
     }, [refresh_songxml]);
 
+    // Update chords when content changes
     useEffect(() => {
         if (song && songxmlRef.current && content) {
             Array.prototype.map.call(songxmlRef.current.querySelectorAll('.bridge, .chorus, .verse, .prechorus'), (e: Element) => {
@@ -316,9 +317,7 @@ export const SongXMLDisplay: ComponentType<SongXMLDisplayProps> = ({ song, trans
                 songXMLRefCallback={songXMLRefCallback}
             />
 
-            {show_fingering && selected_chord && (
-                <ChordPopup selected_chord={selected_chord} onMouseEnter={stopHideChordTimer} onMouseLeave={startHideChordTimer} />
-            )}
+            {show_fingering && selected_chord ? <ChordPopup selected_chord={selected_chord} onMouseEnter={stopHideChordTimer} onMouseLeave={startHideChordTimer} /> : null}
         </Fragment>
     );
 };

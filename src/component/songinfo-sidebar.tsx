@@ -85,12 +85,10 @@ export const PrintCapoDisplay = ({ transpose }: { transpose?: TransposeDetails |
     return (
         <Box sx={{ display: 'none', displayPrint: 'block' }}>
             {capo > 0 && <InfoLine label={t('capo')}>{capo}</InfoLine>}
-            {key && (
-                <InfoLine label={t('key')}>
+            {key ? <InfoLine label={t('key')}>
                     {maybe_convert_solfege(key.name)}
                     {is_minor ? 'm' : ''}
-                </InfoLine>
-            )}
+                </InfoLine> : null}
         </Box>
     );
 };
@@ -111,8 +109,7 @@ const TopImage = ({ img }: { img?: string }) => {
     // TODO: kapak/large
     return (
         <Fragment>
-            {img && (
-                <Box
+            {img ? <Box
                     component="img"
                     src={img.replace(/kapak\//, 'kapak/large/')}
                     onLoad={show_img_handler}
@@ -123,8 +120,7 @@ const TopImage = ({ img }: { img?: string }) => {
                         display: show_img ? 'block' : 'none',
                         '@media only print': { display: 'none' },
                     }}
-                />
-            )}
+                /> : null}
             {!show_img && (
                 <Icon.Logo
                     viewBox={viewBox}
@@ -183,21 +179,18 @@ const SidebarHeader = ({ section, title, partialDisplay = false, oneLine = false
                 <DropDownIcon collapsed={collapsed} />
             </Box>
 
-            {titleText && (
-                <Box
+            {titleText ? <Box
                     component="h3"
                     onClick={toggle_collapse}
                     sx={(theme) => ({
                         borderBottom: `1px solid ${theme.palette.border.main}`,
                     })}
                 >
-                    {HeaderIcon && <HeaderIcon color="primary" />}
+                    {HeaderIcon ? <HeaderIcon color="primary" /> : null}
                     {titleText}
-                    {collapsed && count && ` (${count})`}
-                </Box>
-            )}
-            {(!collapsed || partialDisplay) && (
-                <Box
+                    {collapsed && count ? ` (${count})` : null}
+                </Box> : null}
+            {(!collapsed || partialDisplay) ? <Box
                     sx={{
                         display: oneLine ? 'inline' : 'block',
                         ...(collapsed &&
@@ -208,8 +201,7 @@ const SidebarHeader = ({ section, title, partialDisplay = false, oneLine = false
                     }}
                 >
                     {children}
-                </Box>
-            )}
+                </Box> : null}
         </Box>
     );
 };
@@ -220,8 +212,7 @@ function AlbumEntry({ lang, album_song, on_filter_change }: { lang: string; albu
 
     let entry = (
         <Grid container sx={{ justifyContent: 'flex-start' }}>
-            {img && (
-                <Grid size={3}>
+            {img ? <Grid size={3}>
                     <Box
                         component="img"
                         alt={t('albums')}
@@ -232,11 +223,10 @@ function AlbumEntry({ lang, album_song, on_filter_change }: { lang: string; albu
                             pr: '1em',
                         }}
                     />
-                </Grid>
-            )}
+                </Grid> : null}
             <Grid size={img ? 9 : 12}>
                 <TextDirection lang={lang}>
-                    {album_song.album.title} {album_song.track && ` (${t('track')} ${album_song.track})`}
+                    {album_song.album.title} {album_song.track ? ` (${t('track')} ${album_song.track})` : null}
                 </TextDirection>
             </Grid>
         </Grid>
@@ -411,7 +401,7 @@ const RatingSection = ({ song }: { song: Song }) => {
             <Box sx={{ display: 'inline-block' }}>
                 {t('rating')}
                 <Rating name="rating" value={my_rating} onChange={rating_update} />
-                {song.rating && ` (${song.rating / 10})`}
+                {song.rating > 0 && ` (${song.rating / 10})`}
             </Box>
         </Box>
     );
@@ -485,8 +475,8 @@ const SongInfoSection = ({ song, on_filter_change }: { song: Song; on_filter_cha
         <SidebarHeader section="song-info" title="details" partialDisplay>
             <div>
                 {info_render}
-                {song.year && <InfoLine label={t('year_written')}>{song.year}</InfoLine>}
-                {song.lang && <InfoLine label={t('language')}>{lang_name(song.lang)}</InfoLine>}
+                {song.year ? <InfoLine label={t('year_written')}>{song.year}</InfoLine> : null}
+                {song.lang ? <InfoLine label={t('language')}>{lang_name(song.lang)}</InfoLine> : null}
             </div>
         </SidebarHeader>
     );
@@ -615,14 +605,12 @@ export const SongInfoSide = ({
                     <TextDirection lang={song.lang}>{song.title}</TextDirection>
                 </Typography>
 
-                {song.alternative_titles && song.alternative_titles.length > 0 && (
-                    <Typography variant="h6">
+                {song.alternative_titles && song.alternative_titles.length > 0 ? <Typography variant="h6">
                         <TextDirection lang={song.lang}>{song.alternative_titles.join(', ')}</TextDirection>
-                    </Typography>
-                )}
+                    </Typography> : null}
             </Box>
 
-            {related_songs && related_songs.length > 0 && <RelatedSongs lang={song.lang} related_songs={related_songs} />}
+            {related_songs && related_songs.length > 0 ? <RelatedSongs lang={song.lang} related_songs={related_songs} /> : null}
 
             <SongInfoSection song={song} on_filter_change={on_filter_change} />
 

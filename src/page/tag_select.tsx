@@ -56,7 +56,7 @@ const TagFilterItem = ({ tag, tag_counts, filter_tags }: TagFilterItemProps) => 
                     <ListCheckbox indeterminate={value === 0} checked={value === 1} />
                 </ListItemIcon>
                 <ListItemText primary={tag.name} />
-                {tag_counts && <ListItemSecondaryAction>{tag_counts[tag.id]}</ListItemSecondaryAction>}
+                {tag_counts ? <ListItemSecondaryAction>{tag_counts[tag.id]}</ListItemSecondaryAction> : null}
             </ListItemButton>
         </ListItem>
     );

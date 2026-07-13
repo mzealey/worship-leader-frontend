@@ -115,14 +115,12 @@ export function TopBar({ sx, noMenu, className, menuOnly, before, documentTitle,
                     <Box sx={{ flexGrow: 1, minWidth: 16 }} />
                     {children}
                 </Toolbar>
-                {show_menu && (
-                    <Box sx={{ position: 'absolute', right: 0 }}>
+                {show_menu ? <Box sx={{ position: 'absolute', right: 0 }}>
                         <MenuButton>
                             {children}
                             {menuOnly}
                         </MenuButton>
-                    </Box>
-                )}
+                    </Box> : null}
             </AppBar>
             <Toolbar />
         </Box>

@@ -408,7 +408,7 @@ export const PageSongInfo: ComponentType<PageSongInfoProps> = ({ requested_song_
 
     return (
         <Fragment>
-            {show_sidebar && song && <SongPageSidebar active_song_id={song.id} />}
+            {show_sidebar && song ? <SongPageSidebar active_song_id={song.id} /> : null}
 
             <Box
                 sx={{
@@ -426,11 +426,9 @@ export const PageSongInfo: ComponentType<PageSongInfoProps> = ({ requested_song_
                     <Typography variant="h4" align="center">
                         <TextDirection lang={song ? song.lang : appLang}>{title}</TextDirection>
                     </Typography>
-                    {song && song.alternative_titles && song.alternative_titles.length > 0 && (
-                        <Typography variant="h6" align="center">
+                    {song && song.alternative_titles && song.alternative_titles.length > 0 ? <Typography variant="h6" align="center">
                             <TextDirection lang={song.lang}>{song.alternative_titles.join(', ')}</TextDirection>
-                        </Typography>
-                    )}
+                        </Typography> : null}
                 </Box>
 
                 <TopBar
@@ -454,28 +452,20 @@ export const PageSongInfo: ComponentType<PageSongInfoProps> = ({ requested_song_
                     title={<TextDirection lang={song ? song.lang : appLang}>{title}</TextDirection>}
                     menuOnly={
                         <Fragment>
-                            {display_lyrics && canPrint && (
-                                <ImageButton icon={Icon.Print} onClick={do_print}>
+                            {display_lyrics && canPrint ? <ImageButton icon={Icon.Print} onClick={do_print}>
                                     {t('print-btn')}
-                                </ImageButton>
-                            )}
+                                </ImageButton> : null}
 
-                            {display_lyrics && (
-                                <ImageButton icon={Icon.Copy} onClick={do_show_copy}>
+                            {display_lyrics ? <ImageButton icon={Icon.Copy} onClick={do_show_copy}>
                                     {t('copybtn')}
-                                </ImageButton>
-                            )}
+                                </ImageButton> : null}
 
-                            {display_lyrics && (
-                                <ImageButton icon={Icon.EditSong} onClick={do_show_edit}>
+                            {display_lyrics ? <ImageButton icon={Icon.EditSong} onClick={do_show_edit}>
                                     {t('editbtn')}
-                                </ImageButton>
-                            )}
-                            {display_lyrics && (
-                                <ImageButton icon={Icon.NewSong} onClick={show_new}>
+                                </ImageButton> : null}
+                            {display_lyrics ? <ImageButton icon={Icon.NewSong} onClick={show_new}>
                                     {t('newbtn')}
-                                </ImageButton>
-                            )}
+                                </ImageButton> : null}
 
                             <SongRefreshBtn onClick={refresh_song} />
                         </Fragment>
@@ -493,19 +483,18 @@ export const PageSongInfo: ComponentType<PageSongInfoProps> = ({ requested_song_
                         </ImageButton>
                     )}
 
-                    {display_lyrics && <SongPresentBtn show_dialog={do_show_present} enter_single_presentor_mode={enter_single_presentor_mode} />}
+                    {display_lyrics ? <SongPresentBtn show_dialog={do_show_present} enter_single_presentor_mode={enter_single_presentor_mode} /> : null}
 
                     <ImageButton onClick={show_share} icon={Icon.Share}>
                         {t('sharebtn')}
                     </ImageButton>
                 </TopBar>
 
-                {show_scroller && <MobileScroller update_refs={(fn) => (update_item_refs_ref.current = fn ?? undefined)} />}
+                {show_scroller ? <MobileScroller update_refs={(fn) => (update_item_refs_ref.current = fn ?? undefined)} /> : null}
 
-                {add_to_set && song && <DialogAddToSet transpose={transposePayload} song_id={song.id} onClose={() => setAddToSet(false)} />}
-                {show_present && <DialogPresent enter_single_presentor_mode={enter_single_presentor_mode} />}
-                {share_link && (
-                    <PageSharer
+                {add_to_set && song ? <DialogAddToSet transpose={transposePayload} song_id={song.id} onClose={() => setAddToSet(false)} /> : null}
+                {show_present ? <DialogPresent enter_single_presentor_mode={enter_single_presentor_mode} /> : null}
+                {share_link ? <PageSharer
                         url={share_link}
                         title={t('share_title')}
                         subject={t('share_subject')}
@@ -513,18 +502,15 @@ export const PageSongInfo: ComponentType<PageSongInfoProps> = ({ requested_song_
                             if (did_share && song) song_feedback('share', song.id);
                             setShareLink(undefined);
                         }}
-                    />
-                )}
-                {show_copy && song && <PageCopyTextarea song={song} onClose={() => setShowCopy(false)} />}
-                {show_edit && <PageEditTextarea type={show_edit} song={show_edit === 'new' ? undefined : song} onClose={() => setShowEdit(undefined)} />}
+                    /> : null}
+                {show_copy && song ? <PageCopyTextarea song={song} onClose={() => setShowCopy(false)} /> : null}
+                {show_edit ? <PageEditTextarea type={show_edit} song={show_edit === 'new' ? undefined : song} onClose={() => setShowEdit(undefined)} /> : null}
 
-                {song && set_id && <SetPrevNext song_id={song.id} set_switcher={set_switcher} />}
+                {song && set_id ? <SetPrevNext song_id={song.id} set_switcher={set_switcher} /> : null}
 
-                {!song && requested_song_id && !song_loading && (
-                    <p style={{ fontWeight: 'bold' }}>
+                {!song && requested_song_id && !song_loading ? <p style={{ fontWeight: 'bold' }}>
                         {t('unknown-song')} (i{requested_song_id})
-                    </p>
-                )}
+                    </p> : null}
 
                 {song_display}
             </Box>

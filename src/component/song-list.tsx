@@ -168,16 +168,14 @@ const SongListLinkHeader = ({ prefix, song, children }: SongListLinkHeaderProps)
                     pl: 1,
                 }}
             >
-                {is_favourite && <Icon.SymbolFavourite />}
+                {is_favourite ? <Icon.SymbolFavourite /> : null}
                 {!!fullSong.is_original && <Icon.SymbolOriginal />}
-                {!!fullSong.has_chord && display_chords && <Icon.SymbolHasChord />}
+                {!!fullSong.has_chord && display_chords ? <Icon.SymbolHasChord /> : null}
                 {!!fullSong.has_mp3 && <Icon.SymbolHasMP3 />}
                 {!!fullSong.has_sheet && <Icon.SymbolHasSheet />}
-                {children && (
-                    <Box component="span" sx={{ ml: 1 }}>
+                {children ? <Box component="span" sx={{ ml: 1 }}>
                         {children}
-                    </Box>
-                )}
+                    </Box> : null}
             </ListItemSecondaryAction>
         </Fragment>
     );
@@ -210,7 +208,7 @@ export const SongListLink = ({ withStripe, realRef, prefix, song, is_active, chi
 
     return (
         <Fragment>
-            {addToSet && <DialogAddToSet song_id={song.id} onClose={() => setAddToSet(false)} />}
+            {addToSet ? <DialogAddToSet song_id={song.id} onClose={() => setAddToSet(false)} /> : null}
             <ListItem
                 disablePadding
                 ref={realRef}
@@ -290,7 +288,7 @@ function SongSourceMetaLink({ meta }: SongSourceMetaLinkProps) {
                 <ListItemText
                     primary={
                         <TextDirection lang={meta.lang}>
-                            {meta.name} {meta.abbreviation && `(${meta.abbreviation})`}
+                            {meta.name} {meta.abbreviation ? `(${meta.abbreviation})` : null}
                         </TextDirection>
                     }
                 />
@@ -526,9 +524,8 @@ export function SongList({ container, active_song_id }: SongListProps) {
         <Fragment>
             <PagerElem current_search={current_search} on_change={scroll_to_top} />
 
-            {!is_loading && on_first_page && items.length == 0 && <p style={{ fontWeight: 'bold' }}>{t('noresults')}</p>}
-            {(infinite_scroll || !show_spinner) && items.length > 0 && (
-                <List ref={set_songlist} disablePadding>
+            {!is_loading && on_first_page && items.length == 0 ? <p style={{ fontWeight: 'bold' }}>{t('noresults')}</p> : null}
+            {(infinite_scroll || !show_spinner) && items.length > 0 ? <List ref={set_songlist} disablePadding>
                     {items.map((item, idx: number) =>
                         '_type' in item ? (
                             <MetaLink withStripe={idx % 2 == 0} key={`${item._type}${item.id}`} meta={item} />
@@ -536,10 +533,9 @@ export function SongList({ container, active_song_id }: SongListProps) {
                             <SongListLink withStripe={idx % 2 == 0} key={item.id} is_active={item.id == active_song_id} song={item as Song} />
                         ),
                     )}
-                </List>
-            )}
+                </List> : null}
 
-            {show_spinner && loader}
+            {show_spinner ? loader : null}
 
             <PagerElem current_search={current_search} on_change={scroll_to_top} />
         </Fragment>

@@ -12,7 +12,7 @@ export const Alert = ({ title, message, onClose }: AlertProps) => {
 
     return (
         <Dialog open={!closed} onClose={handleClose}>
-            {title && <DialogTitle>{title}</DialogTitle>}
+            {title ? <DialogTitle>{title}</DialogTitle> : null}
             <DialogContent>
                 <DialogContentText>{message}</DialogContentText>
             </DialogContent>

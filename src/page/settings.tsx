@@ -244,7 +244,7 @@ export const PageSettings = () => {
                     />
                 </Grid>
 
-                {showDbLang && <DialogDbLangs onClose={() => setShowDbLang(false)} />}
+                {showDbLang ? <DialogDbLangs onClose={() => setShowDbLang(false)} /> : null}
                 <Grid>
                     <Button color="primary" variant="contained" onClick={() => setShowDbLang(true)} fullWidth>
                         {t('button-choose-song-languages')}
@@ -255,17 +255,17 @@ export const PageSettings = () => {
                     <List>
                         <SettingCheckbox setting="display-lyrics" />
 
-                        {display_lyrics && <SettingCheckbox setting="display-chords" />}
+                        {display_lyrics ? <SettingCheckbox setting="display-chords" /> : null}
 
-                        {display_chords && <SettingCheckbox setting="show-fingering" />}
-                        {display_chords && <SettingCheckbox setting="use-solfege" />}
-                        {display_chords && <ChordColorGroup />}
+                        {display_chords ? <SettingCheckbox setting="show-fingering" /> : null}
+                        {display_chords ? <SettingCheckbox setting="use-solfege" /> : null}
+                        {display_chords ? <ChordColorGroup /> : null}
 
-                        {display_chords && <SettingCheckbox setting="show-key-in-list" />}
+                        {display_chords ? <SettingCheckbox setting="show-key-in-list" /> : null}
 
-                        {display_lyrics && <SettingCheckbox setting="sidebyside" />}
+                        {display_lyrics ? <SettingCheckbox setting="sidebyside" /> : null}
 
-                        {is_cordova() && window.plugins && window.plugins.insomnia && <SettingCheckbox setting="poweron" />}
+                        {is_cordova() && window.plugins && window.plugins.insomnia ? <SettingCheckbox setting="poweron" /> : null}
                     </List>
                 </Grid>
 
@@ -291,13 +291,11 @@ export const PageSettings = () => {
                     </Grid>
                 )}
 
-                {show_cast_scan && (
-                    <Grid>
+                {show_cast_scan ? <Grid>
                         <Button color="primary" variant="contained" fullWidth onClick={() => get_presentation().then((p) => p.enter_cast_mode())}>
                             {t('cast_scan')}
                         </Button>
-                    </Grid>
-                )}
+                    </Grid> : null}
 
                 <Grid>
                     <SettingsPageVersion />

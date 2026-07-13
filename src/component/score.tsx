@@ -187,11 +187,9 @@ const _SheetMusicDisplay = ({ song, abc_file, transpose, is_printing, in_present
 
     return (
         <Fragment>
-            {(isLoading || instrumentLoading) && (
-                <Box sx={{ displayPrint: 'none', display: 'flex', justifyContent: 'center', p: 5 }}>
+            {(isLoading || instrumentLoading) ? <Box sx={{ displayPrint: 'none', display: 'flex', justifyContent: 'center', p: 5 }}>
                     <CircularProgress />
-                </Box>
-            )}
+                </Box> : null}
 
             {!in_presentation && (
                 <Box sx={{ displayPrint: 'none' }}>
@@ -222,7 +220,7 @@ const _SheetMusicDisplay = ({ song, abc_file, transpose, is_printing, in_present
                 })}
             />
 
-            {needsSongxml && <SongXMLDisplay song={song} no_chords={true} />}
+            {needsSongxml ? <SongXMLDisplay song={song} no_chords={true} /> : null}
         </Fragment>
     );
 };

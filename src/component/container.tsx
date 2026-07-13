@@ -117,8 +117,7 @@ function _PagesContainer({ children }: PagesContainerProps) {
 
     return (
         <Fragment>
-            {desktop_mode && (
-                <Fragment>
+            {desktop_mode ? <Fragment>
                     <Box
                         sx={(theme) => ({
                             position: 'fixed',
@@ -150,13 +149,12 @@ function _PagesContainer({ children }: PagesContainerProps) {
                         </Box>
                     </Box>
                     <Box sx={{ displayPrint: 'none' }} style={{ height: DESKTOP_HEADER_HEIGHT }} />
-                </Fragment>
-            )}
+                </Fragment> : null}
 
             {/* preact bug requires div wrap here otherwise padding can go before it */}
             <div>{children}</div>
 
-            {show_new && <AddComponent onClose={() => setShowNew(false)} />}
+            {show_new ? <AddComponent onClose={() => setShowNew(false)} /> : null}
 
             {!desktop_mode && (
                 <Fragment>

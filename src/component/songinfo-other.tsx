@@ -70,8 +70,7 @@ export const DialogPresent = ({ enter_single_presentor_mode }: { enter_single_pr
                             <ListItemText primary={t('present-monitor')} />
                         </ListItemButton>
                     </ListItem>
-                    {presentation && (
-                        <ListItem divider disablePadding>
+                    {presentation ? <ListItem divider disablePadding>
                             <ListItemButton
                                 onClick={() => {
                                     handleClose();
@@ -83,8 +82,7 @@ export const DialogPresent = ({ enter_single_presentor_mode }: { enter_single_pr
                                 </ListItemIcon>
                                 <ListItemText primary={t('present-cast')} />
                             </ListItemButton>
-                        </ListItem>
-                    )}
+                        </ListItem> : null}
                 </List>
             </DialogContent>
             <DialogActions>
@@ -225,8 +223,7 @@ const PresentationMover: React.FC<PresentationMoverProps> = ({ set_switcher, exi
     return (
         <Fragment>
             <GlobalStyles styles={presentationGlobalStyles} />
-            {set_switcher && set_switcher.can_prev() && (
-                <IconButton
+            {set_switcher && set_switcher.can_prev() ? <IconButton
                     component={Link}
                     to={`/song/${set_switcher.move(-1)}/${set_switcher.set_id}`}
                     sx={{
@@ -239,10 +236,8 @@ const PresentationMover: React.FC<PresentationMoverProps> = ({ set_switcher, exi
                     }}
                 >
                     <Icon.Prev />
-                </IconButton>
-            )}
-            {set_switcher && set_switcher.can_next() && (
-                <IconButton
+                </IconButton> : null}
+            {set_switcher && set_switcher.can_next() ? <IconButton
                     component={Link}
                     to={`/song/${set_switcher.move(1)}/${set_switcher.set_id}`}
                     sx={{
@@ -255,10 +250,8 @@ const PresentationMover: React.FC<PresentationMoverProps> = ({ set_switcher, exi
                     }}
                 >
                     <Icon.Next />
-                </IconButton>
-            )}
-            {exit_single_presentor_mode && (
-                <IconButton
+                </IconButton> : null}
+            {exit_single_presentor_mode ? <IconButton
                     onClick={exit_single_presentor_mode}
                     sx={{
                         position: 'fixed',
@@ -270,8 +263,7 @@ const PresentationMover: React.FC<PresentationMoverProps> = ({ set_switcher, exi
                     }}
                 >
                     <Icon.Close />
-                </IconButton>
-            )}
+                </IconButton> : null}
         </Fragment>
     );
 };
@@ -497,20 +489,16 @@ export const SongsDisplay = ({
                             <PrintCapoDisplay transpose={transpose} />
                             <Box sx={{ displayPrint: 'none' }}>
                                 <Grid container spacing={2} sx={{ justifyContent: 'space-evenly' }}>
-                                    {transpose && (
-                                        <Grid>
+                                    {transpose ? <Grid>
                                             <CapoChange song_id={song!.id} set_switcher={set_switcher} transpose={transpose} />
-                                        </Grid>
-                                    )}
-                                    {setup_chord_boxes && transpose && (
-                                        <Grid>
+                                        </Grid> : null}
+                                    {setup_chord_boxes && transpose ? <Grid>
                                             <ChordSelect set_switcher={set_switcher} song={song} transpose={transpose} />
-                                        </Grid>
-                                    )}
+                                        </Grid> : null}
                                 </Grid>
                             </Box>
 
-                            {song && <SongTopInfoSection song={song} />}
+                            {song ? <SongTopInfoSection song={song} /> : null}
 
                             <Box
                                 component="div"
@@ -544,8 +532,7 @@ export const SongsDisplay = ({
                             </Box>
                         </Box>
 
-                        {related_songs && related_songs.length > 0 && use_sidebyside() && (
-                            <Box sx={{ mx: 1, displayPrint: 'none' }}>
+                        {related_songs && related_songs.length > 0 && use_sidebyside() ? <Box sx={{ mx: 1, displayPrint: 'none' }}>
                                 <Grid container>
                                     <IconButton
                                         color="primary"
@@ -565,9 +552,8 @@ export const SongsDisplay = ({
                                         ))}
                                     </NativeSelect>
                                 </Grid>
-                                {sec_song && <SongXMLDisplay song={sec_song} transpose={transpose} />}
-                            </Box>
-                        )}
+                                {sec_song ? <SongXMLDisplay song={sec_song} transpose={transpose} /> : null}
+                            </Box> : null}
                     </div>
                 </div>
 
@@ -601,7 +587,7 @@ function ScrollButton({ active, icon: ThisIcon, title, ...props }: ScrollButtonP
             }}
         >
             <ThisIcon />
-            {active && t(title)}
+            {active ? t(title) : null}
         </Button>
     );
 }

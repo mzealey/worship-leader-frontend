@@ -27,7 +27,7 @@ export const EditTypeChooser = ({ format, onChange, elvanto }: EditTypeChooserPr
                 <ToggleButtonGroup fullWidth value={format} exclusive onChange={(_e, value) => onChange(value)}>
                     <ToggleButton value="chords">{t('edit_chords')}</ToggleButton>
                     <ToggleButton value="opensong">{t('edit_opensong')}</ToggleButton>
-                    {elvanto && <ToggleButton value="elvanto">Elvanto</ToggleButton>}
+                    {elvanto ? <ToggleButton value="elvanto">Elvanto</ToggleButton> : null}
                 </ToggleButtonGroup>
             </Grid>
         </Grid>
@@ -160,7 +160,7 @@ export const PageEditTextarea = ({ type, song, onClose }: PageEditTextareaProps)
                     </Button>
                 </DialogActions>
 
-                {submitFailed && <Alert message={t('edit_submit_failed')} onClose={() => setSubmitFailed(false)} />}
+                {submitFailed ? <Alert message={t('edit_submit_failed')} onClose={() => setSubmitFailed(false)} /> : null}
             </Dialog>
         </form>
     );

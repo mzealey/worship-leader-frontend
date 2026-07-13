@@ -59,6 +59,8 @@ export default defineConfig(js.configs.recommended, tseslint.configs.recommended
         // TODO: Add this in
         'react/prop-types': 1,
 
+        'react/jsx-no-leaked-render': ['error', { validStrategies: ['ternary', 'coerce'] }],
+
         'no-unused-vars': 'off', // Overridden by @typescript-eslint/no-unused-vars below
         '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_', varsIgnorePattern: '^_', caughtErrorsIgnorePattern: '.*' }],
         '@typescript-eslint/no-explicit-any': 'off',

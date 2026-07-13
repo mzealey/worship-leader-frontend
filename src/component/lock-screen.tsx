@@ -10,7 +10,7 @@ export function Spinner({ message_code }: SpinnerProps) {
     return (
         <Grid container spacing={0} sx={{ flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100vh' }}>
             <Box style={{ textAlign: 'center' }}>
-                {message_code && <h3>{t(message_code)}</h3>}
+                {message_code ? <h3>{t(message_code)}</h3> : null}
                 <CircularProgress />
             </Box>
         </Grid>

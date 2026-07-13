@@ -327,7 +327,7 @@ export const AudioPlayer = ({ song, file }: AudioPlayerProps) => {
                     <IconButton size="small" color="primary" title="Share" onClick={handleShare}>
                         <Icon.Share />
                     </IconButton>
-                    {shareLink && <PageSharer url={shareLink as string} file={file.path} title="Share" subject="Share" onClose={closeSharer} />}
+                    {shareLink ? <PageSharer url={shareLink as string} file={file.path} title="Share" subject="Share" onClose={closeSharer} /> : null}
                     <DownloadButton song={song} file={file} onDownload={setSrc} down_file_key={downFileKey()} />
                 </Fragment>
             )}
