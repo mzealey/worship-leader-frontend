@@ -1,0 +1,58 @@
+{
+  "$schema": "https://unpkg.com/knip@6/schema.json",
+  "ignoreIssues": {
+    "src/component/delayed-db-input.tsx": ["exports"],
+    "src/component/icons.tsx": ["exports", "duplicates"],
+    "src/component/song-list.tsx": ["exports"],
+    "src/db-search.ts": ["exports"],
+    "src/db/compressed-key-map.ts": ["exports"],
+    "src/file-download-utils.ts": ["exports", "types"],
+    "src/page/set-list.tsx": ["exports"],
+    "src/song.ts": ["types"],
+    "src/util.ts": ["types"],
+    "src/langpack.ts": ["duplicates"]
+  },
+  "workspaces": {
+    ".": {
+      "entry": [
+        "src/presentor/presentor.tsx",
+        "src/songbook-viewer.ts",
+        "src/common-functions.ts"
+      ],
+      "project": [
+        "src/**/*.{ts,tsx,scss}",
+        "*.{ts,js,mjs}",
+        "spec/**/*.{ts,tsx}",
+        "tests/**/*.ts"
+      ],
+      "ignoreDependencies": [
+        "caniuse-lite",
+        "core-js",
+        "@eslint/js",
+        "clsx",
+        "@mui/styles",
+        "eslint-plugin-import",
+        "vite-plugin-compression"
+      ],
+      "paths": {
+        "/src/*": ["src/*"]
+      }
+    },
+    "abc2svg": {
+      "entry": [],
+      "project": []
+    },
+    "wa-sqlite": {
+      "entry": [],
+      "project": [],
+      "ignoreDependencies": [
+        "@types/jasmine",
+        "@web/test-runner-core",
+        "comlink",
+        "jasmine-core",
+        "monaco-editor",
+        "web-test-runner-jasmine"
+      ]
+    }
+  }
+}

@@ -147,7 +147,6 @@ export const PagePrintSongbook = ({ set_id }: PagePrintSongbookProps) => {
         return () => {
             cancelled = true;
         };
-         
     }, [iframeReady]);
 
     // Push full data to viewer whenever the underlying song data or translation map changes

@@ -60,6 +60,10 @@ The following basic commands are available (see package.json for more):
     yarn test:unit:watch # Run the unit tests in watch mode
     yarn build:test     # Do a test build of everything into build/
 
+## Upgrading dependencies
+
+    yarn upgrade-interactive --latest
+
 # History
 
 See https://worshipleaderapp.com/en/story-worship-leader for some details of the general project. The history of the

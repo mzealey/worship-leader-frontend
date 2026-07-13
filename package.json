@@ -16,13 +16,14 @@
     "not ie <= 11"
   ],
   "scripts": {
-    "lint": "yarn lint:prettier && yarn lint:eslint:fix && yarn lint:typescript && yarn lint:typescript:spec",
+    "lint": "yarn lint:prettier && yarn lint:eslint:fix && yarn lint:typescript && yarn lint:typescript:spec && yarn lint:knip",
     "lint:prettier": "prettier --write {spec,src,tests}/**/*.{js,jsx,ts,tsx,css,scss} *.{js,mjs,ts,jsx,tsx} --experimental-cli",
     "lint:eslint": "eslint src/ spec/ tests/",
     "lint:eslint:fix": "eslint --fix src/ spec/ tests/",
     "lint:typescript": "tsc --noEmit",
     "lint:typescript:spec": "tsc --noEmit --project tsconfig.spec.json",
     "lint:typescript:tools": "tsc --noEmit --project tsconfig.playwright.json",
+    "lint:knip": "knip",
     "dev": "vite",
     "test": "yarn test:unit && yarn test:browser",
     "test:unit;watch": "vitest --dir spec",
@@ -73,8 +74,8 @@
   "devDependencies": {
     "@originjs/vite-plugin-commonjs": "^1.0.3",
     "@playwright/test": "^1.56.0",
-    "@types/better-sqlite3": "^7.6.13",
     "@react-router/node": "^7.9.3",
+    "@types/better-sqlite3": "^7.6.13",
     "@types/node": "^24.7.2",
     "@types/react": "^19.2.0",
     "@types/react-dom": "^19.2.0",
@@ -90,6 +91,7 @@
     "globals": "^16.4.0",
     "jiti": "^2.6.1",
     "jsdom": "^27.0.0",
+    "knip": "^6.26.0",
     "prettier": "^3.6.2",
     "prettier-plugin-organize-imports": "^4.3.0",
     "sass-embedded": "^1.83.0",
