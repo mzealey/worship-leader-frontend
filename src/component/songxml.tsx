@@ -1,5 +1,5 @@
 import { Box } from '@mui/material';
-import { ComponentType, useCallback, useEffect, useRef, useState, type MouseEvent } from 'react';
+import { ComponentType, memo, useCallback, useEffect, useRef, useState, type MouseEvent } from 'react';
 import { useTranslation } from '../langpack';
 import { clsx, Fragment } from '../preact-helpers';
 import { on_resize } from '../resize-watcher';
@@ -12,7 +12,7 @@ import type { TransposeDetails } from '../transpose-details';
 import { is_rtl, is_vertical_lang } from '../util';
 import { ChordPopup } from './chordpopup';
 
-const ZOOM_LEVELS = {
+const ZOOM_LEVELS: Record<string, string> = {
     vsmall: '100%',
     small: '120%',
     medium: '140%',
@@ -28,7 +28,76 @@ interface SelectedChord {
     pageY: number;
 }
 
-// Define the props that can be passed to SongXMLDisplay from outside
+interface SongXMLContentProps {
+    content: string;
+    songLang: string | undefined;
+    isRtlSong: boolean;
+    showFingering: boolean;
+    showChords: boolean;
+    inPresentation: boolean | undefined;
+    settingZoom: string;
+    onMouseOver: (e: MouseEvent<HTMLElement>) => void;
+    onMouseOut: (e: MouseEvent<HTMLElement>) => void;
+    songXMLRefCallback: (instance: HTMLDivElement | null) => void;
+}
+
+const SongXMLContent = memo(function SongXMLContent({
+    content,
+    songLang,
+    isRtlSong,
+    showFingering,
+    showChords,
+    inPresentation,
+    settingZoom,
+    onMouseOver,
+    onMouseOut,
+    songXMLRefCallback,
+}: SongXMLContentProps) {
+    return (
+        <div lang={songLang} dir={isRtlSong ? 'rtl' : 'ltr'}>
+            <Box
+                className={clsx(
+                    'songxml',
+                    inPresentation && 'presentation',
+                    inPresentation && (is_vertical_lang(songLang) ? 'presentationVertLang' : 'presentationNormalLang'),
+                    showFingering && 'setting-show-fingering',
+                    showChords && 'showchords',
+
+                    // Set the vertical-lr class if mongolian (traditional) and is the song block
+                    is_vertical_lang(songLang) && 'vertical-lr vertical-lr-scroll',
+                )}
+                sx={(theme) => ({
+                    color: theme.palette.text.highlight,
+                    '@media only print': {
+                        color: '#000',
+                    },
+                    '&.presentation': {
+                        '& .chorus, & .bridge, & .prechorus': { paddingLeft: 0 },
+                        textAlign: 'center',
+                        fontSize: '20pt',
+                        [theme.breakpoints.up('sm')]: { fontSize: '30pt' },
+                        [theme.breakpoints.up('md')]: { fontSize: '40pt' },
+                    },
+                    '&.presentationNormalLang': {
+                        // Amount of blank space to add at the bottom of a song when
+                        // presenting. We can't use vh units as these change a bit when in
+                        // a presentation-iframe
+                        paddingBottom: 500, // overscroll
+                    },
+                    '&.presentationVertLang': {
+                        marginRight: 500,
+                    },
+                })}
+                style={inPresentation ? {} : { fontSize: settingZoom ? ZOOM_LEVELS[settingZoom] : undefined }}
+                ref={songXMLRefCallback}
+                onMouseOver={onMouseOver}
+                onMouseOut={onMouseOut}
+                dangerouslySetInnerHTML={{ __html: content }}
+            />
+        </div>
+    );
+});
+
 export interface SongXMLDisplayProps {
     song?: Song;
     transpose?: TransposeDetails;
@@ -37,7 +106,7 @@ export interface SongXMLDisplayProps {
     in_presentation?: boolean;
 }
 
-export const SongXMLDisplay: ComponentType<SongXMLDisplayProps> = ({ song, transpose, is_printing, no_chords, in_presentation }: SongXMLDisplayProps) => {
+export const SongXMLDisplay: ComponentType<SongXMLDisplayProps> = ({ song, transpose, no_chords, in_presentation }: SongXMLDisplayProps) => {
     const { t } = useTranslation();
     const [display_chords] = useSetting('display-chords');
     const [show_fingering] = useSetting('show-fingering');
@@ -54,11 +123,12 @@ export const SongXMLDisplay: ComponentType<SongXMLDisplayProps> = ({ song, trans
     const lastChordCloseRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const resizeWatcherRef = useRef<{ unsubscribe: () => void } | null>(null);
     const transWatcherRef = useRef<{ unsubscribe: () => void } | null>(null);
+    const selectedChordRef = useRef<SelectedChord | undefined>(undefined);
 
-    const display_chord = (chord: string) => {
+    const display_chord = useCallback((chord: string) => {
         // Map # and &/b into sharp/flat symbols
         return maybe_convert_solfege(chord.replace(/[&b]/, '\u266D').replace(/#/, '\u266F'));
-    };
+    }, []);
 
     const rerender = useCallback(() => {
         // Width of chords may have changed - re-do the space stuff
@@ -126,6 +196,7 @@ export const SongXMLDisplay: ComponentType<SongXMLDisplayProps> = ({ song, trans
 
     const closeChordPopup = useCallback(() => {
         lastChordCloseRef.current = null;
+        selectedChordRef.current = undefined;
         setSelectedChord(undefined);
     }, []);
 
@@ -148,10 +219,16 @@ export const SongXMLDisplay: ComponentType<SongXMLDisplayProps> = ({ song, trans
             const parent = (e.target as HTMLElement).parentElement;
             if (!parent) return;
             const chord = parent.dataset.cur_chord;
-            if (chord) {
-                setSelectedChord({ chord, display_chord: display_chord(chord), pageX: e.pageX, pageY: e.pageY });
-                stopHideChordTimer();
+            if (!chord) return;
+
+            stopHideChordTimer();
+
+            if (selectedChordRef.current && selectedChordRef.current.chord === chord) {
+                return;
             }
+
+            selectedChordRef.current = { chord, display_chord: display_chord(chord), pageX: e.pageX, pageY: e.pageY };
+            setSelectedChord(selectedChordRef.current);
         },
         [display_chord, stopHideChordTimer],
     );
@@ -164,6 +241,10 @@ export const SongXMLDisplay: ComponentType<SongXMLDisplayProps> = ({ song, trans
         },
         [startHideChordTimer],
     );
+
+    const songXMLRefCallback = useCallback((instance: HTMLDivElement | null) => {
+        songxmlRef.current = instance;
+    }, []);
 
     // Watch transpose changes
     useEffect(() => {
@@ -197,7 +278,6 @@ export const SongXMLDisplay: ComponentType<SongXMLDisplayProps> = ({ song, trans
         refresh_songxml();
     }, [refresh_songxml]);
 
-    // Update chords when content changes
     useEffect(() => {
         if (song && songxmlRef.current && content) {
             Array.prototype.map.call(songxmlRef.current.querySelectorAll('.bridge, .chorus, .verse, .prechorus'), (e: Element) => {
@@ -215,9 +295,6 @@ export const SongXMLDisplay: ComponentType<SongXMLDisplayProps> = ({ song, trans
     // We don't need to do anything to allow a print at the moment,
     // although perhaps in future we should make page larger and redo the
     // format_html_chords.
-    if (is_printing) {
-        // was is_printing();
-    }
 
     if (!content) {
         return <b>{t('nolyrics')}</b>;
@@ -226,47 +303,18 @@ export const SongXMLDisplay: ComponentType<SongXMLDisplayProps> = ({ song, trans
     return (
         <Fragment>
             {/* Nest divs so that language can provide a font adjustment followed by the zoom setting */}
-            <div lang={song?.lang} dir={is_rtl_song ? 'rtl' : 'ltr'}>
-                <Box
-                    className={clsx(
-                        'songxml',
-                        in_presentation && 'presentation',
-                        in_presentation && (is_vertical_lang(song?.lang) ? 'presentationVertLang' : 'presentationNormalLang'),
-                        show_fingering && 'setting-show-fingering',
-                        show_chords && 'showchords',
-
-                        // Set the vertical-lr class if mongolian (traditional) and is the song block
-                        is_vertical_lang(song?.lang) && 'vertical-lr vertical-lr-scroll',
-                    )}
-                    sx={(theme) => ({
-                        color: theme.palette.text.highlight,
-                        '@media only print': {
-                            color: '#000',
-                        },
-                        '&.presentation': {
-                            '& .chorus, & .bridge, & .prechorus': { paddingLeft: 0 },
-                            textAlign: 'center',
-                            fontSize: '20pt',
-                            [theme.breakpoints.up('sm')]: { fontSize: '30pt' },
-                            [theme.breakpoints.up('md')]: { fontSize: '40pt' },
-                        },
-                        '&.presentationNormalLang': {
-                            // Amount of blank space to add at the bottom of a song when
-                            // presenting. We can't use vh units as these change a bit when in
-                            // a presentation-iframe
-                            paddingBottom: 500, // overscroll
-                        },
-                        '&.presentationVertLang': {
-                            marginRight: 500,
-                        },
-                    })}
-                    style={in_presentation ? {} : { fontSize: setting_zoom ? ZOOM_LEVELS[setting_zoom] : undefined }}
-                    ref={(e: any) => (songxmlRef.current = e)}
-                    onMouseOver={onMouseOver}
-                    onMouseOut={onMouseOut}
-                    dangerouslySetInnerHTML={{ __html: content }}
-                />
-            </div>
+            <SongXMLContent
+                content={content}
+                songLang={song?.lang}
+                isRtlSong={is_rtl_song}
+                showFingering={show_fingering}
+                showChords={show_chords}
+                inPresentation={in_presentation}
+                settingZoom={setting_zoom}
+                onMouseOver={onMouseOver}
+                onMouseOut={onMouseOut}
+                songXMLRefCallback={songXMLRefCallback}
+            />
 
             {show_fingering && selected_chord && (
                 <ChordPopup selected_chord={selected_chord} onMouseEnter={stopHideChordTimer} onMouseLeave={startHideChordTimer} />

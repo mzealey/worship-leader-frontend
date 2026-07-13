@@ -1,5 +1,5 @@
 import { Box, Button, IconButton, useTheme } from '@mui/material';
-import { useEffect, useRef, useState } from 'react';
+import { memo, useEffect, useRef, useState } from 'react';
 import { ABC } from '../abc2svg';
 import { Chord } from '../chord';
 import { fetch_json } from '../util';
@@ -20,7 +20,7 @@ interface ChordPopupProps {
     [key: string]: unknown;
 }
 
-export const ChordPopup = ({ selected_chord, ...props }: ChordPopupProps) => {
+export const ChordPopup = memo(function ChordPopup({ selected_chord, ...props }: ChordPopupProps) {
     const theme = useTheme();
     const [displayIdx, setDisplayIdx] = useState(0);
     const [chordData, setChordData] = useState<ChordDictionary | undefined>(undefined);
@@ -66,9 +66,8 @@ export const ChordPopup = ({ selected_chord, ...props }: ChordPopupProps) => {
 
         if (abcRef.current) {
             abcRef.current.toggle_playing(false);
-        } else {
-            abcRef.current = new ABC();
         }
+        abcRef.current = new ABC();
 
         const note_length = 0.3;
 
@@ -151,4 +150,4 @@ export const ChordPopup = ({ selected_chord, ...props }: ChordPopupProps) => {
             </Button>
         </Box>
     );
-};
+});

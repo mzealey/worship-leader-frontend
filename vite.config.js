@@ -64,6 +64,7 @@ export default defineConfig(({ command, mode }) => {
         },
 
         build: {
+            cssMinify: 'esbuild',
             reportCompressedSize: false,
             commonjsOptions: {
                 include: [/abc2svg/, /node_modules/],

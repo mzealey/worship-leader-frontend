@@ -25,3 +25,4 @@ the database by choosing a language and choosing some song languages to download
 ### General Principles
 - Do NOT use inline imports like `import('...').Type` - always use proper imports at the top of the file
 - Do NOT use ugly workarounds like `{...{} as any}` or spreading empty objects with type assertions
+- When refactoring files retain all existing comments unless they are no longer relevant to the new code
