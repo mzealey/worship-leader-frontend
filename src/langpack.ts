@@ -10,7 +10,7 @@ import { fetch_json } from './util';
 const translations: Record<string, string | Record<string, string>> = {};
 
 // Load a language pack
-async function lang_setup(lang = 'en') {
+export async function lang_setup(lang = 'en') {
     const new_lang = lang || 'en';
 
     // If we are in a live build then see if we previously had the correct langpack injected
@@ -61,6 +61,8 @@ async function lang_setup(lang = 'en') {
     }
     return new_lang;
 }
+
+export const _lang_setup = lang_setup;
 
 interface AppLangState {
     appLang: string | undefined;

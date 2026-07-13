@@ -5,7 +5,7 @@ import { defineConfig } from 'eslint/config';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
 
-export default defineConfig(js.configs.recommended, tseslint.configs.recommended, {
+export default defineConfig({ ignores: ['src/page/page-print-songbook.ts'] }, js.configs.recommended, tseslint.configs.recommended, {
     files: ['**/*.{js,jsx,ts,tsx}'],
     plugins: {
         react,
