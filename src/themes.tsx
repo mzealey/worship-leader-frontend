@@ -299,11 +299,20 @@ function generate_theme(base_palette: Palette) {
                             borderRadius: 16,
                             backgroundColor: fade(theme.palette.background.default, 0.85),
                         },
-                        //'& > option:focus': { backgroundColor: '#93DEDC !important', },
                     },
                     icon: {
                         right: 10,
                         color: theme.palette.text.highlight,
+                    },
+                },
+            },
+            MuiInputBase: {
+                styleOverrides: {
+                    root: {
+                        '&.MuiNativeSelect-root': {
+                            backgroundColor: theme.palette.background.default,
+                            color: theme.palette.text.highlight,
+                        },
                     },
                 },
             },

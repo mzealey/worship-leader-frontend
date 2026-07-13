@@ -1,4 +1,4 @@
-import { Box } from '@mui/material';
+import { Box, styled } from '@mui/material';
 import type { Theme } from '@mui/material/styles';
 import { Fragment, useEffect } from 'react';
 import side_img from '../../img/search-page-side-img.svg';
@@ -30,8 +30,14 @@ useSearchStore.subscribe((state) => {
 const side_section_width = '25vw';
 const breakpoint = 'md';
 
+const StickySearchArea = styled(Box)(({ theme }) => ({
+    position: 'sticky',
+    top: 0,
+    zIndex: theme.zIndex.appBar - 1,
+}));
+
 export const PageList = () => {
-    const { t } = useTranslation();
+    const { t: _t } = useTranslation();
     const verticalPagePadding = usePagePadding((state) => state.bottom + state.top);
 
     useEffect(() => {
@@ -43,7 +49,6 @@ export const PageList = () => {
         };
     }, []);
 
-    // TODO: Make SearchArea fixed
     return (
         <Fragment>
             <Box
@@ -53,18 +58,35 @@ export const PageList = () => {
                     width: side_section_width,
                     position: 'fixed',
                     height: '100%',
-                    backgroundImage: `url(${side_img})`,
-                    backgroundPosition: '0 50%',
-                    backgroundSize: 'contain',
-                    backgroundRepeat: 'no-repeat',
+                    overflow: 'hidden',
+                }}
+                style={{
+                    height: `calc(100vh - ${verticalPagePadding}px)`,
                     flexDirection: 'column',
                     justifyContent: 'center',
                 }}
-                style={{ height: `calc(100vh - ${verticalPagePadding}px)` }}
             >
+                <Box
+                    component="img"
+                    src={side_img}
+                    alt=""
+                    sx={{
+                        position: 'absolute',
+                        left: 0,
+                        top: '50%',
+                        transform: 'translateY(-50%)',
+                        width: '100%',
+                        height: 'auto',
+                        objectFit: 'contain',
+                        pointerEvents: 'none',
+                        zIndex: 0,
+                    }}
+                />
                 <Box
                     component={Icon.Search}
                     sx={(theme) => ({
+                        position: 'relative',
+                        zIndex: 1,
                         color: theme.palette.primary.contrastText,
                         marginLeft: '5vw',
                         width: '5vw',
@@ -81,7 +103,7 @@ export const PageList = () => {
                 })}
             >
                 <TopBar
-                    title={t('search')}
+                    title=""
                     sx={(theme: Theme) => ({
                         [theme.breakpoints.up(breakpoint)]: {
                             left: side_section_width,
@@ -90,7 +112,9 @@ export const PageList = () => {
                     })}
                 />
 
-                <SearchArea />
+                <StickySearchArea>
+                    <SearchArea />
+                </StickySearchArea>
                 <SongList container={document} />
             </Box>
         </Fragment>
