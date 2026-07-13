@@ -3,7 +3,7 @@ import { send_error_report } from '../error-catcher';
 import type { FavouriteDB } from '../favourite-db';
 import { DB_PATH } from '../globals';
 import { persistentStorage } from '../persistent-storage.es5';
-import { Song } from '../song';
+import type { Song } from '../song';
 import { load_song_languages, refresh_song_languages } from '../song-languages';
 import { CommonDB, get_db_chosen_langs } from './common';
 import { OnlineDB } from './online';

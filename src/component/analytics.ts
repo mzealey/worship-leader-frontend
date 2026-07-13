@@ -1,4 +1,5 @@
-import { PropsWithChildren, ReactNode, useEffect, useRef } from 'react';
+import type { PropsWithChildren, ReactNode } from 'react';
+import { useEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
 import { BUILD_TYPE, DEBUG } from '../globals';
 

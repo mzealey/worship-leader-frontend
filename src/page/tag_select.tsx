@@ -15,7 +15,8 @@ import { DialogTitleWithClose, DropDownIcon, ListCheckbox } from '../component/b
 import { DB, on_db_languages_update } from '../db';
 import { useSearchStore, type TagFilterMap } from '../db-search';
 import { useAppLang, useTranslation } from '../langpack';
-import { get_meta_db, MetaDbTagMapping, type MetaDb } from '../meta-db';
+import type { MetaDbTagMapping } from '../meta-db';
+import { get_meta_db, type MetaDb } from '../meta-db';
 import { useDialog } from '../preact-helpers';
 import { LOCALE_SORT } from '../sort-helpers';
 

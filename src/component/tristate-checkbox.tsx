@@ -1,5 +1,6 @@
 import { Checkbox, FormControlLabel } from '@mui/material';
-import { ReactNode, useState } from 'react';
+import type { ReactNode } from 'react';
+import { useState } from 'react';
 
 export const TristateCheckbox = ({ onChange, children }: { onChange?: (_state?: 0 | 1) => void; children?: ReactNode }) => {
     const [state, setState] = useState<number | undefined>(undefined);

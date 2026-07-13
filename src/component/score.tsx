@@ -5,7 +5,7 @@ import type { AbcRenderRequest } from '../abc2svg-renderer';
 import { file_feedback, song_feedback } from '../feedback';
 import { Fragment, useCallback, useEffect, useRef, useState } from '../preact-helpers';
 import { on_resize } from '../resize-watcher';
-import { Song, SongFile } from '../song';
+import type { Song, SongFile } from '../song';
 import type { TransposeDetails } from '../transpose-details';
 import { ensure_visible } from '../util';
 import * as Icon from './icons';
@@ -187,9 +187,11 @@ const _SheetMusicDisplay = ({ song, abc_file, transpose, is_printing, in_present
 
     return (
         <Fragment>
-            {(isLoading || instrumentLoading) ? <Box sx={{ displayPrint: 'none', display: 'flex', justifyContent: 'center', p: 5 }}>
+            {isLoading || instrumentLoading ? (
+                <Box sx={{ displayPrint: 'none', display: 'flex', justifyContent: 'center', p: 5 }}>
                     <CircularProgress />
-                </Box> : null}
+                </Box>
+            ) : null}
 
             {!in_presentation && (
                 <Box sx={{ displayPrint: 'none' }}>

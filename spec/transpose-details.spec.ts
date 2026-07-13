@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from 'vitest';
-import { Song } from '../src/song';
+import type { Song } from '../src/song';
 import { TransposeDetails } from '../src/transpose-details';
 
 describe('TransposeDetails', function () {

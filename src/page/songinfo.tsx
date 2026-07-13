@@ -1,6 +1,7 @@
 // TODO: Set document.title
 import { Box, IconButton, Typography, useTheme } from '@mui/material';
-import { ComponentType, useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import type { ComponentType } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import type { Subscription } from 'rxjs';
 import { useCanPrint } from '../can-print';
@@ -33,7 +34,7 @@ import { send_fake_resize } from '../resize-watcher';
 import { on_set_db_update } from '../set-db';
 import { SetSwitcher } from '../set-switcher';
 import { useSetting } from '../settings-store';
-import { Song, SongShortData } from '../song';
+import type { Song, SongShortData } from '../song';
 import { LOCALE_SORT } from '../sort-helpers';
 import { TransposeDetails } from '../transpose-details';
 import { is_cordova, scroll_to, try_to_run_fn } from '../util';
@@ -426,9 +427,11 @@ export const PageSongInfo: ComponentType<PageSongInfoProps> = ({ requested_song_
                     <Typography variant="h4" align="center">
                         <TextDirection lang={song ? song.lang : appLang}>{title}</TextDirection>
                     </Typography>
-                    {song && song.alternative_titles && song.alternative_titles.length > 0 ? <Typography variant="h6" align="center">
+                    {song && song.alternative_titles && song.alternative_titles.length > 0 ? (
+                        <Typography variant="h6" align="center">
                             <TextDirection lang={song.lang}>{song.alternative_titles.join(', ')}</TextDirection>
-                        </Typography> : null}
+                        </Typography>
+                    ) : null}
                 </Box>
 
                 <TopBar
@@ -452,20 +455,28 @@ export const PageSongInfo: ComponentType<PageSongInfoProps> = ({ requested_song_
                     title={<TextDirection lang={song ? song.lang : appLang}>{title}</TextDirection>}
                     menuOnly={
                         <Fragment>
-                            {display_lyrics && canPrint ? <ImageButton icon={Icon.Print} onClick={do_print}>
+                            {display_lyrics && canPrint ? (
+                                <ImageButton icon={Icon.Print} onClick={do_print}>
                                     {t('print-btn')}
-                                </ImageButton> : null}
+                                </ImageButton>
+                            ) : null}
 
-                            {display_lyrics ? <ImageButton icon={Icon.Copy} onClick={do_show_copy}>
+                            {display_lyrics ? (
+                                <ImageButton icon={Icon.Copy} onClick={do_show_copy}>
                                     {t('copybtn')}
-                                </ImageButton> : null}
+                                </ImageButton>
+                            ) : null}
 
-                            {display_lyrics ? <ImageButton icon={Icon.EditSong} onClick={do_show_edit}>
+                            {display_lyrics ? (
+                                <ImageButton icon={Icon.EditSong} onClick={do_show_edit}>
                                     {t('editbtn')}
-                                </ImageButton> : null}
-                            {display_lyrics ? <ImageButton icon={Icon.NewSong} onClick={show_new}>
+                                </ImageButton>
+                            ) : null}
+                            {display_lyrics ? (
+                                <ImageButton icon={Icon.NewSong} onClick={show_new}>
                                     {t('newbtn')}
-                                </ImageButton> : null}
+                                </ImageButton>
+                            ) : null}
 
                             <SongRefreshBtn onClick={refresh_song} />
                         </Fragment>
@@ -494,7 +505,8 @@ export const PageSongInfo: ComponentType<PageSongInfoProps> = ({ requested_song_
 
                 {add_to_set && song ? <DialogAddToSet transpose={transposePayload} song_id={song.id} onClose={() => setAddToSet(false)} /> : null}
                 {show_present ? <DialogPresent enter_single_presentor_mode={enter_single_presentor_mode} /> : null}
-                {share_link ? <PageSharer
+                {share_link ? (
+                    <PageSharer
                         url={share_link}
                         title={t('share_title')}
                         subject={t('share_subject')}
@@ -502,15 +514,18 @@ export const PageSongInfo: ComponentType<PageSongInfoProps> = ({ requested_song_
                             if (did_share && song) song_feedback('share', song.id);
                             setShareLink(undefined);
                         }}
-                    /> : null}
+                    />
+                ) : null}
                 {show_copy && song ? <PageCopyTextarea song={song} onClose={() => setShowCopy(false)} /> : null}
                 {show_edit ? <PageEditTextarea type={show_edit} song={show_edit === 'new' ? undefined : song} onClose={() => setShowEdit(undefined)} /> : null}
 
                 {song && set_id ? <SetPrevNext song_id={song.id} set_switcher={set_switcher} /> : null}
 
-                {!song && requested_song_id && !song_loading ? <p style={{ fontWeight: 'bold' }}>
+                {!song && requested_song_id && !song_loading ? (
+                    <p style={{ fontWeight: 'bold' }}>
                         {t('unknown-song')} (i{requested_song_id})
-                    </p> : null}
+                    </p>
+                ) : null}
 
                 {song_display}
             </Box>

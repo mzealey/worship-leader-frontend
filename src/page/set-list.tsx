@@ -58,14 +58,15 @@ const SetListItem = ({ withActions, set, ...props }: SetListItemProps) => {
                     <ListItemText
                         primary={
                             <span>
-                                {set.name} {(set.shared_live || set.live) ? <Icon.LiveSet /> : null}
+                                {set.name} {set.shared_live || set.live ? <Icon.LiveSet /> : null}
                             </span>
                         }
                     />
 
                     <ListItemSecondaryAction style={{ right: 0 }}>
                         {set.total}
-                        {withActions ? <span style={{ marginLeft: 12 }}>
+                        {withActions ? (
+                            <span style={{ marginLeft: 12 }}>
                                 {!set.ro && (
                                     <IconButton onClick={() => setShowRename(true)} title={t('rename_set')}>
                                         <Icon.Rename />
@@ -75,7 +76,8 @@ const SetListItem = ({ withActions, set, ...props }: SetListItemProps) => {
                                 <IconButton onClick={() => setShowDelete(true)} title={t('delete_set_btn')}>
                                     <Icon.Delete />
                                 </IconButton>
-                            </span> : null}
+                            </span>
+                        ) : null}
                     </ListItemSecondaryAction>
                 </ListItemButton>
             </ListItem>

@@ -48,9 +48,11 @@ export function DialogTitleWithClose({ handleClose, children }: { handleClose?: 
     return (
         <DialogTitle sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', pb: 2 }}>
             <span>{children}</span>
-            {handleClose ? <IconButton color="inherit" onClick={handleClose} aria-label="close" size="small" sx={{ ml: 2 }}>
+            {handleClose ? (
+                <IconButton color="inherit" onClick={handleClose} aria-label="close" size="small" sx={{ ml: 2 }}>
                     <Icon.Close />
-                </IconButton> : null}
+                </IconButton>
+            ) : null}
         </DialogTitle>
     );
 }

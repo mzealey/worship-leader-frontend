@@ -1,5 +1,7 @@
-import { IconButton, Input, InputAdornment, InputProps } from '@mui/material';
-import { ChangeEvent, ClipboardEvent, ComponentType, FocusEvent, KeyboardEvent, ReactNode, Ref, useEffect, useRef, useState } from 'react';
+import type { InputProps } from '@mui/material';
+import { IconButton, Input, InputAdornment } from '@mui/material';
+import type { ChangeEvent, ClipboardEvent, ComponentType, FocusEvent, KeyboardEvent, ReactNode, Ref } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { DB_AVAILABLE } from '../db';
 import * as Icon from './icons';
 

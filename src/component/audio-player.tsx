@@ -5,8 +5,8 @@ import { get_downloaded_file, is_local_url_allowed } from '../file-download-util
 import { usePagePadding } from '../page-padding';
 import { PageSharer } from '../page/sharer';
 import { Fragment, clsx, useEffect, useRef, useState } from '../preact-helpers';
-import { Song } from '../song';
-import { MediaFile } from '../util';
+import type { Song } from '../song';
+import type { MediaFile } from '../util';
 import { DownloadButton } from './file-download';
 import * as Icon from './icons';
 
@@ -305,21 +305,21 @@ export const AudioPlayer = ({ song, file }: AudioPlayerProps) => {
             })}
             style={isActivePlayer ? { bottom } : {}}
         >
-            <audio preload="none" ref={audioRef} onProgress={progressUpdate} onCanPlayThrough={progressUpdate} onTimeUpdate={onTimeUpdate}></audio>
+            <audio preload="none" ref={audioRef} onProgress={progressUpdate} onCanPlayThrough={progressUpdate} onTimeUpdate={onTimeUpdate} />
             <IconButton size="small" className={clsx('playBtn', playing && 'playing')} onClick={() => togglePlay()}>
                 {playing ? <Icon.Pause /> : <Icon.Play />}
             </IconButton>
             <div className="text">{parseTime(progress)}</div>
             <div className="trackContainer" ref={trackRef} onMouseDown={trackTouch} onMouseMove={trackTouch} onTouchStart={trackTouch} onTouchMove={trackTouch}>
-                <div className={clsx('track', 'trackBg', buffering && 'trackBuffering')}></div>
+                <div className={clsx('track', 'trackBg', buffering && 'trackBuffering')} />
                 <div
                     className={clsx('track', 'trackBuffered')}
                     style={audioRef.current && finalDuration ? { width: ((largestLoadTimestamp() / finalDuration) * 100).toFixed(2) + '%' } : {}}
-                ></div>
+                />
                 <div
                     className={clsx('track', 'trackIndicator')}
                     style={finalDuration ? { width: (((progress || 0) / (finalDuration as number)) * 100).toFixed(2) + '%' } : {}}
-                ></div>
+                />
             </div>
             <div className="text">{parseTime(finalDuration)}</div>
             {(!file.download_path || file.download_path != 'none') && (

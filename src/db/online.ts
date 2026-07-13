@@ -3,7 +3,7 @@ import { API_HOST, DB_PATH, DUMP_VERSION } from '../globals';
 import { get_browser_languages } from '../langdetect.es5';
 import { useAppLang } from '../langpack';
 import { persistentStorage } from '../persistent-storage.es5';
-import { Song, SongShortData, SongSource } from '../song';
+import type { Song, SongShortData, SongSource } from '../song';
 import { fetch_json, generate_search_params, type AbortablePromise } from '../util';
 import { CommonDB, get_db_chosen_langs, type DBFilters, type _SearchMetaResult } from './common';
 

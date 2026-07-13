@@ -7,7 +7,7 @@ import { LockScreen } from '../component/lock-screen';
 import { send_ui_notification } from '../component/notification';
 import { API_HOST, get_uuid } from '../globals';
 import { useTranslation } from '../langpack';
-import { Song } from '../song';
+import type { Song } from '../song';
 import { convert_to_elvanto, convert_to_pre } from '../songxml-util';
 import { fetch_json } from '../util';
 

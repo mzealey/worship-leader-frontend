@@ -2,7 +2,7 @@ import type { DBRequestedItems, DBSearchRunResult } from '../db-search';
 import type { FavouriteDB } from '../favourite-db';
 import { get_meta_db } from '../meta-db';
 import { persistentStorage } from '../persistent-storage.es5';
-import { Album, MaybeLoadedSong, NotLoadedSong, Song, SongShortData, SongSource } from '../song';
+import type { Album, MaybeLoadedSong, NotLoadedSong, Song, SongShortData, SongSource } from '../song';
 import { LOCALE_SORT, SORT_TITLE_SORT } from '../sort-helpers';
 import { deferred_promise, type DeferredPromise } from '../util';
 

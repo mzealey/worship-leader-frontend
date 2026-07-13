@@ -14,7 +14,7 @@ import { useTranslation } from '../langpack';
 import { Link } from '../preact-helpers';
 import { on_set_db_update, SET_DB, type SetEntry } from '../set-db';
 import { generate_set_share_link } from '../set-utils';
-import { MaybeLoadedSong } from '../song';
+import type { MaybeLoadedSong } from '../song';
 import { PageSetShare } from './dialog-set-share';
 import { PageSharer } from './sharer';
 
@@ -173,7 +173,9 @@ export const PageSetView = ({ set_id }: PageSetViewProps) => {
             </TopBar>
 
             {shareSetDialog ? <PageSetShare set={set} onClose={() => setShareSetDialog(false)} /> : null}
-            {shareSetLink ? <PageSharer url={shareSetLink} title={t('share_title')} subject={t('share_set_subject')} onClose={() => setShareSetLink(null)} /> : null}
+            {shareSetLink ? (
+                <PageSharer url={shareSetLink} title={t('share_title')} subject={t('share_set_subject')} onClose={() => setShareSetLink(null)} />
+            ) : null}
 
             {isLoading ? <CircularProgress /> : null}
 

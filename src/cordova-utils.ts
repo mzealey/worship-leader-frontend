@@ -1,4 +1,5 @@
-import { is_cordova, UnknownArgs } from './util';
+import type { UnknownArgs } from './util';
+import { is_cordova } from './util';
 
 type StatusBarFn = (...args: UnknownArgs) => void;
 

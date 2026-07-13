@@ -27,7 +27,8 @@ import { APP_VERSION, BUILD_TYPE, get_client_type, get_uuid } from '../globals';
 import { useTranslation } from '../langpack';
 import { get_meta_db_update_ts } from '../meta-db';
 import { persistentStorage } from '../persistent-storage.es5';
-import { Settings, useSetting } from '../settings-store';
+import type { Settings } from '../settings-store';
+import { useSetting } from '../settings-store';
 import { date_as_utc, is_cordova } from '../util';
 import { DialogDbLangs } from './db-langs';
 
@@ -291,11 +292,13 @@ export const PageSettings = () => {
                     </Grid>
                 )}
 
-                {show_cast_scan ? <Grid>
+                {show_cast_scan ? (
+                    <Grid>
                         <Button color="primary" variant="contained" fullWidth onClick={() => get_presentation().then((p) => p.enter_cast_mode())}>
                             {t('cast_scan')}
                         </Button>
-                    </Grid> : null}
+                    </Grid>
+                ) : null}
 
                 <Grid>
                     <SettingsPageVersion />

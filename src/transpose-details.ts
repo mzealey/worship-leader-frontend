@@ -1,7 +1,7 @@
 import type { Subscription } from 'rxjs';
 import { Subject } from 'rxjs';
 import { SET_DB } from './set-db';
-import { Song } from './song';
+import type { Song } from './song';
 import { Transpose } from './transpose';
 
 const trans = new Transpose();

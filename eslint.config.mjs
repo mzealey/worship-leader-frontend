@@ -61,6 +61,16 @@ export default defineConfig(js.configs.recommended, tseslint.configs.recommended
 
         'react/jsx-no-leaked-render': ['error', { validStrategies: ['ternary', 'coerce'] }],
 
+        'react-hooks/rules-of-hooks': 'warn',
+        'react-hooks/exhaustive-deps': 'warn',
+
+        'react/jsx-key': 'error',
+        'react/self-closing-comp': 'warn',
+        'react/no-unescaped-entities': 'warn',
+
+        '@typescript-eslint/consistent-type-imports': 'warn',
+        '@typescript-eslint/ban-ts-comment': ['error', { 'ts-expect-error': false, 'ts-ignore': true, 'ts-nocheck': false, 'ts-check': false }],
+
         'no-unused-vars': 'off', // Overridden by @typescript-eslint/no-unused-vars below
         '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_', varsIgnorePattern: '^_', caughtErrorsIgnorePattern: '.*' }],
         '@typescript-eslint/no-explicit-any': 'off',

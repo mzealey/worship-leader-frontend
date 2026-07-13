@@ -1,9 +1,10 @@
 import { IconButton } from '@mui/material';
-import { PresentationCommon, get_presentation, useCast } from '../dual-present';
+import type { PresentationCommon } from '../dual-present';
+import { get_presentation, useCast } from '../dual-present';
 import { persistentStorage } from '../persistent-storage.es5';
 import { clsx, useCallback, useEffect, useRef, useState } from '../preact-helpers';
 import { on_resize } from '../resize-watcher';
-import { Song } from '../song';
+import type { Song } from '../song';
 import { songxml_to_divs } from '../songxml-util';
 import { is_rtl, is_vertical_lang } from '../util';
 import * as Icon from './icons';

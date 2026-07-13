@@ -1,11 +1,12 @@
 import { Box } from '@mui/material';
-import { ComponentType, memo, useCallback, useEffect, useRef, useState, type MouseEvent } from 'react';
+import type { ComponentType } from 'react';
+import { memo, useCallback, useEffect, useRef, useState, type MouseEvent } from 'react';
 import { useTranslation } from '../langpack';
 import { clsx, Fragment } from '../preact-helpers';
 import { on_resize } from '../resize-watcher';
 import { useSetting } from '../settings-store';
 import { maybe_convert_solfege } from '../solfege-util';
-import { Song } from '../song';
+import type { Song } from '../song';
 import { format_html_chords, songxml_to_divs } from '../songxml-util';
 import { Transpose } from '../transpose';
 import type { TransposeDetails } from '../transpose-details';
@@ -317,7 +318,9 @@ export const SongXMLDisplay: ComponentType<SongXMLDisplayProps> = ({ song, trans
                 songXMLRefCallback={songXMLRefCallback}
             />
 
-            {show_fingering && selected_chord ? <ChordPopup selected_chord={selected_chord} onMouseEnter={stopHideChordTimer} onMouseLeave={startHideChordTimer} /> : null}
+            {show_fingering && selected_chord ? (
+                <ChordPopup selected_chord={selected_chord} onMouseEnter={stopHideChordTimer} onMouseLeave={startHideChordTimer} />
+            ) : null}
         </Fragment>
     );
 };

@@ -150,9 +150,11 @@ export function SearchFilters(props: SearchFiltersProps) {
                         </Button>
                     )}
                 </ButtonGroup>
-                {show_tag_selector ? <Theme section="Base">
+                {show_tag_selector ? (
+                    <Theme section="Base">
                         <PageTagSelect onClose={() => setShowTagSelector(false)} />
-                    </Theme> : null}
+                    </Theme>
+                ) : null}
             </Grid>
             <Grid>
                 <ButtonGroup>
@@ -166,9 +168,11 @@ export function SearchFilters(props: SearchFiltersProps) {
                         </Button>
                     )}
                 </ButtonGroup>
-                {show_source_selector ? <Theme section="Base">
+                {show_source_selector ? (
+                    <Theme section="Base">
                         <PageSourceSelect onClose={() => setShowSourceSelector(false)} />
-                    </Theme> : null}
+                    </Theme>
+                ) : null}
             </Grid>
             <Grid>
                 <SongKeyInput fullWidth onChange={(v: string) => updateFilter({ songkey: v == '' ? undefined : v })} />

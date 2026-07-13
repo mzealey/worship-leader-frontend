@@ -21,7 +21,8 @@ import { DialogTitleWithClose, ListCheckbox, ThinPage } from '../component/basic
 import { send_ui_notification } from '../component/notification';
 import { TopBar } from '../component/top-bar';
 import { DB_AVAILABLE } from '../db';
-import { DbLangEntry, getDbLangs } from '../db-language-utils';
+import type { DbLangEntry } from '../db-language-utils';
+import { getDbLangs } from '../db-language-utils';
 import { save_db_chosen_langs } from '../db/common';
 import { useTranslation } from '../langpack';
 import { useDialog } from '../preact-helpers';

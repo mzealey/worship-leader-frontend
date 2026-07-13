@@ -30,14 +30,15 @@ import { PrintCapoDisplay, SongTopInfoSection } from '../component/songinfo-side
 import { SongXMLDisplay } from '../component/songxml';
 import { Theme } from '../component/theme';
 import { DB, on_db_change } from '../db';
-import { PresentationCommon, get_presentation, useCast } from '../dual-present';
+import type { PresentationCommon } from '../dual-present';
+import { get_presentation, useCast } from '../dual-present';
 import { useTranslation } from '../langpack';
 import { usePagePadding } from '../page-padding';
 import { Fragment, Link, useDialog } from '../preact-helpers';
 import { SET_DB } from '../set-db';
 import type { SetSwitcher } from '../set-switcher';
 import { useSetting } from '../settings-store';
-import { Song, SongShortData } from '../song';
+import type { Song, SongShortData } from '../song';
 import { get_text_title } from '../song-utils';
 import type { TransposeDetails } from '../transpose-details';
 import { format_string, is_rtl, is_vertical_lang, scroll_to } from '../util';
@@ -70,7 +71,8 @@ export const DialogPresent = ({ enter_single_presentor_mode }: { enter_single_pr
                             <ListItemText primary={t('present-monitor')} />
                         </ListItemButton>
                     </ListItem>
-                    {presentation ? <ListItem divider disablePadding>
+                    {presentation ? (
+                        <ListItem divider disablePadding>
                             <ListItemButton
                                 onClick={() => {
                                     handleClose();
@@ -82,7 +84,8 @@ export const DialogPresent = ({ enter_single_presentor_mode }: { enter_single_pr
                                 </ListItemIcon>
                                 <ListItemText primary={t('present-cast')} />
                             </ListItemButton>
-                        </ListItem> : null}
+                        </ListItem>
+                    ) : null}
                 </List>
             </DialogContent>
             <DialogActions>
@@ -223,7 +226,8 @@ const PresentationMover: React.FC<PresentationMoverProps> = ({ set_switcher, exi
     return (
         <Fragment>
             <GlobalStyles styles={presentationGlobalStyles} />
-            {set_switcher && set_switcher.can_prev() ? <IconButton
+            {set_switcher && set_switcher.can_prev() ? (
+                <IconButton
                     component={Link}
                     to={`/song/${set_switcher.move(-1)}/${set_switcher.set_id}`}
                     sx={{
@@ -236,8 +240,10 @@ const PresentationMover: React.FC<PresentationMoverProps> = ({ set_switcher, exi
                     }}
                 >
                     <Icon.Prev />
-                </IconButton> : null}
-            {set_switcher && set_switcher.can_next() ? <IconButton
+                </IconButton>
+            ) : null}
+            {set_switcher && set_switcher.can_next() ? (
+                <IconButton
                     component={Link}
                     to={`/song/${set_switcher.move(1)}/${set_switcher.set_id}`}
                     sx={{
@@ -250,8 +256,10 @@ const PresentationMover: React.FC<PresentationMoverProps> = ({ set_switcher, exi
                     }}
                 >
                     <Icon.Next />
-                </IconButton> : null}
-            {exit_single_presentor_mode ? <IconButton
+                </IconButton>
+            ) : null}
+            {exit_single_presentor_mode ? (
+                <IconButton
                     onClick={exit_single_presentor_mode}
                     sx={{
                         position: 'fixed',
@@ -263,7 +271,8 @@ const PresentationMover: React.FC<PresentationMoverProps> = ({ set_switcher, exi
                     }}
                 >
                     <Icon.Close />
-                </IconButton> : null}
+                </IconButton>
+            ) : null}
         </Fragment>
     );
 };
@@ -489,12 +498,16 @@ export const SongsDisplay = ({
                             <PrintCapoDisplay transpose={transpose} />
                             <Box sx={{ displayPrint: 'none' }}>
                                 <Grid container spacing={2} sx={{ justifyContent: 'space-evenly' }}>
-                                    {transpose ? <Grid>
+                                    {transpose ? (
+                                        <Grid>
                                             <CapoChange song_id={song!.id} set_switcher={set_switcher} transpose={transpose} />
-                                        </Grid> : null}
-                                    {setup_chord_boxes && transpose ? <Grid>
+                                        </Grid>
+                                    ) : null}
+                                    {setup_chord_boxes && transpose ? (
+                                        <Grid>
                                             <ChordSelect set_switcher={set_switcher} song={song} transpose={transpose} />
-                                        </Grid> : null}
+                                        </Grid>
+                                    ) : null}
                                 </Grid>
                             </Box>
 
@@ -532,7 +545,8 @@ export const SongsDisplay = ({
                             </Box>
                         </Box>
 
-                        {related_songs && related_songs.length > 0 && use_sidebyside() ? <Box sx={{ mx: 1, displayPrint: 'none' }}>
+                        {related_songs && related_songs.length > 0 && use_sidebyside() ? (
+                            <Box sx={{ mx: 1, displayPrint: 'none' }}>
                                 <Grid container>
                                     <IconButton
                                         color="primary"
@@ -553,7 +567,8 @@ export const SongsDisplay = ({
                                     </NativeSelect>
                                 </Grid>
                                 {sec_song ? <SongXMLDisplay song={sec_song} transpose={transpose} /> : null}
-                            </Box> : null}
+                            </Box>
+                        ) : null}
                     </div>
                 </div>
 

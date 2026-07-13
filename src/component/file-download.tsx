@@ -3,8 +3,8 @@ import { useEffect, useState } from 'react';
 import { delete_downloaded_file, download_file, get_downloaded_file, get_file, remove_file } from '../file-download-utils';
 import { useTranslation } from '../langpack';
 import { clsx } from '../preact-helpers';
-import { Song } from '../song';
-import { MediaFile } from '../util';
+import type { Song } from '../song';
+import type { MediaFile } from '../util';
 import { Download, Link } from './icons';
 
 interface DownloadButtonProps {

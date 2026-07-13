@@ -4,7 +4,7 @@ import { create } from 'zustand';
 import type { CommonDB, DBBaseFilters, DBFilters } from './db/common';
 import { eventSocket } from './event-socket';
 import { persistentStorage } from './persistent-storage.es5';
-import { Album, SongShortData, SongSource } from './song';
+import type { Album, SongShortData, SongSource } from './song';
 import { unidecode } from './unidecode';
 import { is_mobile_browser, prepare_search_string } from './util';
 

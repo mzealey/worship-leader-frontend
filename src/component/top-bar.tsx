@@ -1,5 +1,6 @@
 import { AppBar, Box, IconButton, Popover, Toolbar, Typography } from '@mui/material';
-import { ReactNode, useState } from 'react';
+import type { ReactNode } from 'react';
+import { useState } from 'react';
 import { useTranslation } from '../langpack';
 import { Fragment, preact_get_text } from '../preact-helpers';
 import * as Icon from './icons';
@@ -115,12 +116,14 @@ export function TopBar({ sx, noMenu, className, menuOnly, before, documentTitle,
                     <Box sx={{ flexGrow: 1, minWidth: 16 }} />
                     {children}
                 </Toolbar>
-                {show_menu ? <Box sx={{ position: 'absolute', right: 0 }}>
+                {show_menu ? (
+                    <Box sx={{ position: 'absolute', right: 0 }}>
                         <MenuButton>
                             {children}
                             {menuOnly}
                         </MenuButton>
-                    </Box> : null}
+                    </Box>
+                ) : null}
             </AppBar>
             <Toolbar />
         </Box>

@@ -5,7 +5,7 @@ import { get_translation } from './langpack';
 import { persistentStorage } from './persistent-storage.es5';
 import { is_chrome_extension, is_cordova } from './util';
 
-import { MediaFileAdditionalData } from './util';
+import type { MediaFileAdditionalData } from './util';
 
 export type DownloadState = {
     loading: 0 | 1;

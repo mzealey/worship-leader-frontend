@@ -1,5 +1,6 @@
 import { Box, Button, ButtonGroup, useTheme } from '@mui/material';
-import { ComponentType, Fragment, ReactElement, useEffect, useState } from 'react';
+import type { ComponentType, ReactElement } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { useLocation } from 'react-router';
 import { create } from 'zustand';
 import { match_media_watcher } from '../globals';
@@ -117,7 +118,8 @@ function _PagesContainer({ children }: PagesContainerProps) {
 
     return (
         <Fragment>
-            {desktop_mode ? <Fragment>
+            {desktop_mode ? (
+                <Fragment>
                     <Box
                         sx={(theme) => ({
                             position: 'fixed',
@@ -149,7 +151,8 @@ function _PagesContainer({ children }: PagesContainerProps) {
                         </Box>
                     </Box>
                     <Box sx={{ displayPrint: 'none' }} style={{ height: DESKTOP_HEADER_HEIGHT }} />
-                </Fragment> : null}
+                </Fragment>
+            ) : null}
 
             {/* preact bug requires div wrap here otherwise padding can go before it */}
             <div>{children}</div>

@@ -26,9 +26,10 @@ import { clsx, Fragment, preact_get_text } from '../preact-helpers';
 import { on_resize } from '../resize-watcher';
 import { set_search_text } from '../search';
 import { useSetting } from '../settings-store';
-import { Album, MaybeLoadedSong, RelatedSong, Song, SongSource } from '../song';
+import type { Album, MaybeLoadedSong, RelatedSong, Song, SongSource } from '../song';
 import { get_text_title } from '../song-utils';
-import { ensure_visible, format_string, is_rtl, is_vertical_lang, scroll_to, UnknownArgs } from '../util';
+import type { UnknownArgs } from '../util';
+import { ensure_visible, format_string, is_rtl, is_vertical_lang, scroll_to } from '../util';
 import * as Icon from './icons';
 
 interface TextDirectionProps extends React.HTMLAttributes<HTMLSpanElement> {
@@ -173,9 +174,11 @@ const SongListLinkHeader = ({ prefix, song, children }: SongListLinkHeaderProps)
                 {!!fullSong.has_chord && display_chords ? <Icon.SymbolHasChord /> : null}
                 {!!fullSong.has_mp3 && <Icon.SymbolHasMP3 />}
                 {!!fullSong.has_sheet && <Icon.SymbolHasSheet />}
-                {children ? <Box component="span" sx={{ ml: 1 }}>
+                {children ? (
+                    <Box component="span" sx={{ ml: 1 }}>
                         {children}
-                    </Box> : null}
+                    </Box>
+                ) : null}
             </ListItemSecondaryAction>
         </Fragment>
     );
@@ -525,7 +528,8 @@ export function SongList({ container, active_song_id }: SongListProps) {
             <PagerElem current_search={current_search} on_change={scroll_to_top} />
 
             {!is_loading && on_first_page && items.length == 0 ? <p style={{ fontWeight: 'bold' }}>{t('noresults')}</p> : null}
-            {(infinite_scroll || !show_spinner) && items.length > 0 ? <List ref={set_songlist} disablePadding>
+            {(infinite_scroll || !show_spinner) && items.length > 0 ? (
+                <List ref={set_songlist} disablePadding>
                     {items.map((item, idx: number) =>
                         '_type' in item ? (
                             <MetaLink withStripe={idx % 2 == 0} key={`${item._type}${item.id}`} meta={item} />
@@ -533,7 +537,8 @@ export function SongList({ container, active_song_id }: SongListProps) {
                             <SongListLink withStripe={idx % 2 == 0} key={item.id} is_active={item.id == active_song_id} song={item as Song} />
                         ),
                     )}
-                </List> : null}
+                </List>
+            ) : null}
 
             {show_spinner ? loader : null}
 

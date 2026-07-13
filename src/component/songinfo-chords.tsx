@@ -1,10 +1,11 @@
 import { FormControlLabel, NativeSelect } from '@mui/material';
-import { ReactElement, useCallback, useEffect, useState } from 'react';
+import type { ReactElement } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from '../langpack';
 import { SET_DB } from '../set-db';
 import type { SetSwitcher } from '../set-switcher';
 import { maybe_convert_solfege } from '../solfege-util';
-import { Song } from '../song';
+import type { Song } from '../song';
 import { Transpose } from '../transpose';
 import type { TransposeDetails } from '../transpose-details';
 

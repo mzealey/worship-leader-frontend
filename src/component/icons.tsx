@@ -1,5 +1,6 @@
 import { mdiDotsHorizontal as _Menu, mdiMonitor as _Present, mdiYoutube as _Video } from '@mdi/js';
-import SvgIcon, { SvgIconProps } from '@mui/material/SvgIcon';
+import type { SvgIconProps } from '@mui/material/SvgIcon';
+import SvgIcon from '@mui/material/SvgIcon';
 const _genMDIIcon = (path: string, default_props: Partial<SvgIconProps> = {}) => {
     const fn = (props?: SvgIconProps) => (
         <SvgIcon {...default_props} {...props}>
