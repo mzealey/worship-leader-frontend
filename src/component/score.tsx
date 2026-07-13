@@ -188,13 +188,13 @@ const _SheetMusicDisplay = ({ song, abc_file, transpose, is_printing, in_present
     return (
         <Fragment>
             {(isLoading || instrumentLoading) && (
-                <Box displayPrint="none" display="flex" justifyContent="center" p={5}>
+                <Box sx={{ displayPrint: 'none', display: 'flex', justifyContent: 'center', p: 5 }}>
                     <CircularProgress />
                 </Box>
             )}
 
             {!in_presentation && (
-                <Box displayPrint="none">
+                <Box sx={{ displayPrint: 'none' }}>
                     {!isLoading && (
                         <IconButton onClick={onClick} color="primary">
                             {playing ? <Icon.Pause /> : <Icon.Play />}

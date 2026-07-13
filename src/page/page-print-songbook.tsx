@@ -194,13 +194,13 @@ export const PagePrintSongbook = ({ set_id }: PagePrintSongbookProps) => {
                 </ImageButton>
             </TopBar>
 
-            <Grid container spacing={2} direction="column">
+            <Grid container spacing={2} sx={{ flexDirection: 'column' }}>
                 <Grid>
                     <Typography variant="subtitle1">{t('print-songbook')}</Typography>
                 </Grid>
 
                 <Grid>
-                    <Box display="flex" alignItems="center" justifyContent="space-between" width={1}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: 1 }}>
                         <label htmlFor="songbook-paper-size">{t('editor.paper_size')}</label>
                         <NativeSelect
                             id="songbook-paper-size"
@@ -215,7 +215,7 @@ export const PagePrintSongbook = ({ set_id }: PagePrintSongbookProps) => {
                 </Grid>
 
                 <Grid>
-                    <Box display="flex" alignItems="center" justifyContent="space-between" width={1}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: 1 }}>
                         <label htmlFor="songbook-font-size">{t('editor.font_size')}</label>
                         <NativeSelect
                             id="songbook-font-size"
@@ -231,7 +231,7 @@ export const PagePrintSongbook = ({ set_id }: PagePrintSongbookProps) => {
                 </Grid>
 
                 <Grid>
-                    <Box display="flex" alignItems="center" justifyContent="space-between" width={1}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: 1 }}>
                         <label htmlFor="songbook-columns">{t('editor.columns')}</label>
                         <NativeSelect
                             id="songbook-columns"
@@ -248,7 +248,7 @@ export const PagePrintSongbook = ({ set_id }: PagePrintSongbookProps) => {
                 </Grid>
 
                 <Grid>
-                    <Box display="flex" alignItems="center" justifyContent="space-between" width={1}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: 1 }}>
                         <label htmlFor="songbook-language">{t('editor.songbook_language')}</label>
                         <NativeSelect
                             id="songbook-language"
@@ -266,7 +266,7 @@ export const PagePrintSongbook = ({ set_id }: PagePrintSongbookProps) => {
                 </Grid>
 
                 <Grid>
-                    <Box display="flex" alignItems="center" justifyContent="space-between" width={1}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: 1 }}>
                         <label htmlFor="songbook-sidebyside">{t('editor.songbook_include_translations')}</label>
                         <NativeSelect
                             id="songbook-sidebyside"
@@ -285,7 +285,7 @@ export const PagePrintSongbook = ({ set_id }: PagePrintSongbookProps) => {
                 </Grid>
 
                 <Grid>
-                    <Box display="flex" flexDirection="column">
+                    <Box sx={{ display: 'flex', flexDirection: 'column' }}>
                         <BoolSetting label={t('editor.include_chords')} checked={config.wantChords} onChange={(v) => updateConfig({ wantChords: v })} />
                         <BoolSetting
                             label={t('editor.include_front_page')}
@@ -321,7 +321,7 @@ export const PagePrintSongbook = ({ set_id }: PagePrintSongbookProps) => {
                 </Grid>
 
                 <Grid>
-                    <Box position="relative">
+                    <Box sx={{ position: 'relative' }}>
                         <iframe
                             ref={iframeRef}
                             id="songbook-viewer-iframe"
@@ -331,7 +331,18 @@ export const PagePrintSongbook = ({ set_id }: PagePrintSongbookProps) => {
                             onLoad={() => setIframeReady(true)}
                         />
                         {!baseData && (
-                            <Box position="absolute" top={0} left={0} right={0} bottom={0} display="flex" justifyContent="center" alignItems="center">
+                            <Box
+                                sx={{
+                                    position: 'absolute',
+                                    top: 0,
+                                    left: 0,
+                                    right: 0,
+                                    bottom: 0,
+                                    display: 'flex',
+                                    justifyContent: 'center',
+                                    alignItems: 'center',
+                                }}
+                            >
                                 <CircularProgress />
                             </Box>
                         )}

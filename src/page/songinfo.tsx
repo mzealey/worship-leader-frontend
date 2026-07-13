@@ -411,10 +411,10 @@ export const PageSongInfo: ComponentType<PageSongInfoProps> = ({ requested_song_
             {show_sidebar && song && <SongPageSidebar active_song_id={song.id} />}
 
             <Box
-                minHeight={`calc(100vh - ${verticalPagePadding}px)`}
-                display="flex"
-                flexDirection="column"
                 sx={{
+                    minHeight: `calc(100vh - ${verticalPagePadding}px)`,
+                    display: 'flex',
+                    flexDirection: 'column',
                     ...(show_sidebar && {
                         '@media only screen': {
                             marginLeft: `${sidebar_width + 1}px`,
@@ -422,7 +422,7 @@ export const PageSongInfo: ComponentType<PageSongInfoProps> = ({ requested_song_
                     }),
                 }}
             >
-                <Box display="none" displayPrint="block">
+                <Box sx={{ display: 'none', displayPrint: 'block' }}>
                     <Typography variant="h4" align="center">
                         <TextDirection lang={song ? song.lang : appLang}>{title}</TextDirection>
                     </Typography>

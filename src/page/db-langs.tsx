@@ -138,7 +138,7 @@ const DbLanguageSelectorInner = ({
     }, [bottomLangs, deferredFilterText, selectedLangs]);
 
     return (
-        <Box width="100%">
+        <Box sx={{ width: '100%' }}>
             <p>{t('db-langs-intro')}</p>
 
             <List dense>
@@ -181,7 +181,12 @@ function DbLanguageSelector({
     return (
         <Suspense
             fallback={
-                <Grid container spacing={0} direction="row" alignItems="center" justifyContent="center" style={{ minHeight: '50vh', flexGrow: 1 }}>
+                <Grid
+                    container
+                    spacing={0}
+                    sx={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'center' }}
+                    style={{ minHeight: '50vh', flexGrow: 1 }}
+                >
                     <CircularProgress />
                 </Grid>
             }
@@ -271,15 +276,15 @@ export const PageDbLangs = ({ onClose }: { onClose?: () => void }) => {
     const [selectedLangs, setSelectedLangs] = useState<Set<string>>(new Set());
 
     return (
-        <Box minHeight="100vh" display="flex" flexDirection="column" alignItems="center">
+        <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <TopBar title={t('db_langs_title')} noMenu />
             <ThinPage>
-                <Box flexGrow={1} display="flex" width="100%">
+                <Box sx={{ flexGrow: 1, display: 'flex', width: '100%' }}>
                     <DbLanguageSelector alreadySetup={false} selectedLangs={selectedLangs} setSelectedLangs={setSelectedLangs} />
                 </Box>
             </ThinPage>
-            <Box height={60} /> {/* TODO: set height according to the button size */}
-            <Box position="fixed" left={0} right={0} bottom={0}>
+            <Box sx={{ height: 60 }} /> {/* TODO: set height according to the button size */}
+            <Box sx={{ position: 'fixed', left: 0, right: 0, bottom: 0 }}>
                 <DbUpdateButton selectedLangs={selectedLangs} onClose={onClose} />
             </Box>
         </Box>

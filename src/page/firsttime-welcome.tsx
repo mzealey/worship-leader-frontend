@@ -10,7 +10,7 @@ export const PageFirsttimeWelcome = ({ onComplete }: { onComplete: () => void })
     return (
         <ThinPage>
             <TopBar title={t('firsttime_welcome_title')} noMenu />
-            <Grid container alignItems="center" justifyContent="center" direction="column" spacing={2} sx={{ textAlign: 'center' }}>
+            <Grid container spacing={2} sx={{ alignItems: 'center', justifyContent: 'center', flexDirection: 'column', textAlign: 'center' }}>
                 <Grid>
                     <p>{t('firsttime_welcome')}</p>
 

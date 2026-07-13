@@ -47,9 +47,9 @@ export const PageList = () => {
     return (
         <Fragment>
             <Box
-                display={{ xs: 'none', [breakpoint]: 'flex' }}
-                displayPrint="none"
                 sx={{
+                    display: { xs: 'none', [breakpoint]: 'flex' },
+                    displayPrint: 'none',
                     width: side_section_width,
                     position: 'fixed',
                     height: '100%',

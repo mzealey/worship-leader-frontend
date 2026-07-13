@@ -64,7 +64,7 @@ export function TopBar({ sx, noMenu, className, menuOnly, before, documentTitle,
 
     const show_menu = !noMenu && (children || menuOnly);
     return (
-        <Box displayPrint="none">
+        <Box sx={{ displayPrint: 'none' }}>
             {/* TODO: Move this to individual pages */}
             <title>{(doc_title ? `${doc_title} - ` : '') + t('worship-leader')}</title>
             <AppBar
@@ -106,17 +106,17 @@ export function TopBar({ sx, noMenu, className, menuOnly, before, documentTitle,
                         }),
                     })}
                 >
-                    <Box flexShrink={0} display="flex" alignItems="center">
+                    <Box sx={{ flexShrink: 0, display: 'flex', alignItems: 'center' }}>
                         {before}
 
                         {!!title && <Typography variant="h6">{title}</Typography>}
                     </Box>
 
-                    <Box flexGrow={1} minWidth={16} />
+                    <Box sx={{ flexGrow: 1, minWidth: 16 }} />
                     {children}
                 </Toolbar>
                 {show_menu && (
-                    <Box position="absolute" right={0}>
+                    <Box sx={{ position: 'absolute', right: 0 }}>
                         <MenuButton>
                             {children}
                             {menuOnly}

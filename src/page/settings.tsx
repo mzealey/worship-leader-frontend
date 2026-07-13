@@ -76,7 +76,7 @@ const SettingsPageVersion = () => {
     };
 
     return (
-        <Box maxWidth="100%">
+        <Box sx={{ maxWidth: '100%' }}>
             {Object.keys(lines).map((line) => (
                 <div key={line}>
                     {line}: {lines[line].replace(/,/g, ', ')}
@@ -154,7 +154,7 @@ const ReloadDBBtn = (props: ReloadDBBtnProps) => {
 
     if (inProgress) {
         return (
-            <Box width="100%">
+            <Box sx={{ width: '100%' }}>
                 <LinearProgress variant="determinate" value={(progressPerc || 0) * 100} />
                 <Typography align="center">{Math.floor((progressPerc || 0) * 100)}%</Typography>
             </Box>
@@ -200,7 +200,7 @@ export const PageSettings = () => {
                     {t('contact')}
                 </ImageButton>
             </TopBar>
-            <Grid container spacing={2} direction="column">
+            <Grid container spacing={2} sx={{ flexDirection: 'column' }}>
                 <Grid>
                     <FormControlLabel
                         style={{ width: '100%' }}

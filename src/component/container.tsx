@@ -120,11 +120,11 @@ function _PagesContainer({ children }: PagesContainerProps) {
             {desktop_mode && (
                 <Fragment>
                     <Box
-                        position="fixed"
-                        display="flex"
-                        alignItems="center"
-                        displayPrint="none"
                         sx={(theme) => ({
+                            position: 'fixed',
+                            display: 'flex',
+                            alignItems: 'center',
+                            displayPrint: 'none',
                             zIndex: theme.zIndex.appBar,
                             height: DESKTOP_HEADER_HEIGHT,
                             width: '100%',
@@ -132,7 +132,7 @@ function _PagesContainer({ children }: PagesContainerProps) {
                         })}
                     >
                         <Icon.Logo color="primary" style={{ width: 'auto', height: 36, marginLeft: 30 }} />
-                        <Box display="inline" marginLeft="auto">
+                        <Box sx={{ display: 'inline', marginLeft: 'auto' }}>
                             <Theme section="Top">
                                 <TopButton to="/" startIcon={<Icon.List />}>
                                     {t('songlist')}
@@ -149,7 +149,7 @@ function _PagesContainer({ children }: PagesContainerProps) {
                             </Theme>
                         </Box>
                     </Box>
-                    <Box displayPrint="none" style={{ height: DESKTOP_HEADER_HEIGHT }} />
+                    <Box sx={{ displayPrint: 'none' }} style={{ height: DESKTOP_HEADER_HEIGHT }} />
                 </Fragment>
             )}
 
@@ -160,11 +160,11 @@ function _PagesContainer({ children }: PagesContainerProps) {
 
             {!desktop_mode && (
                 <Fragment>
-                    <Box displayPrint="none" style={{ height: MOBILE_BOTTOM_HEIGHT }} />
+                    <Box sx={{ displayPrint: 'none' }} style={{ height: MOBILE_BOTTOM_HEIGHT }} />
                     <Box
-                        position="fixed"
-                        displayPrint="none"
                         sx={(theme) => ({
+                            position: 'fixed',
+                            displayPrint: 'none',
                             zIndex: theme.zIndex.appBar,
                             bottom: 0,
                             height: MOBILE_BOTTOM_HEIGHT,

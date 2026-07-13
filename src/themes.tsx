@@ -105,7 +105,7 @@ function generate_theme(base_palette: Palette) {
                             width: 'calc(100% - 12px)',
                         },
                     },
-                    paperScrollPaper: {
+                    scrollPaper: {
                         '@media (max-height: 400px)': {
                             // TODO
                             // When virtual keyboard shown allow taller dialogs

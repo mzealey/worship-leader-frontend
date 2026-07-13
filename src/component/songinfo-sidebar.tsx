@@ -83,7 +83,7 @@ export const PrintCapoDisplay = ({ transpose }: { transpose?: TransposeDetails |
     }, [transpose, transpose_updated]);
 
     return (
-        <Box display="none" displayPrint="block">
+        <Box sx={{ display: 'none', displayPrint: 'block' }}>
             {capo > 0 && <InfoLine label={t('capo')}>{capo}</InfoLine>}
             {key && (
                 <InfoLine label={t('key')}>
@@ -174,10 +174,9 @@ const SidebarHeader = ({ section, title, partialDisplay = false, oneLine = false
 
     // TODO: In most cases only need to render children if not collapsed
     return (
-        <Box displayPrint={noPrint ? 'none' : ''} title={titleText}>
+        <Box sx={{ displayPrint: noPrint ? 'none' : 'block' }} title={titleText}>
             <Box
-                displayPrint="none"
-                display="inline-block"
+                sx={{ displayPrint: 'none', display: 'inline-block' }}
                 style={oneLine ? { float: 'left', verticalAlign: 'middle' } : { float: 'right' }}
                 onClick={toggle_collapse}
             >
@@ -199,8 +198,8 @@ const SidebarHeader = ({ section, title, partialDisplay = false, oneLine = false
             )}
             {(!collapsed || partialDisplay) && (
                 <Box
-                    display={oneLine ? 'inline' : 'block'}
                     sx={{
+                        display: oneLine ? 'inline' : 'block',
                         ...(collapsed &&
                             partialDisplay && {
                                 height: 21,
@@ -220,7 +219,7 @@ function AlbumEntry({ lang, album_song, on_filter_change }: { lang: string; albu
     const img = album_song.album.image_path;
 
     let entry = (
-        <Grid container justifyContent="flex-start">
+        <Grid container sx={{ justifyContent: 'flex-start' }}>
             {img && (
                 <Grid size={3}>
                     <Box
@@ -408,8 +407,8 @@ const RatingSection = ({ song }: { song: Song }) => {
     };
 
     return (
-        <Box displayPrint="none">
-            <Box display="inline-block">
+        <Box sx={{ displayPrint: 'none' }}>
+            <Box sx={{ display: 'inline-block' }}>
                 {t('rating')}
                 <Rating name="rating" value={my_rating} onChange={rating_update} />
                 {song.rating && ` (${song.rating / 10})`}
@@ -611,7 +610,7 @@ export const SongInfoSide = ({
         >
             <TopImage img={img} />
 
-            <Box displayPrint="none">
+            <Box sx={{ displayPrint: 'none' }}>
                 <Typography variant="h5">
                     <TextDirection lang={song.lang}>{song.title}</TextDirection>
                 </Typography>

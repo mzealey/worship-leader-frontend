@@ -161,20 +161,20 @@ export const SetPrevNext = ({ song_id: _song_id, set_switcher }: { song_id: numb
 
     const position = set_switcher.position();
     return (
-        <Grid container justifyContent="space-between" alignItems="center">
-            <Box displayPrint="none" visibility={set_switcher.can_prev() ? 'visible' : 'hidden'}>
+        <Grid container sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
+            <Box sx={{ displayPrint: 'none', visibility: set_switcher.can_prev() ? 'visible' : 'hidden' }}>
                 <Button component={Link} to={`/song/${set_switcher.move(-1)}/${set_switcher.set_id}`}>
                     {t('pager_prev')}
                 </Button>
             </Box>
 
-            <Box flexGrow={1}>
+            <Box sx={{ flexGrow: 1 }}>
                 <Typography align="center" variant="h6">
                     {format_string(t('set_title') + ': {0}', title)} {position > -1 && `(${position + 1})`}
                 </Typography>
             </Box>
 
-            <Box displayPrint="none" visibility={set_switcher.can_next() ? 'visible' : 'hidden'}>
+            <Box sx={{ displayPrint: 'none', visibility: set_switcher.can_next() ? 'visible' : 'hidden' }}>
                 <Button component={Link} to={`/song/${set_switcher.move(1)}/${set_switcher.set_id}`}>
                     {t('pager_next')}
                 </Button>
@@ -285,11 +285,11 @@ export const SongPageSidebar = ({ active_song_id }: { active_song_id: number }) 
 
     return (
         <Box
-            position="fixed"
-            display="flex"
-            flexDirection="column"
-            displayPrint="none"
             sx={(theme) => ({
+                position: 'fixed',
+                display: 'flex',
+                flexDirection: 'column',
+                displayPrint: 'none',
                 width: `${sidebar_width}px`,
                 borderRight: `1px solid ${theme.palette.border.main}`,
             })}
@@ -297,15 +297,15 @@ export const SongPageSidebar = ({ active_song_id }: { active_song_id: number }) 
         >
             <SearchArea thin />
 
-            <Box position="relative" flexGrow={1}>
+            <Box sx={{ position: 'relative', flexGrow: 1 }}>
                 <Box
                     ref={set_sidebar}
-                    position="absolute"
-                    top={0}
-                    left={0}
-                    right={0}
-                    bottom={0}
                     sx={{
+                        position: 'absolute',
+                        top: 0,
+                        left: 0,
+                        right: 0,
+                        bottom: 0,
                         overflowX: 'hidden',
                         overflowY: 'auto',
                     }}
@@ -436,7 +436,7 @@ export const SongsDisplay = ({
     );
 
     return (
-        <Box display={song ? 'flex' : 'hidden'} flexGrow="1" displayPrint="block" ref={(e) => update_item_refs('song', e as HTMLElement | null)}>
+        <Box sx={{ display: song ? 'flex' : 'hidden', flexGrow: 1, displayPrint: 'block' }} ref={(e) => update_item_refs('song', e as HTMLElement | null)}>
             <Box
                 component="div"
                 sx={{
@@ -464,8 +464,8 @@ export const SongsDisplay = ({
 
             <Box
                 className="song-and-details"
-                flexGrow="1"
                 sx={{
+                    flexGrow: 1,
                     ...((!song || song_loading) && {
                         // Hide the main page when loading, but allow layout of chords and sheet music to happen rather than a display: none
                         opacity: 0,
@@ -473,7 +473,7 @@ export const SongsDisplay = ({
                 }}
             >
                 <div className="songs">
-                    <Box displayPrint="none">
+                    <Box sx={{ displayPrint: 'none' }}>
                         {has_score() && (
                             <Tabs value={prefer_score} variant="fullWidth" centered textColor="primary" indicatorColor="primary" onChange={tab_change}>
                                 <Tab
@@ -491,12 +491,12 @@ export const SongsDisplay = ({
                     </Box>
 
                     <div className="flex">
-                        <Box mx={1}>
+                        <Box sx={{ mx: 1 }}>
                             <PresenterView song={song!} />
 
                             <PrintCapoDisplay transpose={transpose} />
-                            <Box displayPrint="none">
-                                <Grid spacing={2} container justifyContent="space-evenly">
+                            <Box sx={{ displayPrint: 'none' }}>
+                                <Grid container spacing={2} sx={{ justifyContent: 'space-evenly' }}>
                                     {transpose && (
                                         <Grid>
                                             <CapoChange song_id={song!.id} set_switcher={set_switcher} transpose={transpose} />
@@ -545,7 +545,7 @@ export const SongsDisplay = ({
                         </Box>
 
                         {related_songs && related_songs.length > 0 && use_sidebyside() && (
-                            <Box mx={1} displayPrint="none">
+                            <Box sx={{ mx: 1, displayPrint: 'none' }}>
                                 <Grid container>
                                     <IconButton
                                         color="primary"
@@ -677,10 +677,10 @@ export const MobileScroller: React.FC<MobileScrollerProps> = ({ update_refs }: M
     ];
 
     return (
-        <Box position="relative" displayPrint="none" ref={selfRef}>
+        <Box sx={{ position: 'relative', displayPrint: 'none' }} ref={selfRef}>
             <Box
-                position="fixed"
                 sx={(theme) => ({
+                    position: 'fixed',
                     zIndex: theme.zIndex.appBar,
                     height: SCROLLER_HEIGHT,
                     width: '100%',

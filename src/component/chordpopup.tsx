@@ -128,7 +128,7 @@ export const ChordPopup = ({ selected_chord, ...props }: ChordPopupProps) => {
             <div ref={canvasRef} onClick={play_chord} />
 
             {fingerings.length > 1 && (
-                <Box display="flex" alignItems="center">
+                <Box sx={{ display: 'flex', alignItems: 'center' }}>
                     <IconButton onClick={prev_chord}>
                         <Icon.Prev />
                     </IconButton>

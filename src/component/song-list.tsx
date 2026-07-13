@@ -154,7 +154,7 @@ const SongListLinkHeader = ({ prefix, song, children }: SongListLinkHeaderProps)
                         {key_items.length > 0 && <p>{key_items.join(', ')}</p>}
                     </Fragment>
                 }
-                secondaryTypographyProps={{ color: 'initial' }}
+                slotProps={{ secondary: { color: 'initial' } }}
             />
 
             <ListItemSecondaryAction
@@ -332,7 +332,7 @@ export function PagerElem({ current_search, on_change }: PagerElemProps) {
     if (!pager || pager.no_results()) return null;
 
     return (
-        <Grid alignItems="center" justifyContent="space-between" container>
+        <Grid container sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
             <IconButton color="primary" style={{ visibility: pager.has_prev() ? 'visible' : 'hidden' }} onClick={pager_prev} aria-label={t('pager_prev')}>
                 <Icon.Prev />
             </IconButton>
@@ -516,7 +516,7 @@ export function SongList({ container, active_song_id }: SongListProps) {
     const on_first_page = !requested_items?.infinite_scroll || requested_items?.start == 0;
 
     const loader = (
-        <Box textAlign="center">
+        <Box sx={{ textAlign: 'center' }}>
             <CircularProgress />
         </Box>
     );
