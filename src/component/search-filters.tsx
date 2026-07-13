@@ -1,4 +1,4 @@
-import { Button, ButtonGroup, FormControl, Grid, NativeSelect } from '@mui/material';
+import { Button, ButtonGroup, FormControl, Grid, InputBase, NativeSelect } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { DelayedDBInput } from '../component/delayed-db-input';
 import { TristateCheckbox } from '../component/tristate-checkbox';
@@ -17,7 +17,7 @@ type SourceInfo = {
     name: string;
 };
 
-const SearchSelect = (props: React.ComponentProps<typeof NativeSelect>) => <NativeSelect {...props} />;
+const SearchSelect = (props: React.ComponentProps<typeof NativeSelect>) => <NativeSelect input={<InputBase />} {...props} />;
 
 // Define the props that can be passed to SearchFilters from outside
 export interface SearchFiltersProps {

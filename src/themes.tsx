@@ -272,6 +272,9 @@ function generate_theme(base_palette: Palette) {
                         '&:hover': { border: 'none' },
                         color: theme.palette.text.highlight,
                     },
+                    groupedText: {
+                        color: theme.palette.text.highlight,
+                    },
                 },
             },
             MuiButton: {

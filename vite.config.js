@@ -12,7 +12,7 @@ import circleDependency from 'vite-plugin-circular-dependency';
 import eslint from 'vite-plugin-eslint';
 import { createHtmlPlugin } from 'vite-plugin-html';
 import { VitePWA } from 'vite-plugin-pwa';
-import tsconfigPaths from 'vite-tsconfig-paths';
+
 
 const package_conf = require('./package.json');
 const browserslist = {
@@ -71,7 +71,11 @@ export default defineConfig(({ command, mode }) => {
             },
         },
 
-        plugins: [react({}), viteCommonjs(), tsconfigPaths()],
+        plugins: [react({}), viteCommonjs()],
+
+        resolve: {
+            tsconfigPaths: true,
+        },
     };
 
     // Add in linting plugins. TODO: Disable on production build would reduce time from 21 to 15sec
@@ -179,7 +183,7 @@ export default defineConfig(({ command, mode }) => {
         );
 
         // TODO: The legacy shim seems to break phonegap build for some reason on my phone - causes the js to load twice
-        if (build_type == 'www') {
+        if (build_type == 'www' && mode != 'test') {
             //|| build_type == 'phonegap' ) {
             config.plugins.push(
                 legacy({
@@ -301,11 +305,6 @@ export default defineConfig(({ command, mode }) => {
         },
         // Enable web workers in tests
         pool: 'threads',
-        poolOptions: {
-            threads: {
-                useAtomics: true,
-            },
-        },
     };
 
     return config;

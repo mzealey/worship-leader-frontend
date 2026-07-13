@@ -30,10 +30,17 @@ useSearchStore.subscribe((state) => {
 const side_section_width = '25vw';
 const breakpoint = 'md';
 
-const StickySearchArea = styled(Box)(({ theme }) => ({
-    position: 'sticky',
-    top: 0,
+const topBarHeight = 44;
+
+const FixedSearchArea = styled(Box)(({ theme }) => ({
+    position: 'fixed',
+    top: topBarHeight,
+    left: 0,
+    right: 0,
     zIndex: theme.zIndex.appBar - 1,
+    [theme.breakpoints.up(breakpoint)]: {
+        left: side_section_width,
+    },
 }));
 
 export const PageList = () => {
@@ -102,19 +109,13 @@ export const PageList = () => {
                     },
                 })}
             >
-                <TopBar
-                    title=""
-                    sx={(theme: Theme) => ({
-                        [theme.breakpoints.up(breakpoint)]: {
-                            left: side_section_width,
-                            width: 'auto',
-                        },
-                    })}
-                />
+                <TopBar title="" />
 
-                <StickySearchArea>
+                <FixedSearchArea>
                     <SearchArea />
-                </StickySearchArea>
+                </FixedSearchArea>
+                <Box sx={{ height: topBarHeight }} />
+                <Box sx={{ height: 40 }} />
                 <SongList container={document} />
             </Box>
         </Fragment>
