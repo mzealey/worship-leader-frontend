@@ -94,11 +94,6 @@
             [% song_lang_db_raw %]
         </script>
         [% END %] [% FILTER parse_localize(langpack) %] <% } %>
-        <div data-role="page" id="page-list" data-localize-title="songsearch">
-            <div data-role="header" data-position="fixed" data-tap-toggle="false" data-theme="b">
-                <a class="ui-btn-left ui-btn ui-btn-inline ui-btn-icon-left ui-icon-bullets" href="#page-set-list" data-localize="set_list"></a>
-                <h1 data-localize="search"></h1>
-                <a href="#page-settings" data-localize="settings" class="ui-btn-right ui-btn ui-btn-inline ui-btn-icon-left ui-icon-gear"></a>
 
 <!-- splashscreen -->
 <div id="load-splash-screen">
@@ -183,30 +178,6 @@
     [% IF langpack_code %]
         <script id="json-langpack-[% langpack_code %]" type="application/json">[% langpack_raw %]</script>
     [% END %]
-
-                        <div class="ui-grid-a ui-responsive">
-                            <div class="ui-block-a">
-                                <div class="ui-mini">
-                                    <input
-                                        type="search"
-                                        autocomplete="off"
-                                        autocorrect="off"
-                                        autocapitalize="off"
-                                        spellcheck="false"
-                                        class="songkey"
-                                        data-placeholder-localize="key_text"
-                                        data-title-localize="key_text"
-                                    />
-                                </div>
-                            </div>
-                            <div class="ui-block-b">
-                                <div class="ui-mini">
-                                    <button class="filter-mp3 ui-btn ui-corner-all tristate" type="button">
-                                        <span data-localize="listen_words"></span> <span class="symbols">&#x266B;</span>
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
 
     [% IF song_lang_db_raw %]
         <script id="json-song_lang_db" type="application/json">[% song_lang_db_raw %]</script>
