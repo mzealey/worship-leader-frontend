@@ -131,7 +131,9 @@ export function PagesContainer({ children }: PagesContainerProps) {
                             backgroundColor: theme.palette.background.default,
                         })}
                     >
-                        <Icon.Logo color="primary" style={{ width: 'auto', height: 36, marginLeft: 30 }} />
+                        <Box component={Link} to="/" sx={{ display: 'flex' }} style={{ cursor: 'pointer' }}>
+                            <Icon.Logo color="primary" style={{ width: 'auto', height: 36, marginLeft: 30 }} />
+                        </Box>
                         <Box sx={{ display: 'inline', marginLeft: 'auto' }}>
                             <Theme section="Top">
                                 <TopButton to="/" startIcon={<Icon.List />}>
@@ -175,7 +177,7 @@ export function PagesContainer({ children }: PagesContainerProps) {
                             <ButtonGroup fullWidth variant="contained" color="primary" sx={{ height: MOBILE_BOTTOM_HEIGHT }}>
                                 <BottomButton to="/" title={t('songlist')} icon={Icon.List} />
                                 <BottomButton to="/set-list" title={t('set_list')} icon={Icon.Set} />
-                                <BottomButton scaleSize={1.6} icon={Icon.Logo} />
+                                <BottomButton to="/" scaleSize={1.6} icon={Icon.Logo} />
                                 <BottomButton to="/settings" title={t('settings')} icon={Icon.Settings} />
                                 <BottomButton title={t(new_btn.title)} icon={new_btn.icon} onClick={() => setShowNew(true)} />
                             </ButtonGroup>

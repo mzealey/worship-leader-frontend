@@ -328,7 +328,7 @@ export function download_file(song_id: number, file: DownloadableFile, song_titl
         file_promise = try_window_open_download(file.download_path || file.path);
     }
 
-    file_promise = file_promise.catch((err) => {
+    file_promise.catch((err) => {
         console.log('error thrown', err);
         send_ui_notification({ message_code: 'download_file_error' });
     });

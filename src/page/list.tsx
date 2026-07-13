@@ -1,4 +1,4 @@
-import { Box } from '@mui/material';
+import { Box, useTheme } from '@mui/material';
 import type { Theme } from '@mui/material/styles';
 import { Fragment, useEffect } from 'react';
 import side_img from '../../img/search-page-side-img.svg';
@@ -33,6 +33,8 @@ const breakpoint = 'md';
 export const PageList = () => {
     const { t: _t } = useTranslation();
     const verticalPagePadding = usePagePadding((state) => state.bottom + state.top);
+    const theme = useTheme();
+    const isDark = theme.palette.mode === 'dark';
 
     useEffect(() => {
         document.addEventListener('scroll', cache_scroll_position);
@@ -60,22 +62,24 @@ export const PageList = () => {
                     justifyContent: 'center',
                 }}
             >
-                <Box
-                    component="img"
-                    src={side_img}
-                    alt=""
-                    sx={{
-                        position: 'absolute',
-                        left: 0,
-                        top: '50%',
-                        transform: 'translateY(-50%)',
-                        width: '100%',
-                        height: 'auto',
-                        objectFit: 'contain',
-                        pointerEvents: 'none',
-                        zIndex: 0,
-                    }}
-                />
+                {!isDark ? (
+                    <Box
+                        component="img"
+                        src={side_img}
+                        alt=""
+                        sx={{
+                            position: 'absolute',
+                            left: 0,
+                            top: '50%',
+                            transform: 'translateY(-50%)',
+                            width: '100%',
+                            height: 'auto',
+                            objectFit: 'contain',
+                            pointerEvents: 'none',
+                            zIndex: 0,
+                        }}
+                    />
+                ) : null}
                 <Box
                     component={Icon.Search}
                     sx={(theme) => ({

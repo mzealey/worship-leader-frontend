@@ -204,22 +204,26 @@ function generate_theme(base_palette: Palette) {
     ]);
 
     const checkbox_padding = 6;
+    const isDark = base_palette.mode === 'dark';
+    const inverted_bg_default = isDark ? base_palette.background.grey : '#998EF1';
     const inverted_theme = deepmerge(theme, {
         palette: {
             background: {
-                gradient: 'linear-gradient(90deg, #B68EF3, #918EF0)',
-                default: '#998EF1',
+                gradient: isDark
+                    ? `linear-gradient(90deg, ${base_palette.background.topbar}, ${inverted_bg_default})`
+                    : 'linear-gradient(90deg, #B68EF3, #918EF0)',
+                default: inverted_bg_default,
             },
             primary: {
                 //light: '#93DEDC',
                 main: '#fff',
-                contrastText: '#3D3D3D',
+                contrastText: isDark ? base_palette.background.grey : '#3D3D3D',
             },
             secondary: {
                 main: '#93DEDC',
             },
             text: {
-                primary: '#fff',
+                primary: isDark ? base_palette.text.primary : '#fff',
             },
         },
         components: {
@@ -389,7 +393,12 @@ const base_dark_palette = deepmerge(base_light_palette, {
         stripe_active: '#555',
     },
     primary: {
-        main: '#EFEFEF',
+        icon: '#BBBBBB',
+        main: '#BBBBBB',
+        contrastText: '#3D3D3D',
+    },
+    secondary: {
+        main: '#BBBBBB',
         contrastText: '#3D3D3D',
     },
     text: {
