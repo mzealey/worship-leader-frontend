@@ -10,7 +10,7 @@ let _GATracker: (props: TrackerProps) => ReactNode;
 if (BUILD_TYPE == 'www') {
     delete window.ga; // in case has already been polluted by something
 
-    _GATracker = function __GATracker({ children }: TrackerProps) {
+    _GATracker = function GATrackerWrapper({ children }: TrackerProps) {
         const location = useLocation();
         const gaRef = useRef<((...args: GaArgs) => void) | null>(() => {});
         const lastLocationRef = useRef<string | null>(null);
@@ -55,8 +55,11 @@ if (BUILD_TYPE == 'www') {
             sendLocation(location.pathname);
         };
 
+        const loadGARef = useRef(loadGA);
+        loadGARef.current = loadGA;
+
         useEffect(() => {
-            const timer = window.setTimeout(loadGA, 2000); // Load after the page started up
+            const timer = window.setTimeout(() => loadGARef.current(), 2000); // Load after the page started up
             return () => window.clearTimeout(timer);
         }, []);
 

@@ -147,13 +147,13 @@ export const PagePrintSongbook = ({ set_id }: PagePrintSongbookProps) => {
         return () => {
             cancelled = true;
         };
-    }, [iframeReady]);
+    }, [iframeReady, baseData, translationMap, config]);
 
     // Push full data to viewer whenever the underlying song data or translation map changes
     useEffect(() => {
         if (!viewerApiRef.current || !baseData) return;
         viewerApiRef.current.setSongbookData({ ...baseData, translationMap, config });
-    }, [baseData, translationMap]);
+    }, [baseData, translationMap, config]);
 
     // Push the new config to the viewer whenever any form field changes
     useEffect(() => {

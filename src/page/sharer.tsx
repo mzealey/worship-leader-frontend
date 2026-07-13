@@ -116,6 +116,7 @@ export const PageSharer = ({ url: propUrl, subject, title, file, onClose }: Page
             return;
         }
         showSharerPage();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [subject, title, file]);
 
     if (lockScreen) {

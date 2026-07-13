@@ -156,7 +156,7 @@ export const App = () => {
             setAppState(AppState.Running);
             hide_splash();
         })();
-    }, []);
+    }, [setLanguage]);
 
     // Go through the various startup phases of the app showing the
     // appropriate page without modifying the hash at the correct times.

@@ -385,11 +385,14 @@ export const SongsDisplay = ({
     const [prefer_score, setPreferScore] = useState<number>(0);
 
     // Some helper functions...
-    const abc_file = (): Song['files'][number] | undefined => (song ? song.files || [] : []).find((file: Song['files'][number]) => file.type == 'abccache');
+    const abc_file = () => (song ? song.files || [] : []).find((file: Song['files'][number]) => file.type == 'abccache');
     const has_score = () => !!abc_file();
-    const is_copyright_restrict = () => 0; /*is_copyright(song)*/ // TODO
-    const is_show_score = () => has_score() && !!prefer_score && can_do_worker() && !is_copyright_restrict();
-    const use_sidebyside = () => setting_sidebyside && !is_show_score() && !set_id;
+    // const _is_copyright_restrict = 0; /*is_copyright(song)*/ // TODO: re-enable later
+    const is_show_score = useCallback(() => {
+        const abc = (song ? song.files || [] : []).find((file) => file.type == 'abccache');
+        return !!abc && !!prefer_score && can_do_worker();
+    }, [song, prefer_score]);
+    const use_sidebyside = useCallback(() => setting_sidebyside && !is_show_score() && !set_id, [setting_sidebyside, is_show_score, set_id]);
 
     const update_sec_display = useCallback((newSecId: number) => {
         console.log('showing sec', newSecId);

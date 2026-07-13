@@ -112,7 +112,7 @@ export const ChordPopup = memo(function ChordPopup({ selected_chord, ...props }:
             {...props}
             sx={(theme) => ({
                 border: `1px solid ${theme.palette.border.main}`,
-                zIndex: theme.zIndex.tooltip,
+                zIndex: theme.zIndex.appBar - 1,
                 position: 'absolute',
                 backgroundColor: theme.palette.background.paper,
                 textAlign: 'center',

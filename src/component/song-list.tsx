@@ -13,7 +13,7 @@ import {
     Typography,
 } from '@mui/material';
 import debounce from 'lodash/debounce';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import unknown_album_icon from '../../img/unknown_album_icon.png';
 import { DB, on_db_languages_update } from '../db';
@@ -389,7 +389,7 @@ export function SongList({ container, active_song_id }: SongListProps) {
     const songlist_ref = useRef<HTMLUListElement | null>(null);
     const cur_infinite_promise_ref = useRef<Promise<unknown> | null>(null);
 
-    const scroll_to_active_id = () => {
+    const scroll_to_active_id = useCallback(() => {
         if (!songlist_ref.current) return;
 
         const active = songlist_ref.current.querySelector(`.songid-${active_song_id}`) as HTMLElement | null;
@@ -397,7 +397,7 @@ export function SongList({ container, active_song_id }: SongListProps) {
             const parent = container === document || !container ? undefined : (container as HTMLElement);
             ensure_visible(active, parent, 500);
         }
-    };
+    }, [active_song_id, container]);
 
     const scroll_to_top = () => {
         if (container) scroll_to(container === document ? document.documentElement : (container as HTMLElement), 0, 500);
@@ -420,7 +420,7 @@ export function SongList({ container, active_song_id }: SongListProps) {
         }
     };
 
-    const setup_infinite_scroll = () => {
+    const setup_infinite_scroll = useCallback(() => {
         remove_infinite_watcher();
         if (!container) return;
 
@@ -456,9 +456,9 @@ export function SongList({ container, active_song_id }: SongListProps) {
         infinite_watcher_ref.current = [target, debouncer];
         target.addEventListener('scroll', debouncer);
         on_resize_ref.current = on_resize(debouncer);
-    };
+    }, [container, current_search]);
 
-    const watch_current_search = () => {
+    const watch_current_search = useCallback(() => {
         if (watcher_ref.current) {
             watcher_ref.current.unsubscribe();
             watcher_ref.current = null;
@@ -483,7 +483,7 @@ export function SongList({ container, active_song_id }: SongListProps) {
                 }
             });
         }
-    };
+    }, [current_search]);
 
     // Initial mount
     useEffect(() => {
@@ -497,22 +497,22 @@ export function SongList({ container, active_song_id }: SongListProps) {
                 watcher_ref.current.unsubscribe();
             }
         };
-    }, []);
+    }, [setup_infinite_scroll, watch_current_search, scroll_to_active_id]);
 
     // Watch for current_search changes
     useEffect(() => {
         watch_current_search();
-    }, [current_search]);
+    }, [watch_current_search]);
 
     // Watch for container changes
     useEffect(() => {
         setup_infinite_scroll();
-    }, [container]);
+    }, [setup_infinite_scroll]);
 
     // Watch for container or active_song_id changes
     useEffect(() => {
         scroll_to_active_id();
-    }, [container, active_song_id]);
+    }, [scroll_to_active_id]);
 
     const on_first_page = !requested_items?.infinite_scroll || requested_items?.start == 0;
 

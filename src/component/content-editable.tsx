@@ -15,6 +15,7 @@ export const ContentEditable = ({ content, onChange, autofocus }: ContentEditabl
         if (elemRef.current && content !== undefined) {
             elemRef.current.innerHTML = content;
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {

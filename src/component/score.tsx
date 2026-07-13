@@ -19,8 +19,7 @@ interface SheetMusicDisplayProps {
     in_presentation?: boolean;
 }
 
-// Given an abc file, render as SVG
-const _SheetMusicDisplay = ({ song, abc_file, transpose, is_printing, in_presentation }: SheetMusicDisplayProps) => {
+export const SheetMusicDisplay = ({ song, abc_file, transpose, is_printing, in_presentation }: SheetMusicDisplayProps) => {
     const [playing, setPlaying] = useState<boolean>(false);
     const [instrumentLoading, setInstrumentLoading] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -124,7 +123,6 @@ const _SheetMusicDisplay = ({ song, abc_file, transpose, is_printing, in_present
 
                 if (!sheetMusicRef.current) return;
 
-                const start = Date.now();
                 sheetMusicRef.current.innerHTML = render.svg;
                 //if (DEBUG) console.log('rendering svg took', Date.now() - start, 'ms');
 
@@ -160,7 +158,7 @@ const _SheetMusicDisplay = ({ song, abc_file, transpose, is_printing, in_present
         song_feedback('sheet_view', song.id);
         file_feedback('sheet_view', song.id, abc_file.id);
         rerender();
-    }, [song, abc_file]);
+    }, [song, abc_file, rerender]);
 
     // Watch transpose changes
     useEffect(() => {
@@ -175,7 +173,7 @@ const _SheetMusicDisplay = ({ song, abc_file, transpose, is_printing, in_present
     // Rerender on transpose or printing changes
     useEffect(() => {
         rerender();
-    }, [transpose, is_printing]);
+    }, [transpose, is_printing, rerender]);
 
     // Resize watcher
     useEffect(() => {
@@ -226,5 +224,3 @@ const _SheetMusicDisplay = ({ song, abc_file, transpose, is_printing, in_present
         </Fragment>
     );
 };
-
-export const SheetMusicDisplay = _SheetMusicDisplay;

@@ -58,7 +58,7 @@ interface BottomButtonProps extends Omit<React.ComponentProps<typeof Button>, 'c
     title?: string;
 }
 
-function _BottomButton({ to, icon: ThisIcon, scaleSize = 1, ...props }: BottomButtonProps) {
+function BottomButton({ to, icon: ThisIcon, scaleSize = 1, ...props }: BottomButtonProps) {
     const location = useLocation();
     const isActive = to && location.pathname == to;
     const buttonProps: Record<string, unknown> = { ...props };
@@ -82,7 +82,6 @@ function _BottomButton({ to, icon: ThisIcon, scaleSize = 1, ...props }: BottomBu
         </Button>
     );
 }
-const BottomButton = _BottomButton;
 
 // External props that can be passed from outside
 export interface PagesContainerProps {
@@ -95,7 +94,7 @@ const defaultLastButtonHandler: LastButtonHandlerComponent = {
     component: (props: Record<string, unknown>) => <PageEditTextarea type="new" {...props} />,
 };
 
-function _PagesContainer({ children }: PagesContainerProps) {
+export function PagesContainer({ children }: PagesContainerProps) {
     const { t } = useTranslation();
     const theme = useTheme();
     const { handler: lastButtonHandler } = useLastButtonHandler();
@@ -111,7 +110,7 @@ function _PagesContainer({ children }: PagesContainerProps) {
         });
 
         return watcher?.unsubscribe;
-    }, [theme]);
+    }, [theme, resetPagePadding]);
 
     const new_btn: LastButtonHandlerComponent = lastButtonHandler || defaultLastButtonHandler;
     const AddComponent = new_btn.component;
@@ -187,5 +186,3 @@ function _PagesContainer({ children }: PagesContainerProps) {
         </Fragment>
     );
 }
-
-export const PagesContainer: ComponentType<PagesContainerProps> = _PagesContainer;

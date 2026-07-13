@@ -1,5 +1,5 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { DialogTitleWithClose } from '../component/basic';
 import { BUILD_TYPE, get_client_type } from '../globals';
 import { useTranslation } from '../langpack';
@@ -19,9 +19,9 @@ export const PageNativePrompter = ({ onClose }: { onClose?: () => void }) => {
     const { closed, handleClose: dialogHandleClose } = useDialog(onClose);
     const [prompt, setPrompt] = useState<PromptConfig | undefined>(undefined);
 
-    const handleClose = () => {
+    const handleClose = useCallback(() => {
         dialogHandleClose();
-    };
+    }, [dialogHandleClose]);
 
     useEffect(() => {
         if (
@@ -65,7 +65,7 @@ export const PageNativePrompter = ({ onClose }: { onClose?: () => void }) => {
                 window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
             };
         }
-    }, []);
+    }, [handleClose]);
 
     if (!prompt) {
         return null;

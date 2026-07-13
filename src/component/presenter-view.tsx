@@ -36,9 +36,9 @@ const PresenterViewElement = ({ song, presentation }: PresenterViewElementProps)
         [presentation],
     );
 
-    const isVertical = () => {
+    const isVertical = useCallback(() => {
         return song && !!is_vertical_lang(song.lang);
-    };
+    }, [song]);
 
     const sendMessageAllDisplays = useCallback(
         (data: unknown) => {
@@ -76,7 +76,7 @@ const PresenterViewElement = ({ song, presentation }: PresenterViewElementProps)
         ['-webkit-transform', '-moz-transform', '-ms-transform', 'transform'].forEach((prop: string) => {
             iframeRef.current!.style[prop as any] = scaleStr;
         });
-    }, [isVertical, sendMsg]);
+    }, [isVertical]);
 
     const handleZoom = useCallback(
         (delta: number) => {
@@ -113,9 +113,9 @@ const PresenterViewElement = ({ song, presentation }: PresenterViewElementProps)
         [sendScrollEvent],
     );
 
-    const onMouseUp = () => {
+    const onMouseUp = useCallback(() => {
         curPosRef.current = null;
-    };
+    }, []);
 
     const onMouseMove = useCallback(
         (e: MouseEvent) => {
@@ -143,7 +143,7 @@ const PresenterViewElement = ({ song, presentation }: PresenterViewElementProps)
                 sendMsg(data);
             }
         },
-        [sendMsg, isVertical],
+        [sendMsg, isVertical, updatePresentationViewSize],
     );
 
     const updateSong = useCallback(() => {
@@ -232,7 +232,7 @@ const PresenterViewElement = ({ song, presentation }: PresenterViewElementProps)
     // Update song when blanked state changes
     useEffect(() => {
         updateSong();
-    }, [blanked]);
+    }, [blanked, updateSong]);
 
     const vertical = isVertical();
 

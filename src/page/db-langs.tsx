@@ -104,12 +104,12 @@ const DbLanguageSelectorInner = ({
     const deferredFilterText = useDeferredValue(filterText);
 
     const all_langs = use(dbLangPromise);
-    if (!all_langs || !all_langs.length) {
-        // TODO: If error returned then show the retry button
-        // <Alert message={t('db-langs-download-error')} onClose={() => setDownloadError(false)} />
-        return null;
-    }
-    useEffect(() => setSelectedLangs(new Set(all_langs.filter((e) => e.selected).map((e) => e.code))), [all_langs]);
+
+    useEffect(() => {
+        if (all_langs?.length) {
+            setSelectedLangs(new Set(all_langs.filter((e) => e.selected).map((e) => e.code)));
+        }
+    }, [all_langs, setSelectedLangs]);
 
     const updateSelectedLangs = (code: string, val: boolean) => {
         const newSelectedLangs = new Set(selectedLangs);
@@ -118,25 +118,30 @@ const DbLanguageSelectorInner = ({
         setSelectedLangs(newSelectedLangs);
     };
 
-    // Memoize sorted languages to avoid re-sorting on every render
     const sortedLangs = useMemo(() => {
+        if (!all_langs?.length) return [];
         const sorted = [...all_langs];
         sorted.sort((a, b) => LOCALE_SORT(lang_name(a.code), lang_name(b.code)));
         return sorted;
     }, [all_langs, lang_name]);
 
-    // Memoize split of top/bottom languages
     const { topLangs, bottomLangs } = useMemo(() => {
+        if (!sortedLangs.length) return { topLangs: [], bottomLangs: [] };
         const top = sortedLangs.filter((e) => e.position === 'top');
         const bottom = sortedLangs.filter((e) => e.position === 'bottom');
         return { topLangs: top, bottomLangs: bottom };
     }, [sortedLangs]);
 
-    // Memoize filtered bottom languages using deferred filter text
     const filteredBottomLangs = useMemo(() => {
         if (!deferredFilterText) return bottomLangs;
         return bottomLangs.filter((e) => e.unidecoded.includes(deferredFilterText) || selectedLangs.has(e.code));
     }, [bottomLangs, deferredFilterText, selectedLangs]);
+
+    if (!all_langs || !all_langs.length) {
+        // TODO: If error returned then show the retry button
+        // <Alert message={t('db-langs-download-error')} onClose={() => setDownloadError(false)} />
+        return null;
+    }
 
     return (
         <Box sx={{ width: '100%' }}>

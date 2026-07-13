@@ -278,7 +278,7 @@ export const PageSongInfo: ComponentType<PageSongInfoProps> = ({ requested_song_
                 setSongLoading(false);
             }
         },
-        [in_presentation],
+        [in_presentation, lang_name],
     );
 
     const refresh_song = useCallback(async () => {
@@ -332,12 +332,13 @@ export const PageSongInfo: ComponentType<PageSongInfoProps> = ({ requested_song_
             sidebar_watcher_ref.current = undefined;
             scroller_watcher_ref.current = undefined;
         };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     useEffect(() => {
         // Check if us being-in-a-set changed
         setLastButtonHandler(set_id ? exit_button_handler : add_button_handler);
-    }, [set_id, exit_button_handler, add_button_handler]);
+    }, [set_id, exit_button_handler, add_button_handler, setLastButtonHandler]);
 
     useEffect(() => {
         new_song(song);

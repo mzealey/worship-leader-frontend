@@ -166,6 +166,7 @@ export const AudioPlayer = ({ song, file }: AudioPlayerProps) => {
     // Pause players when they become inactive - because activeFileId changed
     useEffect(() => {
         if (!isActivePlayer) togglePlay(false);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isActivePlayer]);
 
     const setSrc = (src: string) => {
@@ -191,7 +192,8 @@ export const AudioPlayer = ({ song, file }: AudioPlayerProps) => {
             const downloaded = get_downloaded_file(downFileKey());
             setSrc(local_allowed && downloaded?.local_url ? downloaded.local_url : file.path || '');
         })();
-    }, [audioRef.current, file.id]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [file.id]);
 
     const handleShare = () => {
         file_feedback('share', song.id, file.id);
@@ -214,11 +216,10 @@ export const AudioPlayer = ({ song, file }: AudioPlayerProps) => {
     };
 
     useEffect(() => {
-        // When component is deleted it is no longer possible for it to be active
         return () => {
             if (activePlayer.activeFileId === file.id) activePlayer.setActiveFileId(undefined);
         };
-    }, []);
+    }, [activePlayer, file.id]);
 
     if (!supportsAudio) return null;
 

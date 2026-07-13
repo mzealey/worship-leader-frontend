@@ -4,7 +4,7 @@ import { restrictToVerticalAxis, restrictToWindowEdges } from '@dnd-kit/modifier
 import { SortableContext, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { CircularProgress, IconButton, List } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { ImageButton } from '../component/basic';
 import * as Icon from '../component/icons';
 import { SongListLink } from '../component/song-list';
@@ -109,31 +109,34 @@ export const PageSetView = ({ set_id }: PageSetViewProps) => {
     const [shareSetDialog, setShareSetDialog] = useState<boolean>(false);
     const [shareSetLink, setShareSetLink] = useState<string | null>(null);
 
-    const do_update = async (show_loading: boolean) => {
-        const songsList = SET_DB.get_songs(set_id);
-        const order: Record<number, number> = {};
-        songsList.forEach((s, idx) => {
-            order[s.song_id] = idx;
-        });
+    const do_update = useCallback(
+        async (show_loading: boolean) => {
+            const songsList = SET_DB.get_songs(set_id);
+            const order: Record<number, number> = {};
+            songsList.forEach((s, idx) => {
+                order[s.song_id] = idx;
+            });
 
-        // Load song details for the set and then sort them according to the requested order
-        const song_promise = DB.then((db) =>
-            db.get_songs(
-                songsList.map((s) => s.song_id),
-                true,
-                true,
-            ),
-        ).then((songsResult) => songsResult.sort((a, b) => order[a.id] - order[b.id]));
+            // Load song details for the set and then sort them according to the requested order
+            const song_promise = DB.then((db) =>
+                db.get_songs(
+                    songsList.map((s) => s.song_id),
+                    true,
+                    true,
+                ),
+            ).then((songsResult) => songsResult.sort((a, b) => order[a.id] - order[b.id]));
 
-        if (show_loading) {
-            setIsLoading(true);
-        }
+            if (show_loading) {
+                setIsLoading(true);
+            }
 
-        const [songsResult, setResult] = await Promise.all([song_promise, SET_DB.get_set(set_id)]);
-        setSongs(songsResult);
-        setSet(setResult);
-        setIsLoading(false);
-    };
+            const [songsResult, setResult] = await Promise.all([song_promise, SET_DB.get_set(set_id)]);
+            setSongs(songsResult);
+            setSet(setResult);
+            setIsLoading(false);
+        },
+        [set_id],
+    );
 
     useEffect(() => {
         do_update(true);
@@ -142,7 +145,7 @@ export const PageSetView = ({ set_id }: PageSetViewProps) => {
         return () => {
             subscription.unsubscribe();
         };
-    }, [set_id]);
+    }, [set_id, do_update]);
 
     const shareSet = () => {
         if (!set) return;

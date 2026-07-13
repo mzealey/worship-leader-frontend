@@ -44,12 +44,14 @@ const SettingsPageVersion = () => {
     useEffect(() => {
         const updateDbInfo = () => {
             dbModule.DB_AVAILABLE.then((db) => {
-                const newOptions = { ...options };
-                newOptions.db = db.get_version_string();
-                if (db.db_load_errs) {
-                    newOptions.db_load_errors = Array.isArray(db.db_load_errs) ? db.db_load_errs.join(',') : db.db_load_errs;
-                }
-                setOptions(newOptions);
+                setOptions((prev) => {
+                    const newOptions = { ...prev };
+                    newOptions.db = db.get_version_string();
+                    if (db.db_load_errs) {
+                        newOptions.db_load_errors = Array.isArray(db.db_load_errs) ? db.db_load_errs.join(',') : db.db_load_errs;
+                    }
+                    return newOptions;
+                });
             });
         };
 

@@ -49,12 +49,12 @@ export const PageEditTextarea = ({ type, song, onClose }: PageEditTextareaProps)
     const [submitting, setSubmitting] = useState(false);
     const [submitFailed, setSubmitFailed] = useState(false);
 
-    const handleClose = () => {
+    const handleClose = useCallback(() => {
         setClosed(true);
         if (onClose) {
             onClose();
         }
-    };
+    }, [onClose]);
 
     const updateCont = useCallback(
         (force?: boolean) => {
@@ -122,7 +122,7 @@ export const PageEditTextarea = ({ type, song, onClose }: PageEditTextareaProps)
                 .then(success, () => setSubmitFailed(true))
                 .finally(() => setSubmitting(false));
         },
-        [t, orig, cont, type, song, format, handleClose],
+        [orig, cont, type, song, format, handleClose],
     );
 
     const formatChange = (newFormat: string) => {
