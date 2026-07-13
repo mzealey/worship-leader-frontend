@@ -13,7 +13,6 @@ import eslint from 'vite-plugin-eslint';
 import { createHtmlPlugin } from 'vite-plugin-html';
 import { VitePWA } from 'vite-plugin-pwa';
 
-
 const package_conf = require('./package.json');
 const browserslist = {
     // Let www build use the default targets from package.json

@@ -1,4 +1,5 @@
 import { Button, ButtonGroup, FormControl, Grid, InputBase, NativeSelect } from '@mui/material';
+import type { ReactNode } from 'react';
 import { useEffect, useState } from 'react';
 import { DelayedDBInput } from '../component/delayed-db-input';
 import { TristateCheckbox } from '../component/tristate-checkbox';
@@ -17,7 +18,43 @@ type SourceInfo = {
     name: string;
 };
 
-const SearchSelect = (props: React.ComponentProps<typeof NativeSelect>) => <NativeSelect input={<InputBase />} {...props} />;
+const FilterGridItem = ({ children, thin }: { children: ReactNode; thin?: boolean }) => (
+    <Grid size={thin ? { xs: 12 } : { xs: 12, sm: 6, md: 4 }}>{children}</Grid>
+);
+
+const FilterSelect = (props: React.ComponentProps<typeof NativeSelect>) => (
+    <FormControl fullWidth>
+        <NativeSelect input={<InputBase />} {...props} />
+    </FormControl>
+);
+
+const TagsButtonGroup = ({
+    text,
+    hasSelection,
+    onOpen,
+    onClear,
+    dialog,
+}: {
+    text: ReactNode;
+    hasSelection: boolean;
+    onOpen: () => void;
+    onClear: () => void;
+    dialog: ReactNode;
+}) => (
+    <>
+        <ButtonGroup variant="text">
+            <Button sx={(theme) => ({ color: theme.palette.text.link, flexGrow: 1 })} onClick={onOpen}>
+                {text}
+            </Button>
+            {hasSelection ? (
+                <Button sx={(theme) => ({ color: theme.palette.text.link })} onClick={onClear}>
+                    <Icon.Clear />
+                </Button>
+            ) : null}
+        </ButtonGroup>
+        {dialog}
+    </>
+);
 
 // Define the props that can be passed to SearchFilters from outside
 export interface SearchFiltersProps {
@@ -67,11 +104,6 @@ export function SearchFilters(props: SearchFiltersProps) {
 
     const sorted_langs = sorted_language_codes(get_db_chosen_langs([]));
 
-    const breakpoint: { xs: number; md?: number; sm?: number } = { xs: 12 };
-    if (!thin) {
-        breakpoint.md = 4;
-        breakpoint.sm = 6;
-    }
     let sources_text, tags_text;
     if (source_list && Object.keys(sources).length > 0) {
         const sourceIds = new Set(Object.keys(sources).map((id) => Number(id)));
@@ -96,112 +128,112 @@ export function SearchFilters(props: SearchFiltersProps) {
 
     return (
         <Grid container spacing={1} style={{ marginTop: 4 }}>
-            <Grid>
-                <FormControl fullWidth>
-                    <SearchSelect
-                        title={t('sort_default')}
-                        value={filters.order_by}
-                        onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
-                            updateFilter({ order_by: e.target.value });
-                        }}
-                    >
-                        <option value="default">{t('sort_default')}</option>
-                        <option value="real_song_usage desc">{t('sort_popular')}</option>
-                        <option value="sort_title asc">{t('sort_title')}</option>
-                        <option value="sort_title desc">{t('sort_title_back')}</option>
-                        <option value="rating desc">{t('sort_rated')}</option>
-                        <option value="songs.id desc">{t('sort_added')}</option>
-                        <option value="song_ts desc">{t('sort_updated')}</option>
-                        <option value="song_source.number asc">{t('sort_song_number')}</option>
-                        <option value="year desc">{t('year_written')}</option>
-                        {db_type == 'offline' && <option value="usage_stat.last_view desc">{t('sort_last_viewed')}</option>}
-                        {db_type == 'offline' && <option value="usage_stat.total_views desc">{t('sort_most_viewed')}</option>}
-                    </SearchSelect>
-                </FormControl>
-            </Grid>
-            <Grid>
-                <FormControl fullWidth>
-                    <SearchSelect
-                        title={t('button-choose-song-languages')}
-                        value={filters.lang}
-                        sx={filters.lang != 'all' ? { backgroundColor: 'blue' } : {}}
-                        onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
-                            updateFilter({ lang: e.target.value });
-                        }}
-                    >
-                        <option value="all">{t('filter_lang_all')}</option>
-                        {sorted_langs.map((code) => (
-                            <option key={code} value={code}>
-                                {lang_name(code)}
-                            </option>
-                        ))}
-                    </SearchSelect>
-                </FormControl>
-            </Grid>
-            <Grid>
-                <ButtonGroup>
-                    <Button style={{ flexGrow: 1 }} onClick={() => setShowTagSelector(true)}>
-                        {t('tag_str')}
-                        {tags_text ? `: ${tags_text}` : null}
-                    </Button>
-                    {Object.keys(tags).length > 0 && (
-                        <Button onClick={() => resetTags()}>
-                            <Icon.Clear />
-                        </Button>
-                    )}
-                </ButtonGroup>
-                {show_tag_selector ? (
-                    <Theme section="Base">
-                        <PageTagSelect onClose={() => setShowTagSelector(false)} />
-                    </Theme>
-                ) : null}
-            </Grid>
-            <Grid>
-                <ButtonGroup>
-                    <Button style={{ flexGrow: 1 }} onClick={() => setShowSourceSelector(true)}>
-                        {t('source_str')}
-                        {sources_text ? `: ${sources_text}` : null}
-                    </Button>
-                    {Object.keys(sources).length > 0 && (
-                        <Button onClick={() => resetSources()}>
-                            <Icon.Clear />
-                        </Button>
-                    )}
-                </ButtonGroup>
-                {show_source_selector ? (
-                    <Theme section="Base">
-                        <PageSourceSelect onClose={() => setShowSourceSelector(false)} />
-                    </Theme>
-                ) : null}
-            </Grid>
-            <Grid>
+            <FilterGridItem thin={thin}>
+                <FilterSelect
+                    title={t('sort_default')}
+                    value={filters.order_by}
+                    onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
+                        updateFilter({ order_by: e.target.value });
+                    }}
+                >
+                    <option value="default">{t('sort_default')}</option>
+                    <option value="real_song_usage desc">{t('sort_popular')}</option>
+                    <option value="sort_title asc">{t('sort_title')}</option>
+                    <option value="sort_title desc">{t('sort_title_back')}</option>
+                    <option value="rating desc">{t('sort_rated')}</option>
+                    <option value="songs.id desc">{t('sort_added')}</option>
+                    <option value="song_ts desc">{t('sort_updated')}</option>
+                    <option value="song_source.number asc">{t('sort_song_number')}</option>
+                    <option value="year desc">{t('year_written')}</option>
+                    {db_type == 'offline' && <option value="usage_stat.last_view desc">{t('sort_last_viewed')}</option>}
+                    {db_type == 'offline' && <option value="usage_stat.total_views desc">{t('sort_most_viewed')}</option>}
+                </FilterSelect>
+            </FilterGridItem>
+            <FilterGridItem thin={thin}>
+                <FilterSelect
+                    title={t('button-choose-song-languages')}
+                    value={filters.lang || 'all'}
+                    sx={filters.lang && filters.lang != 'all' ? { backgroundColor: 'blue' } : {}}
+                    onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
+                        updateFilter({ lang: e.target.value });
+                    }}
+                >
+                    <option value="all">{t('filter_lang_all')}</option>
+                    {sorted_langs.map((code) => (
+                        <option key={code} value={code}>
+                            {lang_name(code)}
+                        </option>
+                    ))}
+                </FilterSelect>
+            </FilterGridItem>
+            <FilterGridItem thin={thin}>
+                <TagsButtonGroup
+                    text={
+                        <>
+                            {t('tag_str')}
+                            {tags_text ? `: ${tags_text}` : null}
+                        </>
+                    }
+                    hasSelection={Object.keys(tags).length > 0}
+                    onOpen={() => setShowTagSelector(true)}
+                    onClear={() => resetTags()}
+                    dialog={
+                        show_tag_selector ? (
+                            <Theme section="Base">
+                                <PageTagSelect onClose={() => setShowTagSelector(false)} />
+                            </Theme>
+                        ) : null
+                    }
+                />
+            </FilterGridItem>
+            <FilterGridItem thin={thin}>
+                <TagsButtonGroup
+                    text={
+                        <>
+                            {t('source_str')}
+                            {sources_text ? `: ${sources_text}` : null}
+                        </>
+                    }
+                    hasSelection={Object.keys(sources).length > 0}
+                    onOpen={() => setShowSourceSelector(true)}
+                    onClear={() => resetSources()}
+                    dialog={
+                        show_source_selector ? (
+                            <Theme section="Base">
+                                <PageSourceSelect onClose={() => setShowSourceSelector(false)} />
+                            </Theme>
+                        ) : null
+                    }
+                />
+            </FilterGridItem>
+            <FilterGridItem thin={thin}>
                 <SongKeyInput fullWidth onChange={(v: string) => updateFilter({ songkey: v == '' ? undefined : v })} />
-            </Grid>
-            <Grid>
+            </FilterGridItem>
+            <FilterGridItem thin={thin}>
                 <TristateCheckbox onChange={(state?: 1 | 0) => updateFilter({ has_mp3: state })}>
                     {t('listen_words')} <Icon.SymbolHasMP3 />
                 </TristateCheckbox>
-            </Grid>
-            <Grid>
+            </FilterGridItem>
+            <FilterGridItem thin={thin}>
                 <TristateCheckbox onChange={(state?: 1 | 0) => updateFilter({ has_chord: state })}>
                     {t('edit_chords')} <Icon.SymbolHasChord />
                 </TristateCheckbox>
-            </Grid>
-            <Grid>
+            </FilterGridItem>
+            <FilterGridItem thin={thin}>
                 <TristateCheckbox onChange={(state?: 1 | 0) => updateFilter({ has_sheet: state })}>
                     {t('has_sheet')} <Icon.SymbolHasSheet />
                 </TristateCheckbox>
-            </Grid>
-            <Grid>
+            </FilterGridItem>
+            <FilterGridItem thin={thin}>
                 <TristateCheckbox onChange={(state?: 1 | 0) => updateFilter({ is_original: state })}>
                     {t('untranslated_song')} <Icon.SymbolOriginal />
                 </TristateCheckbox>
-            </Grid>
-            <Grid>
+            </FilterGridItem>
+            <FilterGridItem thin={thin}>
                 <TristateCheckbox onChange={(state?: 0 | 1) => updateFilter({ favourite: state })}>
                     {t('favourite-filter')} <Icon.SymbolFavourite />
                 </TristateCheckbox>
-            </Grid>
+            </FilterGridItem>
         </Grid>
     );
 }

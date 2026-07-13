@@ -1,4 +1,4 @@
-import { Box, styled } from '@mui/material';
+import { Box } from '@mui/material';
 import type { Theme } from '@mui/material/styles';
 import { Fragment, useEffect } from 'react';
 import side_img from '../../img/search-page-side-img.svg';
@@ -29,19 +29,6 @@ useSearchStore.subscribe((state) => {
 
 const side_section_width = '25vw';
 const breakpoint = 'md';
-
-const topBarHeight = 44;
-
-const FixedSearchArea = styled(Box)(({ theme }) => ({
-    position: 'fixed',
-    top: topBarHeight,
-    left: 0,
-    right: 0,
-    zIndex: theme.zIndex.appBar - 1,
-    [theme.breakpoints.up(breakpoint)]: {
-        left: side_section_width,
-    },
-}));
 
 export const PageList = () => {
     const { t: _t } = useTranslation();
@@ -109,13 +96,17 @@ export const PageList = () => {
                     },
                 })}
             >
-                <TopBar title="" />
+                <TopBar
+                    title=""
+                    sx={(theme: Theme) => ({
+                        [theme.breakpoints.up(breakpoint)]: {
+                            left: side_section_width,
+                            width: 'auto',
+                        },
+                    })}
+                />
 
-                <FixedSearchArea>
-                    <SearchArea />
-                </FixedSearchArea>
-                <Box sx={{ height: topBarHeight }} />
-                <Box sx={{ height: 40 }} />
+                <SearchArea />
                 <SongList container={document} />
             </Box>
         </Fragment>

@@ -255,8 +255,14 @@ function generate_theme(base_palette: Palette) {
             },
             MuiFormControlLabel: {
                 styleOverrides: {
+                    root: {
+                        alignItems: 'center',
+                    },
                     label: {
                         color: theme.palette.primary.contrastText,
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: 4,
                     },
                 },
             },
@@ -270,10 +276,10 @@ function generate_theme(base_palette: Palette) {
                     groupedOutlined: {
                         border: 'none',
                         '&:hover': { border: 'none' },
-                        color: theme.palette.text.highlight,
+                        color: theme.palette.text.link,
                     },
                     groupedText: {
-                        color: theme.palette.text.highlight,
+                        color: theme.palette.text.link,
                     },
                 },
             },
@@ -291,21 +297,20 @@ function generate_theme(base_palette: Palette) {
             },
             MuiNativeSelect: {
                 styleOverrides: {
-                    root: {
-                        backgroundColor: theme.palette.background.default,
-                        color: theme.palette.text.highlight,
-                    },
                     select: {
-                        borderRadius: 16,
-                        paddingLeft: 10 + 10,
+                        paddingTop: 0,
+                        paddingBottom: 0,
+                        paddingRight: 32,
+                        fontSize: BaseTheme.typography.pxToRem(16),
+                        lineHeight: 'inherit',
+                        minHeight: 0,
                         '&:focus': {
-                            borderRadius: 16,
-                            backgroundColor: fade(theme.palette.background.default, 0.85),
+                            backgroundColor: 'transparent',
                         },
                     },
                     icon: {
                         right: 10,
-                        color: theme.palette.text.highlight,
+                        color: theme.palette.text.link,
                     },
                 },
             },
@@ -314,7 +319,19 @@ function generate_theme(base_palette: Palette) {
                     root: {
                         '&.MuiNativeSelect-root': {
                             backgroundColor: theme.palette.background.default,
-                            color: theme.palette.text.highlight,
+                            color: theme.palette.text.link,
+                            fontSize: BaseTheme.typography.pxToRem(16),
+                            lineHeight: 'inherit',
+                            borderRadius: 16,
+                            paddingTop: 2,
+                            paddingBottom: 2,
+                            paddingLeft: 16,
+                            paddingRight: 0,
+                            display: 'flex',
+                            alignItems: 'center',
+                            '&:before, &:after': {
+                                borderBottom: 'none !important',
+                            },
                         },
                     },
                 },
