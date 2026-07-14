@@ -15,6 +15,7 @@ import {
 } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { ImageButton, ThinPage } from '../component/basic';
+import { ChordColorPicker } from '../component/chord-color-picker';
 import * as Icon from '../component/icons';
 import { send_ui_notification } from '../component/notification';
 import { TopBar } from '../component/top-bar';
@@ -109,18 +110,13 @@ const SettingCheckbox = ({ setting }: { setting: keyof Settings }) => {
 
 const ChordColorGroup = () => {
     const { t } = useTranslation();
-    const [color] = useSetting('chord-color');
-
-    useEffect(() => {
-        // TODO: Color picker - Previous colors allowed
-        //"000000","993300","333300","000080","333399","333333","800000","FF6600","808000","008000","008080","0000FF","666699","808080","FF0000","FF9900","99CC00","339966","33CCCC","3366FF","800080","999999","FF00FF","FFCC00","FFFF00","00FF00","00FFFF","00CCFF","993366","C0C0C0","FF99CC","FFCC99","FFFF99","CCFFFF","99CCFF","FFFFFF"
-    }, []);
+    const [color, setColor] = useSetting('chord-color');
 
     return (
         <ListItem disablePadding>
             <ListItemButton>
                 <ListItemIcon>
-                    <div style={{ backgroundColor: color, width: 18, height: 18 }} />
+                    <ChordColorPicker color={color} onChange={setColor} />
                 </ListItemIcon>
                 <ListItemText primary={t('setting-chord-color') + ': ' + color} />
             </ListItemButton>
