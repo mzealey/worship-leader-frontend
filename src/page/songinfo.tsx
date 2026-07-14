@@ -133,9 +133,13 @@ export const PageSongInfo: ComponentType<PageSongInfoProps> = ({ requested_song_
     const setup_track_prints = useCallback(() => {
         // Track song prints. From https://www.tjvantoll.com/2012/06/15/detecting-print-requests-with-javascript/
         print_watcher_ref.current = match_media_watcher('print', (mql: MediaQueryList) => {
-            if (mql.matches)
+            if (mql.matches) {
                 // before print
                 onprinthandler();
+            } else {
+                // after print — restore the non-print view
+                setIsPrinting(false);
+            }
         });
 
         if (!print_watcher_ref.current && window.onbeforeprint)
@@ -165,8 +169,14 @@ export const PageSongInfo: ComponentType<PageSongInfoProps> = ({ requested_song_
 
     const do_print = useCallback(() => {
         setIsPrinting(true);
-        _do_print();
-        setIsPrinting(false);
+        // Wait for React to commit the DOM with is_printing=true (needed for
+        // SheetMusicDisplay to render at 1000px print width) before blocking
+        // the main thread with the synchronous window.print() call
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                _do_print();
+            });
+        });
     }, [_do_print]);
 
     const enter_single_presentor_mode = useCallback(() => {
@@ -417,6 +427,10 @@ export const PageSongInfo: ComponentType<PageSongInfoProps> = ({ requested_song_
                     minHeight: `calc(100vh - ${verticalPagePadding}px)`,
                     display: 'flex',
                     flexDirection: 'column',
+                    '@media only print': {
+                        minHeight: 'auto',
+                        display: 'block',
+                    },
                     ...(show_sidebar && {
                         '@media only screen': {
                             marginLeft: `${sidebar_width + 1}px`,

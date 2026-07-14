@@ -3,16 +3,24 @@
 }
 
 @media only print {
-    #song-right .entries {
-        display: block !important;
-        height: auto;
+    // MUI sets an inline font-size: 12px on <html> — reduce it for print density
+    html {
+        font-size: 10px !important;
+    }
+
+    html,
+    body,
+    #root {
+        color: #000 !important;
+        background-color: #fff !important;
+        text-shadow: none !important;
     }
 
     #song-right {
         margin-top: 20px;
     }
 
-    #song-right > #song-info {
+    #song-right > #song-info-top {
         padding: 0;
         margin: 10px 0;
     }

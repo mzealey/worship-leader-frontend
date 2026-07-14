@@ -194,6 +194,8 @@ export const App = () => {
 
                         '@media only print': {
                             color: '#000',
+                            backgroundColor: '#fff',
+                            textShadow: 'none',
                         },
                     },
                     ':root': {
