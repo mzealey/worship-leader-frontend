@@ -1,6 +1,7 @@
 import { Box } from '@mui/material';
 import type { ComponentType } from 'react';
 import { memo, useCallback, useEffect, useRef, useState, type MouseEvent } from 'react';
+import { createPortal } from 'react-dom';
 import { useTranslation } from '../langpack';
 import { clsx, Fragment } from '../preact-helpers';
 import { on_resize } from '../resize-watcher';
@@ -318,9 +319,12 @@ export const SongXMLDisplay: ComponentType<SongXMLDisplayProps> = ({ song, trans
                 songXMLRefCallback={songXMLRefCallback}
             />
 
-            {show_fingering && selected_chord ? (
-                <ChordPopup selected_chord={selected_chord} onMouseEnter={stopHideChordTimer} onMouseLeave={startHideChordTimer} />
-            ) : null}
+            {show_fingering && selected_chord
+                ? createPortal(
+                      <ChordPopup selected_chord={selected_chord} onMouseEnter={stopHideChordTimer} onMouseLeave={startHideChordTimer} />,
+                      document.body,
+                  )
+                : null}
         </Fragment>
     );
 };

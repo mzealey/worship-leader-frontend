@@ -131,7 +131,9 @@ export const ChordPopup = memo(function ChordPopup({ selected_chord, ...props }:
                     <IconButton onClick={prev_chord}>
                         <Icon.Prev />
                     </IconButton>
-                    {normalizedIdx + 1}/{fingerings.length}
+                    <Box sx={{ flex: 1, textAlign: 'center' }}>
+                        {normalizedIdx + 1}/{fingerings.length}
+                    </Box>
                     <IconButton onClick={next_chord}>
                         <Icon.Next />
                     </IconButton>
