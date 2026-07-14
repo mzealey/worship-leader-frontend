@@ -2,6 +2,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { CommonDB, get_db_chosen_langs, save_db_chosen_langs } from '../src/db/common';
+import type { DBLangCode } from '../src/lang-types';
 
 type TestPreparedQuery = Record<string, any>;
 
@@ -12,32 +13,32 @@ describe('db/common utility functions', function () {
 
     describe('get_db_chosen_langs', function () {
         it('returns array when called', function () {
-            const result = get_db_chosen_langs(['default']);
+            const result = get_db_chosen_langs(['default'] as DBLangCode[]);
             expect(Array.isArray(result)).toBe(true);
         });
 
         it('returns default value when no stored value', function () {
-            const result = get_db_chosen_langs(['default']);
+            const result = get_db_chosen_langs(['default'] as DBLangCode[]);
             expect(result).toEqual(['default']);
         });
 
         it('handles different default values', function () {
-            const result = get_db_chosen_langs(['fr', 'es']);
+            const result = get_db_chosen_langs(['fr', 'es'] as DBLangCode[]);
             expect(result).toEqual(['fr', 'es']);
         });
     });
 
     describe('save_db_chosen_langs', function () {
         it('executes without throwing', function () {
-            expect(() => save_db_chosen_langs(['en', 'fr'])).not.toThrow();
+            expect(() => save_db_chosen_langs(['en', 'fr'] as DBLangCode[])).not.toThrow();
         });
 
         it('handles empty array', function () {
-            expect(() => save_db_chosen_langs([])).not.toThrow();
+            expect(() => save_db_chosen_langs([] as DBLangCode[])).not.toThrow();
         });
 
         it('handles single language', function () {
-            expect(() => save_db_chosen_langs(['de'])).not.toThrow();
+            expect(() => save_db_chosen_langs(['de'] as DBLangCode[])).not.toThrow();
         });
     });
 

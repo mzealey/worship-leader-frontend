@@ -1,4 +1,5 @@
 import type { DBRequestedItems, DBSearchRunResult } from '../db-search';
+import type { DBLangCode } from '../lang-types';
 import { persistentStorage } from '../persistent-storage.es5';
 import type { Album, Song, SongShortData, SongSource } from '../song';
 import type { _SearchMetaResult } from './common';
@@ -73,10 +74,10 @@ export abstract class OfflineSQLiteDB extends OfflineDBCommon<DBQuery> {
     }
 
     // Return a list of languages currently loaded in the database
-    async list_loaded_langs(): Promise<string[]> {
+    async list_loaded_langs(): Promise<DBLangCode[]> {
         try {
             const rows = await this.single_query<{ lang: string }>('SELECT DISTINCT lang FROM songs');
-            return rows.map((row) => row.lang);
+            return rows.map((row) => row.lang as DBLangCode);
         } catch (e) {
             return [];
         }
@@ -366,7 +367,7 @@ export abstract class OfflineSQLiteDB extends OfflineDBCommon<DBQuery> {
 
         // Fetch the basic metadata - will automatically be refreshed
         // periodically by do_background_refresh() as with the song data
-        await this.add_languages(['dbmeta'], true);
+        await this.add_languages(['dbmeta'] as DBLangCode[], true);
     }
 
     async _populate_dbmeta(to_import: LangPackResponse): Promise<void> {
@@ -400,7 +401,7 @@ export abstract class OfflineSQLiteDB extends OfflineDBCommon<DBQuery> {
 
     async _populate_lang(
         to_import: LangPackResponse,
-        lang_code: string,
+        lang_code: DBLangCode,
         is_compressed: boolean,
         rows_loaded_callback?: (count: number, total: number) => void,
     ): Promise<void> {

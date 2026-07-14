@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { send_ui_notification } from './component/notification';
 import { BUILD_TYPE, DEBUG } from './globals';
+import type { DBLangCode } from './lang-types';
 import { updateSetting } from './settings-store';
 import { song_language_translations } from './song-languages';
 import { LOCALE_SORT } from './sort-helpers';
@@ -99,7 +100,7 @@ function lang_name(lang_id: string) {
     const langs = song_language_translations();
     const { appLang } = useAppLang.getState();
 
-    if (appLang && langs?.[lang_id].name?.[appLang]) return langs[lang_id].name[appLang];
+    if (appLang && langs?.[lang_id as DBLangCode]?.name?.[appLang]) return langs[lang_id as DBLangCode]!.name![appLang];
 
     // Fallback to our inbuilt translation or just the language id by itself
     const languageNames = translations['language_names'] as Record<string, string> | undefined;

@@ -1,5 +1,6 @@
 import type { DBRequestedItems, DBSearchRunResult } from '../db-search';
 import type { FavouriteDB } from '../favourite-db';
+import type { DBLangCode } from '../lang-types';
 import { get_meta_db } from '../meta-db';
 import { persistentStorage } from '../persistent-storage.es5';
 import type { Album, MaybeLoadedSong, NotLoadedSong, Song, SongShortData, SongSource } from '../song';
@@ -12,8 +13,41 @@ const TIMING_STAT_LENGTH = 50; // how many samples to take into account when fig
 
 // Languages that the user wants in their database. Stored and returned like [ en, fr, ... ]
 const CHOSEN_LANGUAGES_KEY = 'chosen-languages';
-export const get_db_chosen_langs = (def: string[] = []): string[] => persistentStorage.getObj<string[]>(CHOSEN_LANGUAGES_KEY, def);
-export const save_db_chosen_langs = (langs: string[]) => persistentStorage.setObj(CHOSEN_LANGUAGES_KEY, langs);
+
+/**
+ * Retrieve the user's chosen **database language codes** from persistent
+ * storage. These are always base 2-character codes (e.g., `"en"`,
+ * `"tr"`) — never locale codes like `"en-GB"`.
+ *
+ * @param def  Fallback array returned when no languages have been chosen
+ *             yet. Each element must be a valid database language code.
+ * @returns The list of database language codes the user selected (or the
+ *          default).
+ *
+ * @see {@link save_db_chosen_langs} to persist the user's selection.
+ * @see {@link get_default_db_languages} for an initial sensible default
+ *      list derived from browser settings.
+ * @see {@link get_browser_languages} for UI language pack selection
+ *      (may include locale codes — **not** suitable here).
+ */
+export const get_db_chosen_langs = (def: readonly DBLangCode[] = []): DBLangCode[] => {
+    const raw = persistentStorage.getObj<string[]>(CHOSEN_LANGUAGES_KEY, []);
+    return (raw.length ? raw : [...def]) as DBLangCode[];
+};
+
+/**
+ * Persist the user's chosen **database language codes**. The codes must
+ * be base 2-character codes (e.g., `"en"`, `"tr"`) — do **not** pass
+ * locale codes like `"en-GB"` or raw browser language arrays here.
+ *
+ * Use {@link get_default_db_languages} to generate a valid list from
+ * browser preferences.
+ *
+ * @param langs  Array of database language codes to persist.
+ *
+ * @see {@link get_db_chosen_langs} to read back the persisted selection.
+ */
+export const save_db_chosen_langs = (langs: DBLangCode[]) => persistentStorage.setObj(CHOSEN_LANGUAGES_KEY, langs);
 
 export interface DBBaseFilters {
     search: string;

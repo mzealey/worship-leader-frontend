@@ -6,7 +6,7 @@ import { Spinner } from '../component/lock-screen';
 import { DB, DB_AVAILABLE } from '../db';
 import { get_db_chosen_langs, save_db_chosen_langs } from '../db/common';
 import { is_firsttime } from '../globals';
-import { get_app_languages, get_browser_languages } from '../langdetect.es5';
+import { get_app_languages } from '../langdetect.es5';
 import { useAppLang } from '../langpack';
 import { PageDbLangs } from '../page/db-langs';
 import { PageEditTextarea } from '../page/edit';
@@ -20,6 +20,7 @@ import { PageSettings } from '../page/settings';
 import { PageSongInfo } from '../page/songinfo';
 import type { CreateSetOptions } from '../set';
 import { create_set_from_url } from '../set';
+import { get_default_db_languages } from '../song-languages';
 import { gup, is_bot, parse_search } from '../splash-util.es5';
 import { deferred_promise } from '../util';
 import { GATracker } from './analytics';
@@ -143,7 +144,7 @@ export const App = () => {
                 // rather pull a default list from the browser and set it to that, and assume that we will fall-through to
                 // online db
                 if (is_bot()) {
-                    save_db_chosen_langs(get_browser_languages());
+                    save_db_chosen_langs(get_default_db_languages());
                 } else {
                     // Default case on first load is to show db-langs page so user can select them. Once the languages are
                     // selected, populate_db() will be called from that page and app initialization sequence will continue.

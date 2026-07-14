@@ -1,10 +1,24 @@
+import type { BrowserLangCode, UILangCode } from './lang-types';
 import { getSetting } from './settings-store';
 import { gup } from './splash-util.es5';
 
-// Get languages to try for ui language packs in order of preference. Should
-// always include at least one valid language. This needs to be instant (ie
-// cannot use ajax) as it is used to influence the splash screen.
-export function get_browser_languages(extra?: string[]) {
+/**
+ * Get languages to try for **UI language packs** in order of preference,
+ * derived from the user's browser locale settings. Should always include
+ * at least one valid language. The returned array is suitable for
+ * selecting a language pack; it may contain both full locale codes
+ * (e.g., `"en-GB"`, `"en-US"`) and base 2-character codes (e.g.,
+ * `"en"`, `"tr"`).
+ *
+ * **Not** suitable for database language selection — for that use
+ * {@link get_default_db_languages} instead.
+ *
+ * @see {@link get_app_languages} for the same list with `"en"` appended
+ *      as a final fallback.
+ * @see {@link get_default_db_languages} for a list filtered to valid
+ *      database language codes only.
+ */
+export function get_browser_languages(extra?: string[]): BrowserLangCode[] {
     const languages: string[] = [];
 
     const add_lang = function (...args: (string | undefined | null)[]) {
@@ -70,9 +84,23 @@ export function get_browser_languages(extra?: string[]) {
 
     if (extra) extra.forEach((lang) => add_lang(lang));
 
-    return languages;
+    return languages as BrowserLangCode[];
 }
 
-export function get_app_languages(): string[] {
-    return get_browser_languages(['en']); // en as always final fallback
+/**
+ * Get languages to try for **UI language packs**, derived from browser
+ * locale settings with `"en"` appended as the final fallback. Returns
+ * the same codes as {@link get_browser_languages} plus a guaranteed
+ * `"en"` entry.
+ *
+ * The returned {@link UILangCode} values are suitable for selecting
+ * a UI language pack (e.g., {@code langpack/en.json}).
+ *
+ * **Not** suitable for database language selection — use
+ * {@link get_default_db_languages} for DB purposes.
+ *
+ * @see {@link get_browser_languages} for the raw browser-derived list.
+ */
+export function get_app_languages(): UILangCode[] {
+    return get_browser_languages(['en']) as unknown as UILangCode[]; // en as always final fallback
 }

@@ -2,6 +2,7 @@ import { on_db_languages_update } from '../db';
 import { send_error_report } from '../error-catcher';
 import type { FavouriteDB } from '../favourite-db';
 import { DB_PATH } from '../globals';
+import type { DBLangCode } from '../lang-types';
 import { persistentStorage } from '../persistent-storage.es5';
 import type { Song } from '../song';
 import { load_song_languages, refresh_song_languages } from '../song-languages';
@@ -70,7 +71,7 @@ export abstract class OfflineDBCommon<PreparedQuery> extends CommonDB<PreparedQu
     DB_VERSION!: number;
     _last_update_key!: string;
 
-    abstract list_loaded_langs(): Promise<string[]>;
+    abstract list_loaded_langs(): Promise<DBLangCode[]>;
 
     constructor(favorite_db: FavouriteDB) {
         super(favorite_db);
@@ -115,8 +116,8 @@ export abstract class OfflineDBCommon<PreparedQuery> extends CommonDB<PreparedQu
         await Promise.all(promises);
     }
 
-    async remove_languages(langs: string[]): Promise<void> {
-        const last_update = persistentStorage.getObj<Record<string, number>>(this._last_update_key, {});
+    async remove_languages(langs: DBLangCode[]): Promise<void> {
+        const last_update = persistentStorage.getObj<Record<DBLangCode, number>>(this._last_update_key, {});
         for (const lang of langs) {
             const emptyPack: LangPackResponse = { data: [] };
             await this._populate(emptyPack, lang, false, undefined);
@@ -127,7 +128,7 @@ export abstract class OfflineDBCommon<PreparedQuery> extends CommonDB<PreparedQu
     }
 
     // TODO: Run on worker thread if possible (eg sqlite-wasm)
-    async add_languages(languages: string[], in_background?: boolean, progress_tracker?: ProgressTracker): Promise<void> {
+    async add_languages(languages: DBLangCode[], in_background?: boolean, progress_tracker?: ProgressTracker): Promise<void> {
         const download_promises: Promise<unknown>[] = [];
 
         const start_ts = Date.now();
@@ -139,18 +140,18 @@ export abstract class OfflineDBCommon<PreparedQuery> extends CommonDB<PreparedQu
         // initiated here by the user (ie background update).
         download_promises.push(refresh_song_languages());
 
-        const langs = (load_song_languages(true) as Record<string, { size?: number; count?: number }>) || {};
+        const langs = (load_song_languages(true) || {}) as Record<DBLangCode, { size?: number; count?: number }>;
 
         // TODO: This could be abstracted out into a class if wanted to be used elsewhere
         const ROW_PROGRESS_FACTOR = 2; // how long does row import take after the download
         const sum = (a: Array<number | undefined>): number => a.reduce<number>((a, b) => (a || 0) + (b || 0), 0);
 
         const total_expected = sum(languages.map((lang) => langs[lang]?.size)) * ROW_PROGRESS_FACTOR;
-        const totalDone: Record<string, number> = {};
+        const totalDone: Record<DBLangCode, number> = {};
         const STEP_DOWNLOAD = 1,
             STEP_DOWNLOAD_COMPLETE = 2,
             STEP_IMPORT = 3;
-        const update_loaded_status = (lang: string, step: number, size: number) => {
+        const update_loaded_status = (lang: DBLangCode, step: number, size: number) => {
             if (!progress_tracker || total_expected == 0) return;
 
             if (step == STEP_DOWNLOAD) totalDone[lang] = size;
@@ -167,7 +168,7 @@ export abstract class OfflineDBCommon<PreparedQuery> extends CommonDB<PreparedQu
         // up.
         // TODO: Make this by rough number of songs expected to be backlogged in the queue (on mobile devices). This also slows down desktop devices
         let download_errors = 0;
-        const download_lang = async (lang: string, required?: boolean): Promise<void> => {
+        const download_lang = async (lang: DBLangCode, required?: boolean): Promise<void> => {
             const ret: LangPackResponse = await fetch(`${DB_PATH}.${lang}.json`, { cache: 'no-store' })
                 .then(track_progress((read) => update_loaded_status(lang, STEP_DOWNLOAD, read)))
                 .then((response) => response.json() as Promise<LangPackResponse>);
@@ -185,7 +186,7 @@ export abstract class OfflineDBCommon<PreparedQuery> extends CommonDB<PreparedQu
 
                 console.log(`Completed adding lang ${lang} to db in ${Date.now() - lang_start_ts}ms`);
 
-                const last_update = persistentStorage.getObj<Record<string, number>>(this._last_update_key, {});
+                const last_update = persistentStorage.getObj<Record<DBLangCode, number>>(this._last_update_key, {});
                 last_update[lang] = Date.now();
                 persistentStorage.setObj(this._last_update_key, last_update);
             } catch (err) {
@@ -231,7 +232,7 @@ export abstract class OfflineDBCommon<PreparedQuery> extends CommonDB<PreparedQu
 
     async _populate(
         to_import: LangPackResponse,
-        lang_code: string,
+        lang_code: DBLangCode | 'dbmeta',
         is_compressed: boolean,
         rows_loaded_callback?: (count: number, total: number) => void,
     ): Promise<void> {
@@ -251,11 +252,11 @@ export abstract class OfflineDBCommon<PreparedQuery> extends CommonDB<PreparedQu
     // TODO: Run on worker thread if possible (eg sqlite-wasm)
     async refresh_languages(in_background?: boolean, force?: boolean, progress_tracker?: ProgressTracker): Promise<void> {
         let langs = [...get_db_chosen_langs()];
-        langs.push('dbmeta'); // this needs periodic refreshing also
+        langs.push('dbmeta' as DBLangCode); // this needs periodic refreshing also
 
         // Only update once a week or something if we are not being forced
         if (!force) {
-            const last_update_lang = persistentStorage.getObj<Record<string, number>>(this._last_update_key, {});
+            const last_update_lang = persistentStorage.getObj<Record<DBLangCode, number>>(this._last_update_key, {});
             const ts = Date.now();
             langs = langs.filter((lang) => ts - (last_update_lang[lang] || 0) > this.MAX_DB_AGE);
         }
@@ -297,7 +298,7 @@ export abstract class OfflineDBCommon<PreparedQuery> extends CommonDB<PreparedQu
 
     abstract _populate_lang(
         data: LangPackResponse,
-        lang_code: string,
+        lang_code: DBLangCode,
         is_compressed: boolean,
         rows_loaded_callback?: (count: number, total: number) => void,
     ): Promise<void>;

@@ -1,6 +1,5 @@
 import { db_available_deferred, db_deferred, on_db_change, on_db_languages_update, reset_db_fns } from './db';
-import type { CommonDB } from './db/common';
-import { get_db_chosen_langs, save_db_chosen_langs } from './db/common';
+import { get_db_chosen_langs, save_db_chosen_langs, type CommonDB } from './db/common';
 import { OfflineDBCommon } from './db/offline-common';
 import { OnlineDB } from './db/online';
 import { BUILD_TYPE, DEBUG } from './globals';

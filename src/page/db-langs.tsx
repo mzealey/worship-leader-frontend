@@ -24,17 +24,18 @@ import { DB_AVAILABLE } from '../db';
 import type { DbLangEntry } from '../db-language-utils';
 import { getDbLangs } from '../db-language-utils';
 import { save_db_chosen_langs } from '../db/common';
+import type { DBLangCode } from '../lang-types';
 import { useTranslation } from '../langpack';
 import { useDialog } from '../preact-helpers';
 import { LOCALE_SORT } from '../sort-helpers';
 import { unidecode } from '../unidecode';
 
 interface LangSelectorProps {
-    code: string;
+    code: DBLangCode;
     content: string;
     count: number;
     defaultValue: boolean;
-    onChange: (code: string, selected: boolean) => void;
+    onChange: (code: DBLangCode, selected: boolean) => void;
 }
 
 const LangSelector = ({ code, content, count, defaultValue, onChange }: LangSelectorProps) => {
@@ -68,8 +69,8 @@ function LanguageSelectorGroup({
     onChange,
 }: {
     entries: DbLangEntry[];
-    selectedLangs: Set<string>;
-    onChange: (code: string, selected: boolean) => void;
+    selectedLangs: Set<DBLangCode>;
+    onChange: (code: DBLangCode, selected: boolean) => void;
 }) {
     const { lang_name } = useTranslation();
     return (
@@ -94,8 +95,8 @@ const DbLanguageSelectorInner = ({
     setSelectedLangs,
 }: {
     dbLangPromise: Promise<DbLangEntry[] | undefined>;
-    selectedLangs: Set<string>;
-    setSelectedLangs: (selectedLangs: Set<string>) => void;
+    selectedLangs: Set<DBLangCode>;
+    setSelectedLangs: (selectedLangs: Set<DBLangCode>) => void;
 }) => {
     const { t, lang_name } = useTranslation();
 
@@ -111,7 +112,7 @@ const DbLanguageSelectorInner = ({
         }
     }, [all_langs, setSelectedLangs]);
 
-    const updateSelectedLangs = (code: string, val: boolean) => {
+    const updateSelectedLangs = (code: DBLangCode, val: boolean) => {
         const newSelectedLangs = new Set(selectedLangs);
         if (val) newSelectedLangs.add(code);
         else newSelectedLangs.delete(code);
@@ -178,8 +179,8 @@ function DbLanguageSelector({
     setSelectedLangs,
 }: {
     alreadySetup: boolean;
-    selectedLangs: Set<string>;
-    setSelectedLangs: (selectedLangs: Set<string>) => void;
+    selectedLangs: Set<DBLangCode>;
+    setSelectedLangs: (selectedLangs: Set<DBLangCode>) => void;
 }) {
     const { lang_name } = useTranslation();
     const [dbLangPromise] = useState(getDbLangs({ alreadySetup, lang_name }));
@@ -202,7 +203,7 @@ function DbLanguageSelector({
     );
 }
 
-function DbUpdateButton({ onClose, selectedLangs }: { onClose?: () => void; selectedLangs: Set<string> }) {
+function DbUpdateButton({ onClose, selectedLangs }: { onClose?: () => void; selectedLangs: Set<DBLangCode> }) {
     const { t } = useTranslation();
     const [inProgress, setInProgress] = useState(false);
     const [progressPerc, setProgressPerc] = useState(0);
@@ -260,7 +261,7 @@ export const DialogDbLangs = ({ onClose }: DialogDbLangsProps) => {
     const { t } = useTranslation();
     const { closed, handleClose } = useDialog(onClose);
 
-    const [selectedLangs, setSelectedLangs] = useState<Set<string>>(new Set());
+    const [selectedLangs, setSelectedLangs] = useState<Set<DBLangCode>>(new Set());
 
     return (
         <Dialog open={!closed} onClose={handleClose} fullWidth maxWidth="sm">
@@ -279,7 +280,7 @@ export const DialogDbLangs = ({ onClose }: DialogDbLangsProps) => {
 
 export const PageDbLangs = ({ onClose }: { onClose?: () => void }) => {
     const { t } = useTranslation();
-    const [selectedLangs, setSelectedLangs] = useState<Set<string>>(new Set());
+    const [selectedLangs, setSelectedLangs] = useState<Set<DBLangCode>>(new Set());
 
     return (
         <Box sx={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>

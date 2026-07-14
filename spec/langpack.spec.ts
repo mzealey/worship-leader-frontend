@@ -1,6 +1,8 @@
 // @vitest-environment jsdom
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
+import type { DBLangCode } from '../src/lang-types';
+
 vi.mock('../src/song-languages', () => ({
     song_language_translations: vi.fn(),
 }));
@@ -111,7 +113,7 @@ describe('langpack', () => {
         it('handles lang. prefix by calling lang_name', async () => {
             vi.mocked(songLanguagesMod.song_language_translations).mockReturnValue({
                 fr: { name: { en: 'French' }, count: 1 },
-            });
+            } as Record<DBLangCode, { name: Record<string, string>; count: number }>);
 
             fetchMock.mockResolvedValue({
                 json: () => Promise.resolve({ langpack_direction: 'ltr' }),
