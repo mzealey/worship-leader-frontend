@@ -2,8 +2,8 @@ import { Button, Dialog, DialogActions, DialogContent } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { AutofocusTextField, DialogTitleWithClose } from '../component/basic';
 import { useTranslation } from '../langpack';
-import { useDialog } from '../preact-helpers';
 import { SET_DB } from '../set-db';
+import { useDialog } from '../use-dialog';
 
 interface PageSetRenameProps {
     set_id: number;

@@ -17,8 +17,8 @@ import { useSearchStore, type TagFilterMap } from '../db-search';
 import { useAppLang, useTranslation } from '../langpack';
 import type { MetaDbTagMapping } from '../meta-db';
 import { get_meta_db, type MetaDb } from '../meta-db';
-import { useDialog } from '../preact-helpers';
 import { LOCALE_SORT } from '../sort-helpers';
+import { useDialog } from '../use-dialog';
 
 type TagCountMap = Record<number, number>;
 

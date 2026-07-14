@@ -5,9 +5,9 @@ import { DB, on_db_languages_update } from '../db';
 import { useSearchStore } from '../db-search';
 import { toggle_filter_source } from '../filter-sources';
 import { useTranslation } from '../langpack';
-import { useDialog } from '../preact-helpers';
 import type { SongSource } from '../song';
 import { LOCALE_SORT, SORT_TITLE_SORT } from '../sort-helpers';
+import { useDialog } from '../use-dialog';
 
 interface SourceFilterSectionProps {
     lang: string;

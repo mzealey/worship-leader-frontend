@@ -1,8 +1,8 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText } from '@mui/material';
 import { DialogTitleWithClose } from '../component/basic';
 import { useTranslation } from '../langpack';
-import { useDialog } from '../preact-helpers';
 import { SET_DB } from '../set-db';
+import { useDialog } from '../use-dialog';
 
 interface PageSetDeleteProps {
     set_id: number;

@@ -1,4 +1,3 @@
-// TODO: Set document.title
 import { closestCenter, DndContext, MouseSensor, TouchSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { restrictToVerticalAxis, restrictToWindowEdges } from '@dnd-kit/modifiers';
 import { SortableContext, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
@@ -8,11 +7,11 @@ import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ImageButton } from '../component/basic';
 import * as Icon from '../component/icons';
+import { Link } from '../component/router-link';
 import { SongListLink } from '../component/song-list';
 import { TopBar } from '../component/top-bar';
 import { DB } from '../db';
 import { useTranslation } from '../langpack';
-import { Link } from '../preact-helpers';
 import { on_set_db_update, SET_DB, type SetEntry } from '../set-db';
 import { generate_set_share_link } from '../set-utils';
 import type { MaybeLoadedSong } from '../song';
@@ -170,6 +169,7 @@ export const PageSetView = ({ set_id }: PageSetViewProps) => {
                         <Icon.Back />
                     </IconButton>
                 }
+                documentTitle={set.name}
                 title={t(set.live ? 'set_title_live' : 'set_title') + ': ' + set.name}
             >
                 <ImageButton icon={Icon.Print} onClick={() => navigate(`/print-songbook/${set.id}`)}>

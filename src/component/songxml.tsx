@@ -1,9 +1,9 @@
 import { Box } from '@mui/material';
+import clsx from 'clsx';
 import type { ComponentType } from 'react';
-import { memo, useCallback, useEffect, useRef, useState, type MouseEvent } from 'react';
+import { Fragment, memo, useCallback, useEffect, useRef, useState, type MouseEvent } from 'react';
 import { createPortal } from 'react-dom';
 import { useTranslation } from '../langpack';
-import { clsx, Fragment } from '../preact-helpers';
 import { on_resize } from '../resize-watcher';
 import { useSetting } from '../settings-store';
 import { maybe_convert_solfege } from '../solfege-util';

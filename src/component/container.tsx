@@ -6,8 +6,8 @@ import { create } from 'zustand';
 import { match_media_watcher } from '../globals';
 import { useTranslation } from '../langpack';
 import { usePagePadding } from '../page-padding';
-import { Link } from '../preact-helpers';
 import * as Icon from './icons';
+import { Link } from './router-link';
 import { Theme } from './theme';
 
 import type { SvgIconProps } from '@mui/material/SvgIcon';

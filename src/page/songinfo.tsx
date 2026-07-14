@@ -1,13 +1,13 @@
-// TODO: Set document.title
 import { Box, IconButton, Typography, useTheme } from '@mui/material';
 import type { ComponentType } from 'react';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import type { Subscription } from 'rxjs';
 import { useCanPrint } from '../can-print';
 import { ImageButton } from '../component/basic';
 import { useLastButtonHandler, type LastButtonHandlerComponent } from '../component/container';
 import * as Icon from '../component/icons';
+import { Link } from '../component/router-link';
 import { TextDirection } from '../component/song-list';
 import {
     DialogPresent,
@@ -29,7 +29,6 @@ import { match_media_watcher } from '../globals';
 import { useAppLang, useTranslation } from '../langpack';
 import { usePagePadding } from '../page-padding';
 import { persistentStorage } from '../persistent-storage.es5';
-import { Fragment, Link } from '../preact-helpers';
 import { send_fake_resize } from '../resize-watcher';
 import { on_set_db_update } from '../set-db';
 import { SetSwitcher } from '../set-switcher';
@@ -456,6 +455,7 @@ export const PageSongInfo: ComponentType<PageSongInfoProps> = ({ requested_song_
                             width: 'auto',
                         }),
                     }}
+                    documentTitle={title}
                     before={
                         allow_sidebar ? (
                             <IconButton onClick={toggle_sidebar} title={t(hide_sidebar ? 'sidebar_show' : 'sidebar_hide')} color="primary">

@@ -1,9 +1,9 @@
 import { IconButton, List, ListItem, ListItemButton, ListItemSecondaryAction, ListItemText } from '@mui/material';
 import { Fragment, useEffect, useState } from 'react';
 import * as Icon from '../component/icons';
+import { Link } from '../component/router-link';
 import { TopBar } from '../component/top-bar';
 import { useTranslation } from '../langpack';
-import { Link } from '../preact-helpers';
 import { SET_DB, on_set_db_update } from '../set-db';
 import { PageSetDelete } from './dialog-set-delete';
 import { PageSetRename } from './dialog-set-rename';

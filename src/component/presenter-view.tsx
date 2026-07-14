@@ -1,8 +1,9 @@
 import { IconButton } from '@mui/material';
+import clsx from 'clsx';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import type { PresentationCommon } from '../dual-present';
 import { get_presentation, useCast } from '../dual-present';
 import { persistentStorage } from '../persistent-storage.es5';
-import { clsx, useCallback, useEffect, useRef, useState } from '../preact-helpers';
 import { on_resize } from '../resize-watcher';
 import type { Song } from '../song';
 import { songxml_to_divs } from '../songxml-util';

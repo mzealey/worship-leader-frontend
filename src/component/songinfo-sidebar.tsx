@@ -2,7 +2,7 @@ import { Box, Button, Grid, List, ListItem, ListItemButton, ListItemText, Rating
 import type { SvgIconProps } from '@mui/material/SvgIcon';
 import type { TypographyProps } from '@mui/material/Typography';
 import type { ComponentType, ReactNode, SyntheticEvent } from 'react';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { Subscription } from 'rxjs';
 import { AudioPlayer } from '../component/audio-player';
 import { DropDownIcon, ImageButton } from '../component/basic';
@@ -15,7 +15,6 @@ import { toggle_filter_source } from '../filter-sources';
 import { API_HOST } from '../globals';
 import { useTranslation } from '../langpack';
 import { persistentStorage } from '../persistent-storage.es5';
-import { Fragment } from '../preact-helpers';
 import { set_search_text } from '../search';
 import { useSetting } from '../settings-store';
 import { maybe_convert_solfege } from '../solfege-util';

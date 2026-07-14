@@ -1,5 +1,5 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
-import { useDialog } from '../preact-helpers';
+import { useDialog } from '../use-dialog';
 
 interface AlertProps {
     title?: string;

@@ -2,8 +2,8 @@ import { Button, Dialog, DialogActions, DialogContent, DialogContentText } from 
 import { useState } from 'react';
 import { DialogTitleWithClose } from '../component/basic';
 import { useTranslation } from '../langpack';
-import { useDialog } from '../preact-helpers';
 import { generate_set_share_link, type ShareableSet } from '../set-utils';
+import { useDialog } from '../use-dialog';
 import { PageSharer } from './sharer';
 
 interface PageSetShareProps {

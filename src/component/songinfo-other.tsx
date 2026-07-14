@@ -19,7 +19,7 @@ import {
     Tabs,
     Typography,
 } from '@mui/material';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { Fragment, useCallback, useEffect, useRef, useState } from 'react';
 import { can_do_worker } from '../abc2svg';
 import { DialogTitleWithClose, ImageButton } from '../component/basic';
 import { PresenterView } from '../component/presenter-view';
@@ -35,15 +35,16 @@ import type { PresentationCommon } from '../dual-present';
 import { get_presentation, useCast } from '../dual-present';
 import { useTranslation } from '../langpack';
 import { usePagePadding } from '../page-padding';
-import { Fragment, Link, useDialog } from '../preact-helpers';
 import { SET_DB } from '../set-db';
 import type { SetSwitcher } from '../set-switcher';
 import { useSetting } from '../settings-store';
 import type { Song, SongShortData } from '../song';
 import { get_text_title } from '../song-utils';
 import type { TransposeDetails } from '../transpose-details';
+import { useDialog } from '../use-dialog';
 import { format_string, is_rtl, is_vertical_lang, scroll_to } from '../util';
 import * as Icon from './icons';
+import { Link } from './router-link';
 
 export const DialogPresent = ({ enter_single_presentor_mode }: { enter_single_presentor_mode: () => void }) => {
     const { t } = useTranslation();

@@ -29,19 +29,15 @@ export function match_media_watcher(
     query: string,
     callback: (mql: MediaQueryList & { unsubscribe?: () => void }) => void,
 ): (MediaQueryList & { unsubscribe?: () => void }) | undefined {
-    if (!window.matchMedia) return undefined; // ie9 etc
+    if (!window.matchMedia) return undefined;
 
     query = query.replace(/^@media( ?)/m, ''); // allow both @media and non- prefixed
     const mql = window.matchMedia(query) as MediaQueryList & { unsubscribe?: () => void };
     callback(mql);
 
-    if (!mql.addListener)
-        // flag old browsers as not being set up properly
-        return undefined;
-
     const listener = (_ev: MediaQueryListEvent) => callback(mql);
-    mql.addListener(listener);
-    mql.unsubscribe = () => mql.removeListener(listener);
+    mql.addEventListener('change', listener);
+    mql.unsubscribe = () => mql.removeEventListener('change', listener);
     return mql;
 }
 

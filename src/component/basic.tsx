@@ -1,5 +1,5 @@
 import { Button, Checkbox, DialogTitle, IconButton, TextField } from '@mui/material';
-import { memo } from '../preact-helpers';
+import { memo } from 'react';
 import * as Icon from './icons';
 
 export interface ImageButtonProps extends Omit<React.ComponentProps<typeof Button>, 'component'> {
@@ -13,16 +13,14 @@ export interface ImageButtonProps extends Omit<React.ComponentProps<typeof Butto
 }
 
 export const ImageButton = memo(function ({ icon: Icon, size = 'small', children, iconColor, ...props }: ImageButtonProps) {
-    if (iconColor) console.log('TODO: iconColor', iconColor);
     return (
         <Button
             size={size}
             sx={(theme) => ({
                 minHeight: theme.mixins.toolbar.height,
                 '& .icon': {
-                    color: theme.palette.primary.icon,
+                    color: iconColor || theme.palette.primary.icon,
                 },
-                // TODO: iconColor used to be looked at, needed for presenter and like stuff
             })}
             {...props}
         >

@@ -12,8 +12,9 @@ import {
     ListItemText,
     Typography,
 } from '@mui/material';
+import clsx from 'clsx';
 import debounce from 'lodash/debounce';
-import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
+import React, { Fragment, memo, useCallback, useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import unknown_album_icon from '../../img/unknown_album_icon.png';
 import { DB, on_db_languages_update } from '../db';
@@ -22,7 +23,7 @@ import { FAVOURITE_DB } from '../favourite-db';
 import { toggle_filter_source } from '../filter-sources';
 import { useAppLang, useTranslation } from '../langpack';
 import { DialogAddToSet } from '../page/add-to-set';
-import { clsx, Fragment, preact_get_text } from '../preact-helpers';
+import { react_get_text } from '../react-get-text';
 import { on_resize } from '../resize-watcher';
 import { set_search_text } from '../search';
 import { useSetting } from '../settings-store';
@@ -39,7 +40,7 @@ interface TextDirectionProps extends React.HTMLAttributes<HTMLSpanElement> {
 }
 
 export const TextDirection = ({ text, lang, is_main_block, children, className, ...other_props }: TextDirectionProps) => {
-    const dir = is_rtl(text || preact_get_text(children)) ? 'rtl' : 'ltr';
+    const dir = is_rtl(text || react_get_text(children)) ? 'rtl' : 'ltr';
     return (
         <span {...other_props} lang={lang} dir={dir} className={clsx(className, { 'vertical-lr vertical-lr-scroll': is_main_block && is_vertical_lang(lang) })}>
             {children}

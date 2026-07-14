@@ -1,6 +1,6 @@
+import { alpha } from '@mui/material';
 import { createTheme, type Shadows, type ThemeOptions } from '@mui/material/styles';
 import deepmerge from 'deepmerge';
-import { fade } from './preact-helpers';
 
 const disable_shadows = [...new Array(25)].map(() => 'none') as Shadows;
 
@@ -372,8 +372,8 @@ const base_light_palette: Palette = {
         default: '#f8f8f8',
         topbar: '#eee',
         grey: '#ddd',
-        stripe: fade('#C4C4C4', 0.15),
-        stripe_active: fade('#C4C4C4', 0.35),
+        stripe: alpha('#C4C4C4', 0.15),
+        stripe_active: alpha('#C4C4C4', 0.35),
     },
     primary: {
         icon: '#A88EF2',

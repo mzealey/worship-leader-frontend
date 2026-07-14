@@ -1,9 +1,9 @@
 import { Box, CircularProgress, IconButton } from '@mui/material';
 import isEqual from 'lodash/isEqual';
+import { Fragment, useCallback, useEffect, useRef, useState } from 'react';
 import { ABC } from '../abc2svg';
 import type { AbcRenderRequest } from '../abc2svg-renderer';
 import { file_feedback, song_feedback } from '../feedback';
-import { Fragment, useCallback, useEffect, useRef, useState } from '../preact-helpers';
 import { on_resize } from '../resize-watcher';
 import type { Song, SongFile } from '../song';
 import type { TransposeDetails } from '../transpose-details';

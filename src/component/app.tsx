@@ -12,7 +12,6 @@ import type { CreateSetOptions } from '../set';
 import { create_set_from_url } from '../set';
 import { get_default_db_languages } from '../song-languages';
 import { gup, is_bot, parse_search } from '../splash-util.es5';
-import { deferred_promise } from '../util';
 import { GATracker } from './analytics';
 import { PagesContainer } from './container';
 
@@ -83,7 +82,10 @@ function OldSetList() {
     return redirect ? <Navigate to={redirect} /> : null;
 }
 
-const [firsttime_shown_deferred, firsttime_shown] = deferred_promise<void>(); // TODO: Kill this
+let resolveFirsttimeShown!: () => void;
+const firsttime_shown = new Promise<void>((resolve) => {
+    resolveFirsttimeShown = resolve;
+});
 
 enum AppState {
     Loading,
@@ -192,7 +194,7 @@ export const App = () => {
     if (appState == AppState.FirsttimeScreenRequired) {
         return (
             <Suspense fallback={<Spinner />}>
-                <LazyPageFirsttimeWelcome onComplete={() => firsttime_shown_deferred.resolve()} />
+                <LazyPageFirsttimeWelcome onComplete={() => resolveFirsttimeShown()} />
             </Suspense>
         );
     }

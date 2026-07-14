@@ -4,8 +4,8 @@ import { DialogTitleWithClose } from '../component/basic';
 import { BUILD_TYPE, get_client_type } from '../globals';
 import { useTranslation } from '../langpack';
 import { get_app_dl_link, should_show_prompt } from '../platform-utils';
-import { useDialog } from '../preact-helpers';
 import { is_bot } from '../splash-util.es5';
+import { useDialog } from '../use-dialog';
 
 interface PromptConfig {
     href?: string;

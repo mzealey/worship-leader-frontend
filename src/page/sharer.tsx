@@ -5,7 +5,7 @@ import * as Icon from '../component/icons';
 import { LockScreen } from '../component/lock-screen';
 import { BUILD_TYPE, SHARE_DOMAIN } from '../globals';
 import { useTranslation } from '../langpack';
-import { useDialog } from '../preact-helpers';
+import { useDialog } from '../use-dialog';
 import { generate_search_params, is_cordova, is_mobile_browser, normalize_url } from '../util';
 
 export interface PageSharerProps {

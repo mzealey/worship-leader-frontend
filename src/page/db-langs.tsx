@@ -26,9 +26,9 @@ import { getDbLangs } from '../db-language-utils';
 import { save_db_chosen_langs } from '../db/common';
 import type { DBLangCode } from '../lang-types';
 import { useTranslation } from '../langpack';
-import { useDialog } from '../preact-helpers';
 import { LOCALE_SORT } from '../sort-helpers';
 import { unidecode } from '../unidecode';
+import { useDialog } from '../use-dialog';
 
 interface LangSelectorProps {
     code: DBLangCode;

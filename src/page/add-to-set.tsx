@@ -4,8 +4,8 @@ import { Alert } from '../component/alert';
 import { AutofocusTextField, DialogTitleWithClose } from '../component/basic';
 import { song_feedback } from '../feedback';
 import { useTranslation } from '../langpack';
-import { useDialog } from '../preact-helpers';
 import { SET_DB, on_set_db_update } from '../set-db';
+import { useDialog } from '../use-dialog';
 
 interface SetItem {
     id: number;

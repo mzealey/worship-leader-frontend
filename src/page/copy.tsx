@@ -3,9 +3,9 @@ import { useState } from 'react';
 import { DialogTitleWithClose } from '../component/basic';
 import { ContentEditable } from '../component/content-editable';
 import { useTranslation } from '../langpack';
-import { useDialog } from '../preact-helpers';
 import type { Song } from '../song';
 import { convert_to_pre } from '../songxml-util';
+import { useDialog } from '../use-dialog';
 import { EditTypeChooser } from './edit';
 
 interface PageCopyTextareaProps {

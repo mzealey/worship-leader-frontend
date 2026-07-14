@@ -1,8 +1,7 @@
 import { AppBar, Box, IconButton, Popover, Toolbar, Typography } from '@mui/material';
 import type { ReactNode } from 'react';
-import { useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { useTranslation } from '../langpack';
-import { Fragment, preact_get_text } from '../preact-helpers';
 import * as Icon from './icons';
 
 interface MenuButtonProps {
@@ -61,13 +60,15 @@ interface TopBarProps {
 export function TopBar({ sx, noMenu, className, menuOnly, before, documentTitle, title, children }: TopBarProps) {
     const { t } = useTranslation();
 
-    const doc_title = documentTitle || typeof title === 'string' ? title : preact_get_text(title) || '';
+    const doc_title = documentTitle || (typeof title === 'string' ? title : '') || '';
+
+    useEffect(() => {
+        document.title = (doc_title ? `${doc_title} - ` : '') + t('worship-leader');
+    }, [doc_title, t]);
 
     const show_menu = !noMenu && (children || menuOnly);
     return (
         <Box sx={{ displayPrint: 'none' }}>
-            {/* TODO: Move this to individual pages */}
-            <title>{(doc_title ? `${doc_title} - ` : '') + t('worship-leader')}</title>
             <AppBar
                 color="default"
                 elevation={0}
