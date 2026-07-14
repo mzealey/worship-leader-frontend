@@ -147,6 +147,38 @@ describe('set-utils', function () {
             expect(link).toContain('capos=0%2C5%2C7');
         });
 
+        it('handles undefined song_id, song_key, and capo', function () {
+            const set = {
+                id: 1,
+                uuid: 'test-uuid-undefined',
+                name: 'Undefined Values',
+                live: 0 as 0 | 1,
+                songs: [{ song_id: undefined as any, song_key: undefined, capo: undefined }],
+            };
+
+            const link = generate_set_share_link(set, false);
+
+            expect(link).toContain('song_ids=');
+            expect(link).toContain('keys=');
+            expect(link).toContain('capos=');
+        });
+
+        it('handles null song_key and capo', function () {
+            const set = {
+                id: 1,
+                uuid: 'test-uuid-null',
+                name: 'Null Values',
+                live: 0 as 0 | 1,
+                songs: [{ song_id: 100, song_key: null as any, capo: null as any }],
+            };
+
+            const link = generate_set_share_link(set, false);
+
+            expect(link).toContain('song_ids=100');
+            expect(link).toContain('keys=');
+            expect(link).toContain('capos=');
+        });
+
         it('creates valid hash link format', function () {
             const set = {
                 id: 1,

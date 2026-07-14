@@ -106,8 +106,6 @@ describe('useDialog', function () {
 
         const { result } = renderHook(() => useDialog());
 
-        const originalHash = window.location.hash;
-
         // Simulate popstate returning to original hash
         Object.defineProperty(window, 'location', {
             writable: true,

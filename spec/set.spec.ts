@@ -130,7 +130,7 @@ describe('set', function () {
         });
 
         it('handles URL-encoded commas in keys', async function () {
-            const result = await setMod.create_set_from_url({
+            await setMod.create_set_from_url({
                 new_set: 'URL Encoded',
                 song_ids: '1,2',
                 keys: 'C%23%2CD%23',

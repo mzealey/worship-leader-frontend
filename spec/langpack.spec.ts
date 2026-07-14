@@ -110,6 +110,47 @@ describe('langpack', () => {
             expect(langpackMod.get_translation('non_existent')).toBe('XXX NO TRANSLATION (non_existent) XXX');
         });
 
+        it('handles dotted key lookup', async () => {
+            const mockLangPack = {
+                langpack_direction: 'ltr',
+                section: { key: 'nested value' },
+            };
+            fetchMock.mockResolvedValue({
+                json: () => Promise.resolve(mockLangPack),
+                ok: true,
+            });
+            await langpackMod.useAppLang.getState().setLanguage('en');
+
+            expect(langpackMod.get_translation('section.key')).toBe('nested value');
+        });
+
+        it('returns debug string for dotted key where parent is not an object', async () => {
+            const mockLangPack = {
+                langpack_direction: 'ltr',
+                section: 'not an object',
+            };
+            fetchMock.mockResolvedValue({
+                json: () => Promise.resolve(mockLangPack),
+                ok: true,
+            });
+            await langpackMod.useAppLang.getState().setLanguage('en');
+
+            expect(langpackMod.get_translation('section.key')).toContain('NO TRANSLATION');
+        });
+
+        it('returns empty string for dotted key where parent does not exist', async () => {
+            const mockLangPack = {
+                langpack_direction: 'ltr',
+            };
+            fetchMock.mockResolvedValue({
+                json: () => Promise.resolve(mockLangPack),
+                ok: true,
+            });
+            await langpackMod.useAppLang.getState().setLanguage('en');
+
+            expect(langpackMod.get_translation('missing.key')).toBe('XXX NO TRANSLATION (missing.key) XXX');
+        });
+
         it('handles lang. prefix by calling lang_name', async () => {
             vi.mocked(songLanguagesMod.song_language_translations).mockReturnValue({
                 fr: { name: { en: 'French' }, count: 1 },
@@ -122,6 +163,40 @@ describe('langpack', () => {
             await langpackMod.useAppLang.getState().setLanguage('en');
 
             expect(langpackMod.get_translation('lang.fr')).toBe('French');
+        });
+
+        it('handles lang. prefix falling back to language_names in translation', async () => {
+            vi.mocked(songLanguagesMod.song_language_translations).mockReturnValue({} as Record<DBLangCode, { name: Record<string, string>; count: number }>);
+
+            const mockLangPack = {
+                langpack_direction: 'ltr',
+                language_names: { es: 'Spanish' },
+            };
+            fetchMock.mockResolvedValue({
+                json: () => Promise.resolve(mockLangPack),
+                ok: true,
+            });
+            await langpackMod.useAppLang.getState().setLanguage('en');
+
+            expect(langpackMod.get_translation('lang.es')).toBe('Spanish');
+        });
+
+        it('handles lang. prefix falling back to lang_id when no translation found', async () => {
+            vi.mocked(songLanguagesMod.song_language_translations).mockReturnValue({} as Record<DBLangCode, { name: Record<string, string>; count: number }>);
+
+            fetchMock.mockResolvedValue({
+                json: () => Promise.resolve({ langpack_direction: 'ltr' }),
+                ok: true,
+            });
+            await langpackMod.useAppLang.getState().setLanguage('en');
+
+            expect(langpackMod.get_translation('lang.zz')).toBe('zz');
+        });
+    });
+
+    describe('useTranslation', () => {
+        it('exports useTranslation as a function', () => {
+            expect(typeof langpackMod.useTranslation).toBe('function');
         });
     });
 });
