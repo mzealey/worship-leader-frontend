@@ -403,7 +403,6 @@ export function SongList({ container, active_song_id }: SongListProps) {
 
     const set_songlist = (e: HTMLUListElement | null) => {
         songlist_ref.current = e;
-        scroll_to_active_id();
     };
 
     const remove_infinite_watcher = () => {
@@ -487,7 +486,6 @@ export function SongList({ container, active_song_id }: SongListProps) {
     useEffect(() => {
         setup_infinite_scroll();
         watch_current_search();
-        scroll_to_active_id();
 
         return () => {
             remove_infinite_watcher();
@@ -495,7 +493,7 @@ export function SongList({ container, active_song_id }: SongListProps) {
                 watcher_ref.current.unsubscribe();
             }
         };
-    }, [setup_infinite_scroll, watch_current_search, scroll_to_active_id]);
+    }, [setup_infinite_scroll, watch_current_search]);
 
     // Watch for current_search changes
     useEffect(() => {
