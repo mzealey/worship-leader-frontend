@@ -34,6 +34,21 @@ type Palette = {
     };
     audio?: {
         track: string;
+        trackBg: string;
+        trackBuffered: string;
+        trackBuffering: string;
+    };
+    searchChip: {
+        album: {
+            background: string;
+            border: string;
+            hover: string;
+        };
+        source: {
+            background: string;
+            border: string;
+            hover: string;
+        };
     };
     bottomBar?: Partial<Palette>;
 };
@@ -380,6 +395,21 @@ const base_light_palette: Palette = {
     },
     audio: {
         track: '#D5D5D5',
+        trackBg: 'rgba(223, 223, 223, 0.3)',
+        trackBuffered: 'rgba(223, 223, 223, 0.3)',
+        trackBuffering: 'rgba(200, 200, 200, 1)',
+    },
+    searchChip: {
+        album: {
+            background: '#fadbd8',
+            border: '#C7A8A5',
+            hover: '#E1C2BF',
+        },
+        source: {
+            background: '#d1f2eb',
+            border: '#9EBFB8',
+            hover: '#B8D9D2',
+        },
     },
 };
 
@@ -409,6 +439,24 @@ const base_dark_palette = deepmerge(base_light_palette, {
     },
     border: {
         main: '#555',
+    },
+    audio: {
+        track: '#666',
+        trackBg: 'rgba(100, 100, 100, 0.3)',
+        trackBuffered: 'rgba(100, 100, 100, 0.3)',
+        trackBuffering: 'rgba(130, 130, 130, 1)',
+    },
+    searchChip: {
+        album: {
+            background: '#3B2522',
+            border: '#4A302C',
+            hover: '#523632',
+        },
+        source: {
+            background: '#253B34',
+            border: '#2C4A41',
+            hover: '#325247',
+        },
     },
     bottomBar: {
         primary: {

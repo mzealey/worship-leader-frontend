@@ -253,12 +253,11 @@ function AlbumMetaLink({ meta }: AlbumMetaLinkProps) {
     return (
         <ListItem
             disablePadding
-            sx={{
-                // TODO
-                backgroundColor: '#fadbd8',
-                borderColor: '#C7A8A5',
-                '&:hover': { backgroundColor: '#E1C2BF' },
-            }}
+            sx={(theme) => ({
+                backgroundColor: theme.palette.searchChip.album.background,
+                borderColor: theme.palette.searchChip.album.border,
+                '&:hover': { backgroundColor: theme.palette.searchChip.album.hover },
+            })}
         >
             <ListItemButton onClick={onclick}>
                 <ListItemAvatar>
@@ -280,12 +279,11 @@ function SongSourceMetaLink({ meta }: SongSourceMetaLinkProps) {
     return (
         <ListItem
             disablePadding
-            sx={{
-                // TODO
-                backgroundColor: '#d1f2eb',
-                borderColor: '#9EBFB8',
-                '&:hover': { backgroundColor: '#B8D9D2' },
-            }}
+            sx={(theme) => ({
+                backgroundColor: theme.palette.searchChip.source.background,
+                borderColor: theme.palette.searchChip.source.border,
+                '&:hover': { backgroundColor: theme.palette.searchChip.source.hover },
+            })}
         >
             <ListItemButton onClick={onclick}>
                 <ListItemText

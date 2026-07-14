@@ -202,11 +202,11 @@ export const App = () => {
                         },
                         '& ::-webkit-scrollbar-track': {
                             borderRadius: 10,
-                            backgroundColor: 'rgba(218, 218, 218, 0.5)',
+                            backgroundColor: theme.palette.background.grey,
                         },
                         '& ::-webkit-scrollbar-thumb': {
                             borderRadius: 10,
-                            backgroundColor: 'rgba(61, 61, 61, 0.3)',
+                            backgroundColor: theme.palette.text.secondary,
                         },
                     },
                     a: {

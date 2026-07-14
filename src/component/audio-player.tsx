@@ -277,17 +277,16 @@ export const AudioPlayer = ({ song, file }: AudioPlayerProps) => {
                     cursor: 'pointer',
                 },
                 '& .trackBg': {
-                    backgroundColor: 'rgba(223, 223, 223, 0.3)',
+                    backgroundColor: theme.palette.audio.trackBg,
                     width: '100%',
                 },
                 '& .trackBuffering': {
                     animation: 'buffering-stripes 2s linear infinite',
-                    background:
-                        'linear-gradient(-45deg, rgba(200, 200, 200, 1) 25%, transparent 25%, transparent 50%, rgba(200, 200, 200, 1) 50%, rgba(200, 200, 200, 1) 75%, transparent 75%, transparent)',
+                    background: `linear-gradient(-45deg, ${theme.palette.audio.trackBuffering} 25%, transparent 25%, transparent 50%, ${theme.palette.audio.trackBuffering} 50%, ${theme.palette.audio.trackBuffering} 75%, transparent 75%, transparent)`,
                     backgroundSize: '15px 15px',
                 },
                 '& .trackBuffered': {
-                    backgroundColor: 'rgba(223, 223, 223, 0.3)',
+                    backgroundColor: theme.palette.audio.trackBuffered,
                 },
                 '& .trackIndicator': {
                     backgroundColor: theme.palette.audio.track,

@@ -1,4 +1,4 @@
-import { Box, CircularProgress, Grid, NativeSelect, Typography } from '@mui/material';
+import { Box, CircularProgress, Grid, NativeSelect, Typography, useTheme } from '@mui/material';
 import * as Comlink from 'comlink';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -89,6 +89,7 @@ export interface PagePrintSongbookProps {
 }
 
 export const PagePrintSongbook = ({ set_id }: PagePrintSongbookProps) => {
+    const theme = useTheme();
     const { t, lang_name, sorted_language_codes } = useTranslation();
     const { appLang } = useAppLang();
     const navigate = useNavigate();
@@ -327,7 +328,7 @@ export const PagePrintSongbook = ({ set_id }: PagePrintSongbookProps) => {
                             id="songbook-viewer-iframe"
                             src="songbook-viewer.html"
                             title={t('print-songbook')}
-                            style={{ width: '100%', minHeight: '70vh', border: '1px solid #ccc' }}
+                            style={{ width: '100%', minHeight: '70vh', border: `1px solid ${theme.palette.border.main}` }}
                             onLoad={() => setIframeReady(true)}
                         />
                         {!baseData && (

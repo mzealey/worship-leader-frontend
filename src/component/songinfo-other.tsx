@@ -184,39 +184,6 @@ export const SetPrevNext = ({ song_id: _song_id, set_switcher }: { song_id: numb
     );
 };
 
-const presentationGlobalStyles = {
-    html: {
-        backgroundColor: 'black',
-
-        // ie scroll bars
-        'scrollbar-base-color': '#444',
-        'scrollbar-track-color': 'black',
-        'scrollbar-arrow-color': 'black',
-    },
-    ':root': {
-        // chrome scroll bars
-        '& ::-webkit-scrollbar': {
-            height: '12px !important',
-            width: '12px !important',
-            backgroundColor: 'black !important',
-        },
-        '& ::-webkit-scrollbar-track': {
-            backgroundColor: 'black !important',
-        },
-
-        '& ::-webkit-scrollbar-thumb': {
-            backgroundColor: '#333 !important',
-            //'-webkit-box-shadow': '0px 1px 2px rgba(0, 0, 0, 0.75)',
-        },
-
-        /*
-        '&::-webkit-scrollbar-corner': {
-            backgroundColor: 'black'
-        },
-        */
-    },
-};
-
 interface PresentationMoverProps {
     set_switcher?: SetSwitcher;
     exit_single_presentor_mode?: () => void;
@@ -225,19 +192,41 @@ interface PresentationMoverProps {
 const PresentationMover: React.FC<PresentationMoverProps> = ({ set_switcher, exit_single_presentor_mode }: PresentationMoverProps) => {
     return (
         <Fragment>
-            <GlobalStyles styles={presentationGlobalStyles} />
+            <GlobalStyles
+                styles={(theme) => ({
+                    html: {
+                        backgroundColor: 'black',
+                        scrollbarBaseColor: theme.palette.background.grey,
+                        scrollbarTrackColor: 'black',
+                        scrollbarArrowColor: 'black',
+                    },
+                    ':root': {
+                        '& ::-webkit-scrollbar': {
+                            height: '12px !important',
+                            width: '12px !important',
+                            backgroundColor: 'black !important',
+                        },
+                        '& ::-webkit-scrollbar-track': {
+                            backgroundColor: 'black !important',
+                        },
+                        '& ::-webkit-scrollbar-thumb': {
+                            backgroundColor: `${theme.palette.text.secondary} !important`,
+                        },
+                    },
+                })}
+            />
             {set_switcher && set_switcher.can_prev() ? (
                 <IconButton
                     component={Link}
                     to={`/song/${set_switcher.move(-1)}/${set_switcher.set_id}`}
-                    sx={{
+                    sx={(theme) => ({
                         position: 'fixed',
                         cursor: 'pointer',
-                        color: '#777',
-                        '&:hover': { color: '#ddd' },
+                        color: theme.palette.text.secondary,
+                        '&:hover': { color: theme.palette.text.highlight },
                         left: 0,
                         top: 0,
-                    }}
+                    })}
                 >
                     <Icon.Prev />
                 </IconButton>
@@ -246,14 +235,14 @@ const PresentationMover: React.FC<PresentationMoverProps> = ({ set_switcher, exi
                 <IconButton
                     component={Link}
                     to={`/song/${set_switcher.move(1)}/${set_switcher.set_id}`}
-                    sx={{
+                    sx={(theme) => ({
                         position: 'fixed',
                         cursor: 'pointer',
-                        color: '#777',
-                        '&:hover': { color: '#ddd' },
+                        color: theme.palette.text.secondary,
+                        '&:hover': { color: theme.palette.text.highlight },
                         right: 0,
                         top: 0,
-                    }}
+                    })}
                 >
                     <Icon.Next />
                 </IconButton>
@@ -261,14 +250,14 @@ const PresentationMover: React.FC<PresentationMoverProps> = ({ set_switcher, exi
             {exit_single_presentor_mode ? (
                 <IconButton
                     onClick={exit_single_presentor_mode}
-                    sx={{
+                    sx={(theme) => ({
                         position: 'fixed',
                         cursor: 'pointer',
-                        color: '#777',
-                        '&:hover': { color: '#ddd' },
+                        color: theme.palette.text.secondary,
+                        '&:hover': { color: theme.palette.text.highlight },
                         right: 0,
                         bottom: 0,
-                    }}
+                    })}
                 >
                     <Icon.Close />
                 </IconButton>

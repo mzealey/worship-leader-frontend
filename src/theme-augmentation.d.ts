@@ -36,6 +36,21 @@ declare module '@mui/material/styles' {
         };
         audio: {
             track: string;
+            trackBg: string;
+            trackBuffered: string;
+            trackBuffering: string;
+        };
+        searchChip: {
+            album: {
+                background: string;
+                border: string;
+                hover: string;
+            };
+            source: {
+                background: string;
+                border: string;
+                hover: string;
+            };
         };
     }
 
@@ -45,6 +60,21 @@ declare module '@mui/material/styles' {
         };
         audio?: {
             track?: string;
+            trackBg?: string;
+            trackBuffered?: string;
+            trackBuffering?: string;
+        };
+        searchChip?: {
+            album?: {
+                background?: string;
+                border?: string;
+                hover?: string;
+            };
+            source?: {
+                background?: string;
+                border?: string;
+                hover?: string;
+            };
         };
     }
 
