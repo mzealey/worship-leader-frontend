@@ -49,6 +49,7 @@ function MenuButton({ children }: MenuButtonProps) {
 
 interface TopBarProps {
     noMenu?: boolean;
+    noSpacer?: boolean;
     className?: string;
     menuOnly?: ReactNode;
     before?: ReactNode;
@@ -58,7 +59,7 @@ interface TopBarProps {
     sx?: Record<string, unknown> | ((theme: Theme) => Record<string, unknown>);
 }
 
-export function TopBar({ sx, noMenu, className, menuOnly, before, documentTitle, title, children }: TopBarProps) {
+export function TopBar({ sx, noMenu, noSpacer, className, menuOnly, before, documentTitle, title, children }: TopBarProps) {
     const { t } = useTranslation();
 
     const doc_title = documentTitle || (typeof title === 'string' ? title : '') || '';
@@ -73,6 +74,7 @@ export function TopBar({ sx, noMenu, className, menuOnly, before, documentTitle,
             <AppBar
                 color="default"
                 elevation={0}
+                position={noSpacer ? 'static' : undefined}
                 className={className}
                 sx={(theme) => ({
                     top: 'auto',
@@ -127,7 +129,7 @@ export function TopBar({ sx, noMenu, className, menuOnly, before, documentTitle,
                     </Box>
                 ) : null}
             </AppBar>
-            <Toolbar />
+            {!noSpacer && <Toolbar />}
         </Box>
     );
 }

@@ -33,6 +33,7 @@ const breakpoint = 'md';
 export const PageList = () => {
     const { t: _t } = useTranslation();
     const verticalPagePadding = usePagePadding((state) => state.bottom + state.top);
+    const pagePaddingTop = usePagePadding((state) => state.top);
     const theme = useTheme();
     const isDark = theme.palette.mode === 'dark';
 
@@ -100,17 +101,21 @@ export const PageList = () => {
                     },
                 })}
             >
-                <TopBar
-                    title=""
-                    sx={(theme: Theme) => ({
+                <Box
+                    sx={(theme) => ({
+                        position: 'sticky',
+                        top: pagePaddingTop,
+                        zIndex: theme.zIndex.appBar,
+                        displayPrint: 'none',
                         [theme.breakpoints.up(breakpoint)]: {
                             left: side_section_width,
-                            width: 'auto',
                         },
                     })}
-                />
+                >
+                    <TopBar title="" noMenu noSpacer />
+                    <SearchArea />
+                </Box>
 
-                <SearchArea />
                 <SongList container={document} />
             </Box>
         </Fragment>
