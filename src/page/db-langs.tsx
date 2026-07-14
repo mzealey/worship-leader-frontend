@@ -20,7 +20,7 @@ import { Suspense, use, useDeferredValue, useEffect, useMemo, useState } from 'r
 import { DialogTitleWithClose, ListCheckbox, ThinPage } from '../component/basic';
 import { send_ui_notification } from '../component/notification';
 import { TopBar } from '../component/top-bar';
-import { DB_AVAILABLE } from '../db';
+import { DB_AVAILABLE, on_db_languages_update } from '../db';
 import type { DbLangEntry } from '../db-language-utils';
 import { getDbLangs } from '../db-language-utils';
 import { save_db_chosen_langs } from '../db/common';
@@ -219,6 +219,9 @@ function DbUpdateButton({ onClose, selectedLangs }: { onClose?: () => void; sele
         try {
             const db = await DB_AVAILABLE;
             await db.refresh_languages(false, false, (progress_perc) => setProgressPerc(progress_perc));
+
+            db._invalidate_queries();
+            on_db_languages_update.next();
 
             if (onClose) onClose();
 
