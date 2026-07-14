@@ -303,20 +303,5 @@ export default defineConfig(({ command, mode }) => {
         );
     }
 
-    // vitest config
-    config.test = {
-        environment: 'jsdom',
-        environmentOptions: {
-            jsdom: {
-                html: '<!doctype html><html><body></body></html>',
-            },
-        },
-        coverage: {
-            include: ['src/**'],
-        },
-        // Enable web workers in tests
-        pool: 'threads',
-    };
-
     return config;
 });

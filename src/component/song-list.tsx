@@ -16,10 +16,11 @@ import clsx from 'clsx';
 import debounce from 'lodash/debounce';
 import React, { Fragment, memo, useCallback, useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useShallow } from 'zustand/react/shallow';
 import unknown_album_icon from '../../img/unknown_album_icon.png';
 import { DB, on_db_languages_update } from '../db';
 import { DBSearch, useSearchStore, useSongListStore } from '../db-search';
-import { FAVOURITE_DB } from '../favourite-db';
+import { FAVOURITE_DB, useFavouriteVersion } from '../favourite-db';
 import { toggle_filter_source } from '../filter-sources';
 import { useAppLang, useTranslation } from '../langpack';
 import { DialogAddToSet } from '../page/add-to-set';
@@ -70,22 +71,8 @@ interface FavouriteSymbolProps {
 }
 
 const FavouriteSymbol = memo(function FavouriteSymbol({ songId }: FavouriteSymbolProps) {
-    const [isFavourite, setIsFavourite] = useState(false);
-
-    useEffect(() => {
-        const updateFavourite = () => {
-            setIsFavourite(!!FAVOURITE_DB.get_favourite(songId));
-        };
-
-        const watcher = FAVOURITE_DB.subscribe((sid: number) => {
-            if (sid === songId) updateFavourite();
-        });
-        updateFavourite();
-
-        return () => {
-            watcher.unsubscribe();
-        };
-    }, [songId]);
+    useFavouriteVersion();
+    const isFavourite = !!FAVOURITE_DB.get_favourite(songId);
 
     return isFavourite ? <Icon.SymbolFavourite /> : null;
 });
@@ -328,7 +315,7 @@ interface PagerElemProps {
 
 export function PagerElem({ current_search, on_change }: PagerElemProps) {
     const { t } = useTranslation();
-    const pager = useSongListStore((state) => state.pager);
+    const pager = useSongListStore(useShallow((state) => state.pager));
 
     const pager_prev = () => {
         current_search?.change_page(-1);
@@ -380,9 +367,9 @@ export interface SongListProps {
 
 export function SongList({ container, active_song_id }: SongListProps) {
     const { t } = useTranslation();
-    const current_search = useSearchStore((state) => state.current_search);
-    const requested_items = useSongListStore((state) => state.requested_items);
-    const items = useSongListStore((state) => state.items);
+    const current_search = useSearchStore(useShallow((state) => state.current_search));
+    const requested_items = useSongListStore(useShallow((state) => state.requested_items));
+    const items = useSongListStore(useShallow((state) => state.items));
 
     const [is_loading, setIsLoading] = useState(false);
     const [show_spinner, setShowSpinner] = useState(false);
@@ -396,6 +383,8 @@ export function SongList({ container, active_song_id }: SongListProps) {
     const watcher_ref = useRef<{ unsubscribe: () => void } | null>(null);
     const songlist_ref = useRef<HTMLUListElement | null>(null);
     const cur_infinite_promise_ref = useRef<Promise<unknown> | null>(null);
+    const current_search_ref = useRef(current_search);
+    current_search_ref.current = current_search;
 
     const scroll_to_active_id = useCallback(() => {
         if (!songlist_ref.current) return;
@@ -440,8 +429,8 @@ export function SongList({ container, active_song_id }: SongListProps) {
                     let perc_scroll = scroll_top / bottom_scroll_top;
                     if (!bottom_scroll_top && !scroll_top) perc_scroll = 1;
 
-                    if (!cur_infinite_promise_ref.current && perc_scroll > 0.8 && current_search) {
-                        const promise = current_search.infinite_scroll();
+                    if (!cur_infinite_promise_ref.current && perc_scroll > 0.8 && current_search_ref.current) {
+                        const promise = current_search_ref.current.infinite_scroll();
                         if (promise) {
                             cur_infinite_promise_ref.current = promise;
                             promise.finally(() => {
@@ -463,7 +452,7 @@ export function SongList({ container, active_song_id }: SongListProps) {
         infinite_watcher_ref.current = [target, debouncer];
         target.addEventListener('scroll', debouncer);
         on_resize_ref.current = on_resize(debouncer);
-    }, [container, current_search, remove_infinite_watcher]);
+    }, [container, remove_infinite_watcher]);
 
     const watch_current_search = useCallback(() => {
         if (watcher_ref.current) {

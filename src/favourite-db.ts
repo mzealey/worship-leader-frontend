@@ -1,4 +1,5 @@
 import { Subject, type Subscription } from 'rxjs';
+import { create } from 'zustand';
 import { DB } from './db';
 import { persistentStorage } from './persistent-storage.es5';
 
@@ -69,3 +70,11 @@ export class FavouriteDB {
     }
 }
 export const FAVOURITE_DB = new FavouriteDB();
+
+const useFavouriteVersion = create<{ version: number }>(() => ({ version: 0 }));
+
+FAVOURITE_DB.subscribe(() => {
+    useFavouriteVersion.setState((s) => ({ version: s.version + 1 }));
+});
+
+export { useFavouriteVersion };
