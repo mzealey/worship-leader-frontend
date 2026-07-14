@@ -13,7 +13,7 @@ import {
     Typography,
 } from '@mui/material';
 import debounce from 'lodash/debounce';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { memo, useCallback, useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import unknown_album_icon from '../../img/unknown_album_icon.png';
 import { DB, on_db_languages_update } from '../db';
@@ -26,7 +26,7 @@ import { clsx, Fragment, preact_get_text } from '../preact-helpers';
 import { on_resize } from '../resize-watcher';
 import { set_search_text } from '../search';
 import { useSetting } from '../settings-store';
-import type { Album, MaybeLoadedSong, RelatedSong, Song, SongSource } from '../song';
+import type { Album, MaybeLoadedSong, RelatedSong, Song, SongShortData, SongSource } from '../song';
 import { get_text_title } from '../song-utils';
 import type { UnknownArgs } from '../util';
 import { ensure_visible, format_string, is_rtl, is_vertical_lang, scroll_to } from '../util';
@@ -40,8 +40,6 @@ interface TextDirectionProps extends React.HTMLAttributes<HTMLSpanElement> {
 
 export const TextDirection = ({ text, lang, is_main_block, children, className, ...other_props }: TextDirectionProps) => {
     const dir = is_rtl(text || preact_get_text(children)) ? 'rtl' : 'ltr';
-
-    // Set the vertical-lr class if mongolian (traditional) and is the song block
     return (
         <span {...other_props} lang={lang} dir={dir} className={clsx(className, { 'vertical-lr vertical-lr-scroll': is_main_block && is_vertical_lang(lang) })}>
             {children}
@@ -49,32 +47,64 @@ export const TextDirection = ({ text, lang, is_main_block, children, className, 
     );
 };
 
-interface SongListLinkHeaderProps {
-    prefix?: React.ReactNode;
-    song: MaybeLoadedSong | RelatedSong;
-    children?: React.ReactNode;
+const secondaryActionSx = {
+    position: 'static',
+    transform: 'none',
+    whiteSpace: 'nowrap',
+    display: 'flex',
+    alignItems: 'center',
+    pl: 1,
+} as const;
+
+const childrenBoxSx = { ml: 1 } as const;
+
+const loaderSx = { textAlign: 'center' } as const;
+
+const pagerGridSx = { alignItems: 'center', justifyContent: 'space-between' } as const;
+
+const pagerGrowSx = { flexGrow: 1 } as const;
+
+interface FavouriteSymbolProps {
+    songId: number;
 }
 
-const SongListLinkHeader = ({ prefix, song, children }: SongListLinkHeaderProps) => {
-    const { t } = useTranslation();
-    const { appLang } = useAppLang();
-    const [display_chords] = useSetting('display-chords');
-    const [is_favourite, setIsFavourite] = useState(false);
+const FavouriteSymbol = memo(function FavouriteSymbol({ songId }: FavouriteSymbolProps) {
+    const [isFavourite, setIsFavourite] = useState(false);
 
     useEffect(() => {
         const updateFavourite = () => {
-            setIsFavourite(!!FAVOURITE_DB.get_favourite(song.id));
+            setIsFavourite(!!FAVOURITE_DB.get_favourite(songId));
         };
 
-        const watcher = FAVOURITE_DB.subscribe((song_id: number) => {
-            if (song_id === song.id) updateFavourite();
+        const watcher = FAVOURITE_DB.subscribe((sid: number) => {
+            if (sid === songId) updateFavourite();
         });
         updateFavourite();
 
         return () => {
             watcher.unsubscribe();
         };
-    }, [song.id]);
+    }, [songId]);
+
+    return isFavourite ? <Icon.SymbolFavourite /> : null;
+});
+
+interface SongListLinkHeaderProps {
+    prefix?: React.ReactNode;
+    song: MaybeLoadedSong | RelatedSong;
+    children?: React.ReactNode;
+}
+
+const SongListLinkHeader = memo(function SongListLinkHeader({ prefix, song, children }: SongListLinkHeaderProps) {
+    const { t } = useTranslation();
+    const { appLang } = useAppLang();
+    const [display_chords] = useSetting('display-chords');
+    const [showKeyInList] = useSetting('show-key-in-list');
+
+    const stopClicks = useCallback((e: React.MouseEvent) => {
+        e.stopPropagation();
+        e.preventDefault();
+    }, []);
 
     if ('not_loaded' in song && song.not_loaded) {
         return (
@@ -88,63 +118,46 @@ const SongListLinkHeader = ({ prefix, song, children }: SongListLinkHeaderProps)
         );
     }
 
-    // At this point song is Song (full type)
     const fullSong = song as Song;
 
-    const get_full_title = (prefix?: React.ReactNode) => {
-        const title = get_text_title(fullSong);
-        const other_props = { style: { whiteSpace: 'nowrap' as const } };
+    const title = get_text_title(fullSong);
+    const whiteSpaceStyle = { whiteSpace: 'nowrap' as const };
 
-        const titleElement = (
-            <TextDirection {...other_props} text={title} lang={fullSong.lang} title={title}>
-                {title}
-            </TextDirection>
-        );
+    const titleElement = (
+        <TextDirection {...whiteSpaceStyle} text={title} lang={fullSong.lang} title={title}>
+            {title}
+        </TextDirection>
+    );
 
-        if (!prefix) return titleElement;
-
-        // If prefix is set we'll hide the actual title and direction under a
-        // different span. Unfortunately this means that if the UI direction and
-        // the song direction are different the UI direction will be preferred so
-        // by default we'll not do this.
-        return (
-            <span {...other_props}>
-                {prefix}
-                {titleElement}
-            </span>
-        );
-    };
-
-    const stopClicks = (e: React.MouseEvent) => {
-        e.stopPropagation();
-        e.preventDefault();
-    };
+    const fullTitle = prefix ? (
+        <span {...whiteSpaceStyle}>
+            {prefix}
+            {titleElement}
+        </span>
+    ) : (
+        titleElement
+    );
 
     const sec_props = children ? { onClick: stopClicks } : {};
 
     const key_items: string[] = [];
-    /* TODO
-    if( is_set('setting-show-key-in-list') ) {
-        if( fullSong.songkey )
-            key_items.push( t('songkey') + ": " + fullSong.songkey );
+    if (showKeyInList) {
+        if (fullSong.songkey) key_items.push(t('songkey') + ': ' + fullSong.songkey);
 
-        if( fullSong.info ) {
-            let timesig = fullSong.info.filter( d => d.type == 'timesignature' )[0];
-            if( timesig )
-                key_items.push( timesig.value );
+        if (fullSong.info) {
+            const timesig = fullSong.info.find((d) => d.type === 'timesignature');
+            if (timesig) key_items.push(timesig.value);
 
-            let tempo = fullSong.info.filter( d => d.type == 'tempo' )[0];
-            if( tempo )
-                key_items.push( t('tempo') + ": " + tempo.value );
+            const tempo = fullSong.info.find((d) => d.type === 'tempo');
+            if (tempo) key_items.push(t('tempo') + ': ' + tempo.value);
         }
     }
-    */
 
     const alts = (fullSong.alternative_titles || []).join(', ');
     return (
         <Fragment>
             <ListItemText
-                primary={get_full_title(prefix)}
+                primary={fullTitle}
                 secondary={
                     <Fragment>
                         {alts.length > 0 ? (
@@ -158,90 +171,89 @@ const SongListLinkHeader = ({ prefix, song, children }: SongListLinkHeaderProps)
                 slotProps={{ secondary: { color: 'initial' } }}
             />
 
-            <ListItemSecondaryAction
-                {...sec_props}
-                sx={{
-                    position: 'static',
-                    transform: 'none',
-                    whiteSpace: 'nowrap',
-                    display: 'flex',
-                    alignItems: 'center',
-                    pl: 1,
-                }}
-            >
-                {is_favourite ? <Icon.SymbolFavourite /> : null}
+            <ListItemSecondaryAction {...sec_props} sx={secondaryActionSx}>
+                <FavouriteSymbol songId={fullSong.id} />
                 {!!fullSong.is_original && <Icon.SymbolOriginal />}
                 {!!fullSong.has_chord && display_chords ? <Icon.SymbolHasChord /> : null}
                 {!!fullSong.has_mp3 && <Icon.SymbolHasMP3 />}
                 {!!fullSong.has_sheet && <Icon.SymbolHasSheet />}
                 {children ? (
-                    <Box component="span" sx={{ ml: 1 }}>
+                    <Box component="span" sx={childrenBoxSx}>
                         {children}
                     </Box>
                 ) : null}
             </ListItemSecondaryAction>
         </Fragment>
     );
-};
+});
 
 interface SongListLinkProps {
     withStripe?: boolean;
     realRef?: React.Ref<any>;
     prefix?: React.ReactNode;
-    song: Song | RelatedSong;
+    song: SongShortData | RelatedSong;
     is_active?: boolean;
     children?: React.ReactNode;
     set_id?: number;
     noAddToSet?: boolean;
 }
 
-export const SongListLink = ({ withStripe, realRef, prefix, song, is_active, children, set_id, noAddToSet }: SongListLinkProps) => {
-    const [addToSet, setAddToSet] = useState(false);
+export const SongListLink = memo(
+    function SongListLink({ withStripe, realRef, prefix, song, is_active, children, set_id, noAddToSet }: SongListLinkProps) {
+        const [addToSet, setAddToSet] = useState(false);
 
-    // long-press on mobile devices will trigger add-to-set dialog
-    const handleAddToSet = (e: React.MouseEvent) => {
-        e.preventDefault();
-        if (!noAddToSet) setAddToSet(true);
-    };
+        const handleAddToSet = useCallback(
+            (e: React.MouseEvent) => {
+                e.preventDefault();
+                if (!noAddToSet) setAddToSet(true);
+            },
+            [noAddToSet],
+        );
 
-    // On the links don't create clickable link if target song is copyrighted
-    //if( !prefix || !is_copyright(song) )
-    let path = `/song/${song.id}`;
-    if (set_id) path += `/${set_id}`;
+        const path = set_id ? `/song/${song.id}/${set_id}` : `/song/${song.id}`;
 
-    return (
-        <Fragment>
-            {addToSet ? <DialogAddToSet song_id={song.id} onClose={() => setAddToSet(false)} /> : null}
-            <ListItem
-                disablePadding
-                ref={realRef}
-                component={Link}
-                to={path}
-                onContextMenu={handleAddToSet}
-                className={clsx(withStripe && 'stripe', children && 'with-icons', `songid-${song.id}`)}
-                sx={(theme) => ({
-                    '&.stripe': {
-                        backgroundColor: theme.palette.background.stripe,
-                        '&:hover': {
-                            backgroundColor: theme.palette.background.stripe_active,
+        return (
+            <Fragment>
+                {addToSet ? <DialogAddToSet song_id={song.id} onClose={() => setAddToSet(false)} /> : null}
+                <ListItem
+                    disablePadding
+                    ref={realRef}
+                    component={Link}
+                    to={path}
+                    onContextMenu={handleAddToSet}
+                    className={clsx(withStripe && 'stripe', children && 'with-icons', `songid-${song.id}`)}
+                    sx={(theme) => ({
+                        '&.stripe': {
+                            backgroundColor: theme.palette.background.stripe,
+                            '&:hover': {
+                                backgroundColor: theme.palette.background.stripe_active,
+                            },
                         },
-                    },
-                    '&.with-icons': {
-                        pr: 0,
-                        pt: 0,
-                        pb: 0,
-                    },
-                })}
-            >
-                <ListItemButton selected={is_active}>
-                    <SongListLinkHeader song={song} prefix={prefix}>
-                        {children}
-                    </SongListLinkHeader>
-                </ListItemButton>
-            </ListItem>
-        </Fragment>
-    );
-};
+                        '&.with-icons': {
+                            pr: 0,
+                            pt: 0,
+                            pb: 0,
+                        },
+                    })}
+                >
+                    <ListItemButton selected={is_active}>
+                        <SongListLinkHeader song={song} prefix={prefix}>
+                            {children}
+                        </SongListLinkHeader>
+                    </ListItemButton>
+                </ListItem>
+            </Fragment>
+        );
+    },
+    (prevProps, nextProps) =>
+        prevProps.song.id === nextProps.song.id &&
+        prevProps.is_active === nextProps.is_active &&
+        prevProps.withStripe === nextProps.withStripe &&
+        prevProps.prefix === nextProps.prefix &&
+        prevProps.children === nextProps.children &&
+        prevProps.set_id === nextProps.set_id &&
+        prevProps.noAddToSet === nextProps.noAddToSet,
+);
 
 interface AlbumMetaLinkProps {
     meta: Album;
@@ -308,7 +320,6 @@ function MetaLink({ meta, ...props }: MetaLinkProps) {
     return <Elem meta={meta as any} {...props} />;
 }
 
-// As pager object updates frequently without notifications we need to keep on rerendering
 interface PagerElemProps {
     current_search?: DBSearch;
     on_change: () => void;
@@ -331,12 +342,12 @@ export function PagerElem({ current_search, on_change }: PagerElemProps) {
     if (!pager || pager.no_results()) return null;
 
     return (
-        <Grid container sx={{ alignItems: 'center', justifyContent: 'space-between' }}>
+        <Grid container sx={pagerGridSx}>
             <IconButton color="primary" style={{ visibility: pager.has_prev() ? 'visible' : 'hidden' }} onClick={pager_prev} aria-label={t('pager_prev')}>
                 <Icon.Prev />
             </IconButton>
 
-            <Box sx={{ flexGrow: 1 }}>
+            <Box sx={pagerGrowSx}>
                 <Typography align="center">{format_string(t('pager'), pager.first(), pager.last(), pager.total < 0 ? '...' : pager.total)}</Typography>
             </Box>
 
@@ -349,8 +360,6 @@ export function PagerElem({ current_search, on_change }: PagerElemProps) {
 
 const rerun_search = () => {
     DB.then((db) => {
-        // Be lazy about getting/comparing the data, only do it after we can
-        // execute the query straight away.
         const cur_search = useSearchStore.getState().current_search;
         if (cur_search && cur_search.isEqual(db)) return;
 
@@ -361,7 +370,6 @@ useSearchStore.subscribe(rerun_search);
 on_db_languages_update.subscribe(rerun_search);
 rerun_search();
 
-// Define the props that can be passed to SongList from outside
 type ScrollContainer = HTMLElement | Document | null;
 
 export interface SongListProps {
@@ -398,15 +406,15 @@ export function SongList({ container, active_song_id }: SongListProps) {
         }
     }, [active_song_id, container]);
 
-    const scroll_to_top = () => {
+    const scroll_to_top = useCallback(() => {
         if (container) scroll_to(container === document ? document.documentElement : (container as HTMLElement), 0, 500);
-    };
+    }, [container]);
 
-    const set_songlist = (e: HTMLUListElement | null) => {
+    const set_songlist = useCallback((e: HTMLUListElement | null) => {
         songlist_ref.current = e;
-    };
+    }, []);
 
-    const remove_infinite_watcher = () => {
+    const remove_infinite_watcher = useCallback(() => {
         if (infinite_watcher_ref.current) {
             const [scroll_container, debouncer] = infinite_watcher_ref.current;
             scroll_container.removeEventListener('scroll', debouncer);
@@ -416,7 +424,7 @@ export function SongList({ container, active_song_id }: SongListProps) {
             }
             infinite_watcher_ref.current = null;
         }
-    };
+    }, []);
 
     const setup_infinite_scroll = useCallback(() => {
         remove_infinite_watcher();
@@ -454,7 +462,7 @@ export function SongList({ container, active_song_id }: SongListProps) {
         infinite_watcher_ref.current = [target, debouncer];
         target.addEventListener('scroll', debouncer);
         on_resize_ref.current = on_resize(debouncer);
-    }, [container, current_search]);
+    }, [container, current_search, remove_infinite_watcher]);
 
     const watch_current_search = useCallback(() => {
         if (watcher_ref.current) {
@@ -483,7 +491,7 @@ export function SongList({ container, active_song_id }: SongListProps) {
         }
     }, [current_search]);
 
-    // Initial mount
+    // Initial mount + current_search change
     useEffect(() => {
         setup_infinite_scroll();
         watch_current_search();
@@ -494,19 +502,8 @@ export function SongList({ container, active_song_id }: SongListProps) {
                 watcher_ref.current.unsubscribe();
             }
         };
-    }, [setup_infinite_scroll, watch_current_search]);
+    }, [setup_infinite_scroll, watch_current_search, remove_infinite_watcher]);
 
-    // Watch for current_search changes
-    useEffect(() => {
-        watch_current_search();
-    }, [watch_current_search]);
-
-    // Watch for container changes
-    useEffect(() => {
-        setup_infinite_scroll();
-    }, [setup_infinite_scroll]);
-
-    // Watch for container or active_song_id changes
     useEffect(() => {
         scroll_to_active_id();
     }, [scroll_to_active_id]);
@@ -514,7 +511,7 @@ export function SongList({ container, active_song_id }: SongListProps) {
     const on_first_page = !requested_items?.infinite_scroll || requested_items?.start == 0;
 
     const loader = (
-        <Box sx={{ textAlign: 'center' }}>
+        <Box sx={loaderSx}>
             <CircularProgress />
         </Box>
     );
@@ -531,7 +528,7 @@ export function SongList({ container, active_song_id }: SongListProps) {
                         '_type' in item ? (
                             <MetaLink withStripe={idx % 2 == 0} key={`${item._type}${item.id}`} meta={item} />
                         ) : (
-                            <SongListLink withStripe={idx % 2 == 0} key={item.id} is_active={item.id == active_song_id} song={item as Song} />
+                            <SongListLink withStripe={idx % 2 == 0} key={item.id} is_active={item.id == active_song_id} song={item as SongShortData} />
                         ),
                     )}
                 </List>

@@ -1,4 +1,4 @@
-import { on_db_languages_update } from '../db';
+import { on_db_languages_update, on_dbload_failed } from '../db';
 import { send_error_report } from '../error-catcher';
 import type { FavouriteDB } from '../favourite-db';
 import { DB_PATH } from '../globals';
@@ -81,7 +81,7 @@ export abstract class OfflineDBCommon<PreparedQuery> extends CommonDB<PreparedQu
     }
 
     async on_dbload_fail() {
-        // TODO $.mobile.changePage('#page-dbload-failed', { reverse: false, changeHash: false });
+        on_dbload_failed.next();
     }
 
     full_type(): string {

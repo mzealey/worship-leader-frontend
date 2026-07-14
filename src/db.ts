@@ -8,6 +8,9 @@ export const on_db_languages_update = new Subject<void>();
 // Triggered when the database itself changes
 export const on_db_change = new Subject<void>();
 
+// Triggered when the database fails to load/initialize
+export const on_dbload_failed = new Subject<void>();
+
 // These resolved via db-init.js function, but this is needed to avoid some
 // issues with circular dependencies causing load issues in the chrome build.
 

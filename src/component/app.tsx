@@ -1,9 +1,9 @@
 import { GlobalStyles } from '@mui/material';
-import { lazy, Suspense, useEffect, useState } from 'react';
+import { lazy, Suspense, useEffect, useRef, useState } from 'react';
 import { HashRouter, Navigate, Route, Routes, useParams, useSearchParams } from 'react-router-dom';
 import LANGPACK_INDEX from '../../langpack/index.json';
 import { Spinner } from '../component/lock-screen';
-import { DB, DB_AVAILABLE } from '../db';
+import { DB, DB_AVAILABLE, on_dbload_failed } from '../db';
 import { get_db_chosen_langs, save_db_chosen_langs } from '../db/common';
 import { is_firsttime } from '../globals';
 import { get_app_languages } from '../langdetect.es5';
@@ -26,6 +26,7 @@ const LazyPageSettings = lazy(() => import('../page/settings').then((m) => ({ de
 const LazyPageEditTextarea = lazy(() => import('../page/edit').then((m) => ({ default: m.PageEditTextarea })));
 const LazyPageNativePrompter = lazy(() => import('../page/native-prompter').then((m) => ({ default: m.PageNativePrompter })));
 const LazyPageList = lazy(() => import('../page/list').then((m) => ({ default: m.PageList })));
+const LazyPageDbLoadFailed = lazy(() => import('../page/dbload-failed').then((m) => ({ default: m.PageDbLoadFailed })));
 
 function PageSongInfoWrapper() {
     const { song_id, set_id } = useParams();
@@ -91,6 +92,7 @@ enum AppState {
     DbInitialized,
     NeedsLanguageSelection,
     Running,
+    DbLoadFailed,
 }
 
 const hide_splash = () => {
@@ -111,9 +113,15 @@ const hide_splash = () => {
 export const App = () => {
     const [appState, setAppState] = useState<AppState>(AppState.Loading);
     const { setLanguage } = useAppLang.getState();
+    const failedRef = useRef(false);
 
     // Track startup process and set the state of the view accordingly
     useEffect(() => {
+        const dbload_failed_sub = on_dbload_failed.subscribe(() => {
+            failedRef.current = true;
+            setAppState(AppState.DbLoadFailed);
+        });
+
         (async () => {
             // Various legacy stuff to do with location - TODO: Figure out how to react-ify this
             window.location.hash = window.location.hash.replace(/\?.*/, '');
@@ -147,6 +155,7 @@ export const App = () => {
             setAppState(AppState.DbInitializing);
 
             const db = await DB_AVAILABLE;
+            if (failedRef.current) return;
             console.log('db available');
             setAppState(AppState.DbInitialized);
             if (get_db_chosen_langs().length) {
@@ -167,9 +176,14 @@ export const App = () => {
             }
             console.log('db initialized');
             await DB; // This blocks until the user has chosen DB languages and the DB is correctly populated
+            if (failedRef.current) return;
             setAppState(AppState.Running);
             hide_splash();
         })();
+
+        return () => {
+            dbload_failed_sub.unsubscribe();
+        };
     }, [setLanguage]);
 
     // Go through the various startup phases of the app showing the
@@ -191,6 +205,14 @@ export const App = () => {
         return (
             <Suspense fallback={<Spinner />}>
                 <LazyPageDbLangs onClose={() => setAppState(AppState.Running)} />
+            </Suspense>
+        );
+    }
+
+    if (appState == AppState.DbLoadFailed) {
+        return (
+            <Suspense fallback={<Spinner />}>
+                <LazyPageDbLoadFailed />
             </Suspense>
         );
     }

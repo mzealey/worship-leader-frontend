@@ -13,7 +13,7 @@ import {
     NativeSelect,
     Typography,
 } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { ImageButton, ThinPage } from '../component/basic';
 import { ChordColorPicker } from '../component/chord-color-picker';
 import * as Icon from '../component/icons';
@@ -111,12 +111,40 @@ const SettingCheckbox = ({ setting }: { setting: keyof Settings }) => {
 const ChordColorGroup = () => {
     const { t } = useTranslation();
     const [color, setColor] = useSetting('chord-color');
+    const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+    const swatchRef = useRef<HTMLDivElement>(null);
+
+    const handleOpen = useCallback((el: HTMLElement) => {
+        setAnchorEl(el);
+    }, []);
+
+    const handleClose = useCallback(() => {
+        setAnchorEl(null);
+    }, []);
+
+    const handleClick = () => {
+        if (anchorEl) {
+            setAnchorEl(null);
+        } else {
+            swatchRef.current?.click();
+        }
+    };
+
+    const open = Boolean(anchorEl);
 
     return (
         <ListItem disablePadding>
-            <ListItemButton>
+            <ListItemButton onClick={handleClick}>
                 <ListItemIcon>
-                    <ChordColorPicker color={color} onChange={setColor} />
+                    <ChordColorPicker
+                        ref={swatchRef}
+                        color={color}
+                        onChange={setColor}
+                        open={open}
+                        anchorEl={anchorEl}
+                        onOpen={handleOpen}
+                        onClose={handleClose}
+                    />
                 </ListItemIcon>
                 <ListItemText primary={t('setting-chord-color') + ': ' + color} />
             </ListItemButton>
@@ -260,7 +288,7 @@ export const PageSettings = () => {
                         {display_chords ? <SettingCheckbox setting="use-solfege" /> : null}
                         {display_chords ? <ChordColorGroup /> : null}
 
-                        {display_chords ? <SettingCheckbox setting="show-key-in-list" /> : null}
+                        <SettingCheckbox setting="show-key-in-list" />
 
                         {display_lyrics ? <SettingCheckbox setting="sidebyside" /> : null}
 

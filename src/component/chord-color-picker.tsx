@@ -1,5 +1,5 @@
 import { Box, Popover } from '@mui/material';
-import { forwardRef, useCallback, useState } from 'react';
+import { forwardRef, useCallback } from 'react';
 
 const PREDEFINED_COLORS = [
     '000000',
@@ -43,28 +43,34 @@ const PREDEFINED_COLORS = [
 interface ChordColorPickerProps {
     color: string;
     onChange: (color: string) => void;
+    open: boolean;
+    anchorEl: HTMLElement | null;
+    onOpen: (el: HTMLElement) => void;
+    onClose: () => void;
 }
 
-export const ChordColorPicker = forwardRef<HTMLDivElement, ChordColorPickerProps>(function ChordColorPicker({ color, onChange }, ref) {
-    const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
-
-    const handleClick = useCallback((event: React.MouseEvent<HTMLElement>) => {
-        setAnchorEl(event.currentTarget);
-    }, []);
+export const ChordColorPicker = forwardRef<HTMLDivElement, ChordColorPickerProps>(function ChordColorPicker(
+    { color, onChange, open, anchorEl, onOpen, onClose },
+    ref,
+) {
+    const handleClick = useCallback(
+        (event: React.MouseEvent<HTMLElement>) => {
+            onOpen(event.currentTarget);
+        },
+        [onOpen],
+    );
 
     const handleClose = useCallback(() => {
-        setAnchorEl(null);
-    }, []);
+        onClose();
+    }, [onClose]);
 
     const handleSelectColor = useCallback(
         (newColor: string) => {
             onChange('#' + newColor);
-            setAnchorEl(null);
+            onClose();
         },
-        [onChange],
+        [onChange, onClose],
     );
-
-    const open = Boolean(anchorEl);
 
     return (
         <>
