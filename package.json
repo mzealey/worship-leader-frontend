@@ -29,7 +29,7 @@
     "test:unit;watch": "vitest --config vitest.config.mjs --dir spec --exclude '**/*.ui.spec.*'",
     "test:unit": "vitest run --config vitest.config.mjs --dir spec --exclude '**/*.ui.spec.*'",
     "test:ui": "vitest run --config vitest.config.mjs --dir spec '**/*.ui.spec.*'",
-    "test:coverage": "vitest run --config vitest.config.mjs --dir spec --exclude '**/*.ui.spec.*' --coverage",
+    "test:coverage": "vitest run --config vitest.config.mjs --dir spec --coverage",
     "test:browser": "playwright test",
     "test:browser:ui": "playwright test --ui",
     "test:browser:headed": "playwright test --headed",

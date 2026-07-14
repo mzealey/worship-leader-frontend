@@ -77,6 +77,7 @@ export const ChordColorPicker = forwardRef<HTMLDivElement, ChordColorPickerProps
             <Box
                 ref={ref}
                 onClick={handleClick}
+                data-testid="chord-color-circle"
                 sx={{
                     backgroundColor: color,
                     width: 18,
@@ -104,6 +105,7 @@ export const ChordColorPicker = forwardRef<HTMLDivElement, ChordColorPickerProps
                     {PREDEFINED_COLORS.map((c) => (
                         <Box
                             key={c}
+                            data-testid={`color-swatch-${c}`}
                             onClick={() => handleSelectColor(c)}
                             sx={{
                                 backgroundColor: '#' + c,
