@@ -2,6 +2,7 @@ import {
     Box,
     Button,
     ButtonGroup,
+    CircularProgress,
     Dialog,
     DialogActions,
     DialogContent,
@@ -429,7 +430,21 @@ export const SongsDisplay = ({
     );
 
     return (
-        <Box sx={{ display: song ? 'flex' : 'hidden', flexGrow: 1, displayPrint: 'block' }} ref={(e) => update_item_refs('song', e as HTMLElement | null)}>
+        <Box sx={{ position: 'relative', display: 'flex', flexGrow: 1, displayPrint: 'block' }} ref={(e) => update_item_refs('song', e as HTMLElement | null)}>
+            {song_loading ? (
+                <Box
+                    sx={{
+                        position: 'fixed',
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                        zIndex: 1,
+                    }}
+                >
+                    <CircularProgress />
+                </Box>
+            ) : null}
+
             <Box
                 component="div"
                 sx={{
