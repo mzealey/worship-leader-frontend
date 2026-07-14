@@ -114,6 +114,7 @@ export const SongXMLDisplay: ComponentType<SongXMLDisplayProps> = ({ song, trans
     const [show_fingering] = useSetting('show-fingering');
     const [setting_zoom] = useSetting('song-zoom');
     const [chord_color] = useSetting('chord-color');
+    const [observe_copyright] = useSetting('observe-copyright');
 
     const [selected_chord, setSelectedChord] = useState<SelectedChord | undefined>(undefined);
     const [content, setContent] = useState<string>('');
@@ -183,10 +184,10 @@ export const SongXMLDisplay: ComponentType<SongXMLDisplayProps> = ({ song, trans
         }
 
         /*
-        if( is_copyright(song) ) {
+        if (is_copyright(song)) {
             // Mask copyrighted songs on builds, but not on the web version as we can't
             // get delisted for copyrighted content there.
-            content = $('<b>').text( get_translation('copyright_no_show') );
+            content = $('<b>').text(get_translation('copyright_no_show'));
             show_chords = false;
         } else */
         contentStr = songxml_to_divs(contentStr, !showChordsVal, chord_color);
@@ -298,6 +299,10 @@ export const SongXMLDisplay: ComponentType<SongXMLDisplayProps> = ({ song, trans
     // We don't need to do anything to allow a print at the moment,
     // although perhaps in future we should make page larger and redo the
     // format_html_chords.
+
+    if (observe_copyright && (song?.copyright_restricted || song?.lang === 'en')) {
+        return <b>{t('copyright_no_show')}</b>;
+    }
 
     if (!content) {
         return <b>{t('nolyrics')}</b>;

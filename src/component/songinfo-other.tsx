@@ -371,6 +371,7 @@ export const SongsDisplay = ({
 }: SongsDisplayProps) => {
     const { t, lang_name } = useTranslation();
     const [setting_sidebyside] = useSetting('sidebyside');
+    const [observe_copyright] = useSetting('observe-copyright');
     const [sec_id, setSecId] = useState<number | undefined>(undefined);
     const [sec_song, setSecSong] = useState<Song | null>(null);
     const [prefer_score, setPreferScore] = useState<number>(0);
@@ -378,7 +379,7 @@ export const SongsDisplay = ({
     // Some helper functions...
     const abc_file = () => (song ? song.files || [] : []).find((file: Song['files'][number]) => file.type == 'abccache');
     const has_score = () => !!abc_file();
-    // const _is_copyright_restrict = 0; /*is_copyright(song)*/ // TODO: re-enable later
+    const is_copyright_restrict = !!(observe_copyright && (song?.copyright_restricted || song?.lang === 'en'));
     const is_show_score = useCallback(() => {
         const abc = (song ? song.files || [] : []).find((file) => file.type == 'abccache');
         return !!abc && !!prefer_score && can_do_worker();
@@ -424,7 +425,9 @@ export const SongsDisplay = ({
 
     const setup_chord_boxes = !!song?.songxml && (has_score() || /<chord>/i.test(song.songxml));
 
-    const primary_song_display = show_score ? (
+    const primary_song_display = is_copyright_restrict ? (
+        <b>{t('copyright_no_show')}</b>
+    ) : show_score ? (
         <SheetMusicDisplay song={song} transpose={transpose} is_printing={is_printing} abc_file={abc_file_obj} in_presentation={in_presentation} />
     ) : (
         <SongXMLDisplay song={song} transpose={transpose} is_printing={is_printing} no_chords={in_presentation} in_presentation={in_presentation} />
@@ -483,7 +486,7 @@ export const SongsDisplay = ({
             >
                 <div className="songs">
                     <Box sx={{ displayPrint: 'none' }}>
-                        {has_score() && (
+                        {!is_copyright_restrict && has_score() && (
                             <Tabs value={prefer_score} variant="fullWidth" centered textColor="primary" indicatorColor="primary" onChange={tab_change}>
                                 <Tab
                                     value={0}

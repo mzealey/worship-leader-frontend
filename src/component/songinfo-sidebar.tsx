@@ -571,7 +571,7 @@ export const SongInfoSide = ({
         if (d.type == 'mp3' || d.type == 'promomp3' || d.type == 'instmp3' || d.type == 'backmp3') {
             // Don't display MP3 player on copyright restricted songs to avoid
             // getting blocked from the store
-            if (song.copyright_restricted && observe_copyright) return;
+            if (observe_copyright && (song.copyright_restricted || song.lang === 'en')) return;
 
             sections[d.type == 'instmp3' ? 'mp3-instrumentals' : 'mp3-words'].push(data);
         } else if (d.type == 'sheetpdf') {
