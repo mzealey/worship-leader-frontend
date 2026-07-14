@@ -215,10 +215,11 @@ function renderSong(song: Song, index: number, config: SongbookConfig): HTMLElem
 }
 
 function markSectionsWithChords(): void {
-    document.querySelectorAll('.chord').forEach((chord) => {
+    document.querySelectorAll('.chord-inner').forEach((inner) => {
+        const chord = inner.parentElement!;
         const section = chord.closest('.bridge, .chorus, .verse, .prechorus');
         if (section) section.classList.add('has-chords');
-        if (chord.textContent) chord.textContent = render_chord(chord.textContent);
+        if (inner.textContent) inner.textContent = render_chord(inner.textContent);
     });
 }
 

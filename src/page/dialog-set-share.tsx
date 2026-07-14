@@ -1,8 +1,6 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText } from '@mui/material';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { DialogTitleWithClose } from '../component/basic';
-import * as Icon from '../component/icons';
 import { useTranslation } from '../langpack';
 import { useDialog } from '../preact-helpers';
 import { generate_set_share_link, type ShareableSet } from '../set-utils';
@@ -16,17 +14,11 @@ interface PageSetShareProps {
 export const PageSetShare = (props: PageSetShareProps) => {
     const { set, onClose } = props;
     const { t } = useTranslation();
-    const navigate = useNavigate();
     const { closed, handleClose } = useDialog(onClose);
     const [shareLink, setShareLink] = useState<string | undefined>(undefined);
 
     const doShare = (live_share: boolean) => {
         setShareLink(generate_set_share_link(set, live_share));
-    };
-
-    const printSongbook = () => {
-        handleClose();
-        navigate(`/print-songbook/${set.id}`);
     };
 
     return (
@@ -38,9 +30,6 @@ export const PageSetShare = (props: PageSetShareProps) => {
             {shareLink ? <PageSharer url={shareLink} title={t('share_title')} subject={t('share_set_subject')} onClose={handleClose} /> : null}
             <DialogActions>
                 <Button onClick={handleClose}>{t('cancel_btn')}</Button>
-                <Button onClick={printSongbook} startIcon={<Icon.Print />}>
-                    {t('print-songbook')}
-                </Button>
                 <Button color="primary" onClick={() => doShare(true)}>
                     {t('share-set-live')}
                 </Button>

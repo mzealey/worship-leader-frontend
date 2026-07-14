@@ -8,8 +8,13 @@
 }
 
 :root {
-    --songbook-font-size: 11pt;
+    --songbook-font-size: 10pt;
     --songbook-columns: 1;
+}
+
+.showchords .chord > .chord-inner {
+    font-size: 80%;
+    font-weight: bold;
 }
 
 body {
@@ -223,19 +228,18 @@ body.orientation-landscape #songbook {
     .page-group {
         margin-top: 2em;
         margin-bottom: 2em;
-
-        padding: 15mm;
+        padding: 5mm;
     }
 
     #songbook {
-        max-width: 210mm;
+        max-width: calc(210mm - 30mm);
         margin: 0 auto;
         //box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         //column-rule: 1px solid #ddd;
     }
 
     body.paper-a5 #songbook {
-        max-width: 148mm;
+        max-width: calc(148mm - 30mm);
     }
     /*
     .index-section::after {
@@ -250,10 +254,15 @@ body.orientation-landscape #songbook {
 }
 
 @media print {
+    html {
+        font-size: 10px;
+    }
+
     body {
         background: white;
         padding: 0;
         margin: 0;
+        font-size: calc(var(--songbook-font-size) * 0.9);
     }
 
     #loading,

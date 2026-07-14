@@ -5,6 +5,7 @@ import { SortableContext, useSortable, verticalListSortingStrategy } from '@dnd-
 import { CSS } from '@dnd-kit/utilities';
 import { CircularProgress, IconButton, List } from '@mui/material';
 import { useCallback, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { ImageButton } from '../component/basic';
 import * as Icon from '../component/icons';
 import { SongListLink } from '../component/song-list';
@@ -103,6 +104,7 @@ export interface PageSetViewProps {
 
 export const PageSetView = ({ set_id }: PageSetViewProps) => {
     const { t } = useTranslation();
+    const navigate = useNavigate();
     const [songs, setSongs] = useState<MaybeLoadedSong[]>([]);
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [set, setSet] = useState<SetEntry | null>(null);
@@ -170,6 +172,9 @@ export const PageSetView = ({ set_id }: PageSetViewProps) => {
                 }
                 title={t(set.live ? 'set_title_live' : 'set_title') + ': ' + set.name}
             >
+                <ImageButton icon={Icon.Print} onClick={() => navigate(`/print-songbook/${set.id}`)}>
+                    {t('print-songbook')}
+                </ImageButton>
                 <ImageButton icon={Icon.Share} onClick={shareSet}>
                     {t('sharebtn')}
                 </ImageButton>

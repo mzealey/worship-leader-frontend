@@ -1,9 +1,9 @@
-import { Box, CircularProgress, Grid, NativeSelect, Typography, useTheme } from '@mui/material';
+import { Box, CircularProgress, Grid, NativeSelect, useTheme } from '@mui/material';
 import * as Comlink from 'comlink';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import LANGPACK_INDEX from '../../langpack/index.json';
-import { ImageButton, ThinPage } from '../component/basic';
+import { ImageButton } from '../component/basic';
 import * as Icon from '../component/icons';
 import { TopBar } from '../component/top-bar';
 import { DB } from '../db';
@@ -18,7 +18,7 @@ import { timeout } from '../util';
 
 const defaultConfig = (appLang: string): SongbookConfig => ({
     paperSize: 'a4',
-    fontSize: 11,
+    fontSize: 10,
     columns: 2,
     twoside: false,
     wantChords: true,
@@ -102,6 +102,19 @@ export const PagePrintSongbook = ({ set_id }: PagePrintSongbookProps) => {
     const [iframeReady, setIframeReady] = useState(false);
     const [config, setConfig] = useState<SongbookConfig>(() => defaultConfig(appLang || 'en'));
 
+    const baseDataRef = useRef(baseData);
+    const translationMapRef = useRef(translationMap);
+    const configRef = useRef(config);
+    useEffect(() => {
+        baseDataRef.current = baseData;
+    }, [baseData]);
+    useEffect(() => {
+        translationMapRef.current = translationMap;
+    }, [translationMap]);
+    useEffect(() => {
+        configRef.current = config;
+    }, [config]);
+
     const sideBySideLanguages = useMemo(() => sorted_language_codes(get_db_chosen_langs([])), [sorted_language_codes]);
     const songbookLanguages = useMemo(() => sorted_language_codes(Object.keys(LANGPACK_INDEX)), [sorted_language_codes]);
 
@@ -137,8 +150,9 @@ export const PagePrintSongbook = ({ set_id }: PagePrintSongbookProps) => {
                 if (cancelled) return;
                 viewerApiRef.current = api;
 
-                if (baseData) {
-                    await viewerApiRef.current.setSongbookData({ ...baseData, translationMap, config });
+                const data = baseDataRef.current;
+                if (data) {
+                    await api.setSongbookData({ ...data, translationMap: translationMapRef.current, config: configRef.current });
                 }
             } catch (e) {
                 console.error('Failed to connect to songbook viewer:', e);
@@ -148,7 +162,7 @@ export const PagePrintSongbook = ({ set_id }: PagePrintSongbookProps) => {
         return () => {
             cancelled = true;
         };
-    }, [iframeReady, baseData, translationMap, config]);
+    }, [iframeReady]);
 
     // Push full data to viewer whenever the underlying song data or translation map changes
     useEffect(() => {
@@ -181,7 +195,7 @@ export const PagePrintSongbook = ({ set_id }: PagePrintSongbookProps) => {
     }, []);
 
     return (
-        <ThinPage>
+        <Box sx={{ maxWidth: '100vw', width: '100%', px: 1 }}>
             <TopBar
                 before={
                     <ImageButton component={Link} to={`/set-view/${set_id}`} icon={Icon.Back}>
@@ -195,140 +209,162 @@ export const PagePrintSongbook = ({ set_id }: PagePrintSongbookProps) => {
                 </ImageButton>
             </TopBar>
 
-            <Grid container spacing={2} sx={{ flexDirection: 'column' }}>
-                <Grid>
-                    <Typography variant="subtitle1">{t('print-songbook')}</Typography>
+            <Grid container spacing={2} sx={{ flexDirection: { xs: 'column', md: 'row' } }}>
+                <Grid size={{ xs: 12, md: 5 }}>
+                    <Grid container spacing={2} sx={{ flexDirection: 'column' }}>
+                        <Grid>
+                            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: 1 }}>
+                                <label htmlFor="songbook-paper-size">{t('editor.paper_size')}</label>
+                                <NativeSelect
+                                    id="songbook-paper-size"
+                                    value={config.paperSize}
+                                    onChange={(e) => updateConfig({ paperSize: e.target.value as PaperSize })}
+                                    sx={{ minWidth: 180 }}
+                                >
+                                    <option value="a4">A4</option>
+                                    <option value="a5">A5</option>
+                                </NativeSelect>
+                            </Box>
+                        </Grid>
+
+                        <Grid>
+                            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: 1 }}>
+                                <label htmlFor="songbook-font-size">{t('editor.font_size')}</label>
+                                <NativeSelect
+                                    id="songbook-font-size"
+                                    value={config.fontSize}
+                                    onChange={(e) => updateConfig({ fontSize: parseInt(e.target.value, 10) as FontSize })}
+                                    sx={{ minWidth: 180 }}
+                                >
+                                    <option value="10">{t('zoom-small')}</option>
+                                    <option value="11">{t('zoom-medium')}</option>
+                                    <option value="12">{t('zoom-large')}</option>
+                                </NativeSelect>
+                            </Box>
+                        </Grid>
+
+                        <Grid>
+                            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: 1 }}>
+                                <label htmlFor="songbook-columns">{t('editor.columns')}</label>
+                                <NativeSelect
+                                    id="songbook-columns"
+                                    value={config.columns}
+                                    onChange={(e) => updateConfig({ columns: parseInt(e.target.value, 10) as Columns })}
+                                    sx={{ minWidth: 180 }}
+                                >
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                </NativeSelect>
+                            </Box>
+                        </Grid>
+
+                        <Grid>
+                            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: 1 }}>
+                                <label htmlFor="songbook-language">{t('editor.songbook_language')}</label>
+                                <NativeSelect
+                                    id="songbook-language"
+                                    value={config.songbookLanguage}
+                                    onChange={(e) => updateConfig({ songbookLanguage: e.target.value })}
+                                    sx={{ minWidth: 180 }}
+                                >
+                                    {songbookLanguages.map((lang) => (
+                                        <option key={lang} value={lang}>
+                                            {lang_name(lang)}
+                                        </option>
+                                    ))}
+                                </NativeSelect>
+                            </Box>
+                        </Grid>
+
+                        <Grid>
+                            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: 1 }}>
+                                <label htmlFor="songbook-sidebyside">{t('editor.songbook_include_translations')}</label>
+                                <NativeSelect
+                                    id="songbook-sidebyside"
+                                    value={config.songbookSideBySide}
+                                    onChange={(e) => updateConfig({ songbookSideBySide: e.target.value })}
+                                    sx={{ minWidth: 180 }}
+                                >
+                                    <option value="">{t('none')}</option>
+                                    {sideBySideLanguages.map((lang) => (
+                                        <option key={lang} value={lang}>
+                                            {lang_name(lang)}
+                                        </option>
+                                    ))}
+                                </NativeSelect>
+                            </Box>
+                        </Grid>
+
+                        <Grid>
+                            <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+                                <BoolSetting label={t('editor.include_chords')} checked={config.wantChords} onChange={(v) => updateConfig({ wantChords: v })} />
+                                <BoolSetting
+                                    label={t('editor.include_front_page')}
+                                    checked={config.includeFrontPage}
+                                    onChange={(v) => updateConfig({ includeFrontPage: v })}
+                                />
+                                <BoolSetting label={t('editor.include_capo')} checked={config.includeCapo} onChange={(v) => updateConfig({ includeCapo: v })} />
+                                <BoolSetting
+                                    label={t('editor.include_tran_title')}
+                                    checked={config.includeTranslationSource}
+                                    onChange={(v) => updateConfig({ includeTranslationSource: v })}
+                                />
+                                <BoolSetting
+                                    label={t('editor.include_source_numbers')}
+                                    checked={config.includeSources}
+                                    onChange={(v) => updateConfig({ includeSources: v })}
+                                />
+                                <BoolSetting
+                                    label={t('editor.include_trans_index')}
+                                    checked={config.includeTranslationSourceIndex}
+                                    onChange={(v) => updateConfig({ includeTranslationSourceIndex: v })}
+                                />
+                                <BoolSetting
+                                    label={t('editor.include_key_index')}
+                                    checked={config.includeKeyIndex}
+                                    onChange={(v) => updateConfig({ includeKeyIndex: v })}
+                                />
+                                <BoolSetting
+                                    label={t('editor.include_albums')}
+                                    checked={config.includeAlbums}
+                                    onChange={(v) => updateConfig({ includeAlbums: v })}
+                                />
+                                <BoolSetting
+                                    label={t('editor.include_sref')}
+                                    checked={config.includeSrefs}
+                                    onChange={(v) => updateConfig({ includeSrefs: v })}
+                                />
+                                <BoolSetting
+                                    label={t('editor.include_author')}
+                                    checked={config.includeAuthors}
+                                    onChange={(v) => updateConfig({ includeAuthors: v })}
+                                />
+                                <BoolSetting label={t('editor.include_id')} checked={config.includeId} onChange={(v) => updateConfig({ includeId: v })} />
+                            </Box>
+                        </Grid>
+                    </Grid>
                 </Grid>
 
-                <Grid>
-                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: 1 }}>
-                        <label htmlFor="songbook-paper-size">{t('editor.paper_size')}</label>
-                        <NativeSelect
-                            id="songbook-paper-size"
-                            value={config.paperSize}
-                            onChange={(e) => updateConfig({ paperSize: e.target.value as PaperSize })}
-                            sx={{ minWidth: 180 }}
-                        >
-                            <option value="a4">A4</option>
-                            <option value="a5">A5</option>
-                        </NativeSelect>
-                    </Box>
-                </Grid>
-
-                <Grid>
-                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: 1 }}>
-                        <label htmlFor="songbook-font-size">{t('editor.font_size')}</label>
-                        <NativeSelect
-                            id="songbook-font-size"
-                            value={config.fontSize}
-                            onChange={(e) => updateConfig({ fontSize: parseInt(e.target.value, 10) as FontSize })}
-                            sx={{ minWidth: 180 }}
-                        >
-                            <option value="10">{t('zoom-small')}</option>
-                            <option value="11">{t('zoom-medium')}</option>
-                            <option value="12">{t('zoom-large')}</option>
-                        </NativeSelect>
-                    </Box>
-                </Grid>
-
-                <Grid>
-                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: 1 }}>
-                        <label htmlFor="songbook-columns">{t('editor.columns')}</label>
-                        <NativeSelect
-                            id="songbook-columns"
-                            value={config.columns}
-                            onChange={(e) => updateConfig({ columns: parseInt(e.target.value, 10) as Columns })}
-                            sx={{ minWidth: 180 }}
-                        >
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                        </NativeSelect>
-                    </Box>
-                </Grid>
-
-                <Grid>
-                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: 1 }}>
-                        <label htmlFor="songbook-language">{t('editor.songbook_language')}</label>
-                        <NativeSelect
-                            id="songbook-language"
-                            value={config.songbookLanguage}
-                            onChange={(e) => updateConfig({ songbookLanguage: e.target.value })}
-                            sx={{ minWidth: 180 }}
-                        >
-                            {songbookLanguages.map((lang) => (
-                                <option key={lang} value={lang}>
-                                    {lang_name(lang)}
-                                </option>
-                            ))}
-                        </NativeSelect>
-                    </Box>
-                </Grid>
-
-                <Grid>
-                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: 1 }}>
-                        <label htmlFor="songbook-sidebyside">{t('editor.songbook_include_translations')}</label>
-                        <NativeSelect
-                            id="songbook-sidebyside"
-                            value={config.songbookSideBySide}
-                            onChange={(e) => updateConfig({ songbookSideBySide: e.target.value })}
-                            sx={{ minWidth: 180 }}
-                        >
-                            <option value="">{t('none')}</option>
-                            {sideBySideLanguages.map((lang) => (
-                                <option key={lang} value={lang}>
-                                    {lang_name(lang)}
-                                </option>
-                            ))}
-                        </NativeSelect>
-                    </Box>
-                </Grid>
-
-                <Grid>
-                    <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-                        <BoolSetting label={t('editor.include_chords')} checked={config.wantChords} onChange={(v) => updateConfig({ wantChords: v })} />
-                        <BoolSetting
-                            label={t('editor.include_front_page')}
-                            checked={config.includeFrontPage}
-                            onChange={(v) => updateConfig({ includeFrontPage: v })}
-                        />
-                        <BoolSetting label={t('editor.include_capo')} checked={config.includeCapo} onChange={(v) => updateConfig({ includeCapo: v })} />
-                        <BoolSetting
-                            label={t('editor.include_tran_title')}
-                            checked={config.includeTranslationSource}
-                            onChange={(v) => updateConfig({ includeTranslationSource: v })}
-                        />
-                        <BoolSetting
-                            label={t('editor.include_source_numbers')}
-                            checked={config.includeSources}
-                            onChange={(v) => updateConfig({ includeSources: v })}
-                        />
-                        <BoolSetting
-                            label={t('editor.include_trans_index')}
-                            checked={config.includeTranslationSourceIndex}
-                            onChange={(v) => updateConfig({ includeTranslationSourceIndex: v })}
-                        />
-                        <BoolSetting
-                            label={t('editor.include_key_index')}
-                            checked={config.includeKeyIndex}
-                            onChange={(v) => updateConfig({ includeKeyIndex: v })}
-                        />
-                        <BoolSetting label={t('editor.include_albums')} checked={config.includeAlbums} onChange={(v) => updateConfig({ includeAlbums: v })} />
-                        <BoolSetting label={t('editor.include_sref')} checked={config.includeSrefs} onChange={(v) => updateConfig({ includeSrefs: v })} />
-                        <BoolSetting label={t('editor.include_author')} checked={config.includeAuthors} onChange={(v) => updateConfig({ includeAuthors: v })} />
-                        <BoolSetting label={t('editor.include_id')} checked={config.includeId} onChange={(v) => updateConfig({ includeId: v })} />
-                    </Box>
-                </Grid>
-
-                <Grid>
-                    <Box sx={{ position: 'relative' }}>
+                <Grid size={{ xs: 12, md: 7 }}>
+                    <Box
+                        sx={{
+                            position: 'relative',
+                            height: { xs: 'auto', md: 'calc(100dvh - 130px)' },
+                        }}
+                    >
                         <iframe
                             ref={iframeRef}
                             id="songbook-viewer-iframe"
                             src="songbook-viewer.html"
                             title={t('print-songbook')}
-                            style={{ width: '100%', minHeight: '70vh', border: `1px solid ${theme.palette.border.main}` }}
+                            style={{
+                                width: '100%',
+                                height: '100%',
+                                minHeight: '70vh',
+                                border: `1px solid ${theme.palette.border.main}`,
+                            }}
                             onLoad={() => setIframeReady(true)}
                         />
                         {!baseData && (
@@ -350,7 +386,7 @@ export const PagePrintSongbook = ({ set_id }: PagePrintSongbookProps) => {
                     </Box>
                 </Grid>
             </Grid>
-        </ThinPage>
+        </Box>
     );
 };
 
