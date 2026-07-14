@@ -14,8 +14,8 @@ export const on_dbload_failed = new Subject<void>();
 // These resolved via db-init.js function, but this is needed to avoid some
 // issues with circular dependencies causing load issues in the chrome build.
 
-export let [db_available_deferred, DB_AVAILABLE] = deferred_promise<CommonDB<any>>(); // DB object is available but may not be populated
-export let [db_deferred, DB] = deferred_promise<CommonDB<any>>(); // fully populated and ready to go
+export let [db_available_deferred, DB_AVAILABLE] = deferred_promise<CommonDB<unknown>>(); // DB object is available but may not be populated
+export let [db_deferred, DB] = deferred_promise<CommonDB<unknown>>(); // fully populated and ready to go
 
 // Called when switching to a new database type either at startup or
 export function reset_db_fns() {

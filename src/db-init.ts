@@ -29,7 +29,7 @@ async function _init_db() {
     await switch_db_api();
 }
 
-export async function switch_db_api(try_offline_db?: boolean, save_setting?: boolean): Promise<CommonDB<any>> {
+export async function switch_db_api(try_offline_db?: boolean, save_setting?: boolean): Promise<CommonDB<unknown>> {
     // Reset the database promises to allow switching
     if (save_setting) {
         reset_db_fns();
@@ -48,7 +48,7 @@ export async function switch_db_api(try_offline_db?: boolean, save_setting?: boo
 
     let db_load_errs = '';
 
-    let DB_API: CommonDB<any> | undefined;
+    let DB_API: CommonDB<unknown> | undefined;
     if (try_offline_db) {
         if (!DB_API && supports_cordova_sqlite) {
             try {

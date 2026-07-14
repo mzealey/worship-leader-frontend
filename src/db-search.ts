@@ -261,7 +261,7 @@ interface DBSearchState {
 
 export class DBSearch {
     filters: DBFilters;
-    db: CommonDB<any>;
+    db: CommonDB<unknown>;
     state = new Subject<DBSearchState>();
     search!: Promise<string>;
     prepared_query!: Promise<unknown>;
@@ -269,7 +269,7 @@ export class DBSearch {
     pager: Pager = new Pager();
     private _pager_timeout?: ReturnType<typeof setTimeout>;
 
-    constructor(db: CommonDB<any>) {
+    constructor(db: CommonDB<unknown>) {
         this.filters = get_filters(); // Cache original filters to send with feedback details
         this.db = db;
         this.query_validity = this.db.query_validity();
@@ -285,7 +285,7 @@ export class DBSearch {
     }
 
     // Is a new query needed on the given page for the specified db type?
-    isEqual(cur_db: CommonDB<any>): boolean {
+    isEqual(cur_db: CommonDB<unknown>): boolean {
         return cur_db.query_validity() == this.query_validity && isEqual(get_filters(), this.filters);
     }
 
@@ -311,20 +311,20 @@ export class DBSearch {
         let promise = Promise.all([this.search, this.prepared_query])
             .then(([search, prepared_query]) => {
                 const start_ts = Date.now();
-                const promises: Promise<any>[] = [
-                    this.db._run_search(prepared_query, requested_items).then((ret) => {
-                        time_taken = Date.now() - start_ts;
-                        this.db.add_timing_stat(time_taken);
-                        return ret;
-                    }),
-                ];
-                if (requested_items.start == 0 && search.length && !this.filters.source_id && !this.filters.album_id)
-                    promises.push(this.db.search_meta(this.filters));
+                const songPromise = this.db._run_search(prepared_query, requested_items).then((ret) => {
+                    time_taken = Date.now() - start_ts;
+                    this.db.add_timing_stat(time_taken);
+                    return ret;
+                });
 
-                return Promise.all(promises);
+                let metaPromise: Promise<(SongSource | Album)[] | undefined> = Promise.resolve(undefined);
+                if (requested_items.start == 0 && search.length && !this.filters.source_id && !this.filters.album_id)
+                    metaPromise = this.db.search_meta(this.filters);
+
+                return Promise.all([songPromise, metaPromise]);
             })
             .then(([songs, meta]) => {
-                const song_list: (SongShortData | SongSource | Album)[] = [].concat(songs.data);
+                const song_list: (SongShortData | SongSource | Album)[] = songs.data.slice();
 
                 // If we had the 1 extra row then throw it away - just shows we
                 // can go onto the next page.

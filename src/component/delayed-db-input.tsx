@@ -63,7 +63,7 @@ interface DelayedDBInputProps extends Omit<InputProps, 'onChange'> {
     immediateOnChange?: (_input: string) => boolean;
     onChange: (_input: string) => void;
     inputRef?: Ref<HTMLInputElement>;
-    input?: ComponentType<any>;
+    input?: ComponentType<SearchInputProps>;
     value?: string;
 }
 

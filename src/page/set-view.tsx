@@ -192,7 +192,7 @@ export const PageSetView = ({ set_id }: PageSetViewProps) => {
                 set={set}
                 onSortEnd={(oldIndex, newIndex) => {
                     // Have to update a new copy of the array...
-                    const newSongs = ([] as any[]).concat(songs);
+                    const newSongs = [...(songs || [])];
                     newSongs.splice(newIndex, 0, newSongs.splice(oldIndex, 1)[0]);
                     SET_DB.update_set_db_order(
                         set.id,

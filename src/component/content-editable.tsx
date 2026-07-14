@@ -37,10 +37,10 @@ export const ContentEditable = ({ content, onChange, autofocus }: ContentEditabl
     const onPaste = (e: React.ClipboardEvent) => {
         let text = '';
 
-        if (e.clipboardData || (e as any).originalEvent?.clipboardData) {
-            text = ((e as any).originalEvent || e).clipboardData.getData('text/plain');
-        } else if ((window as any).clipboardData) {
-            text = (window as any).clipboardData.getData('Text');
+        if (e.clipboardData) {
+            text = e.clipboardData.getData('text/plain');
+        } else if (window.clipboardData) {
+            text = window.clipboardData.getData('Text');
         }
 
         ['insertText', 'paste'].forEach((fn) => {

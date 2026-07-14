@@ -9,9 +9,9 @@ import { is_cordova } from './util';
  */
 export function handlePrint(onAfterPrint?: () => void, prepareForPrint?: () => boolean): void {
     const actualPrint = () => {
-        if (is_cordova() && (window as any).cordova?.plugins?.printer) {
+        if (is_cordova() && window.cordova?.plugins?.printer) {
             // Cordova webviews don't support printing natively so we need to use a plugin
-            (window as any).cordova.plugins.printer.print('', {}, (res: boolean) => {
+            window.cordova.plugins.printer.print('', {}, (res: boolean) => {
                 if (res && onAfterPrint) {
                     onAfterPrint();
                 }

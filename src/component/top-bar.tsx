@@ -1,4 +1,5 @@
 import { AppBar, Box, IconButton, Popover, Toolbar, Typography } from '@mui/material';
+import type { Theme } from '@mui/material/styles';
 import type { ReactNode } from 'react';
 import { Fragment, useEffect, useState } from 'react';
 import { useTranslation } from '../langpack';
@@ -10,7 +11,7 @@ interface MenuButtonProps {
 
 function MenuButton({ children }: MenuButtonProps) {
     const [show, setShow] = useState(false);
-    const [anchorEl, setAnchorEl] = useState<any>(null);
+    const [anchorEl, setAnchorEl] = useState<Element | null>(null);
 
     const on_click = (event: React.MouseEvent) => {
         setShow(!show);
@@ -54,7 +55,7 @@ interface TopBarProps {
     documentTitle?: string;
     title?: ReactNode | string;
     children?: ReactNode;
-    sx?: Record<string, unknown> | ((theme: any) => Record<string, unknown>);
+    sx?: Record<string, unknown> | ((theme: Theme) => Record<string, unknown>);
 }
 
 export function TopBar({ sx, noMenu, className, menuOnly, before, documentTitle, title, children }: TopBarProps) {

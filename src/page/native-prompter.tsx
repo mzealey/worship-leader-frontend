@@ -7,6 +7,11 @@ import { get_app_dl_link, should_show_prompt } from '../platform-utils';
 import { is_bot } from '../splash-util.es5';
 import { useDialog } from '../use-dialog';
 
+interface BeforeInstallPromptEvent extends Event {
+    prompt: () => Promise<void>;
+    userChoice: Promise<{ outcome: 'accepted' | 'dismissed'; platform: string }>;
+}
+
 interface PromptConfig {
     href?: string;
     target?: string;
@@ -43,7 +48,8 @@ export const PageNativePrompter = ({ onClose }: { onClose?: () => void }) => {
             setPrompt({ ...link, component: 'a', onClick: handleClose });
         } else {
             // No native app available - prompt the PWA install
-            const handleBeforeInstallPrompt = (pwa_prompt: Event & { prompt?: () => void; userChoice?: Promise<any> }) => {
+            const handleBeforeInstallPrompt = (e: Event) => {
+                const pwa_prompt = e as BeforeInstallPromptEvent;
                 // Prevent Chrome 67 and earlier from automatically showing the prompt
                 pwa_prompt.preventDefault();
 

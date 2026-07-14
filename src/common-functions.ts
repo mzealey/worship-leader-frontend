@@ -11,7 +11,7 @@ window.is_rtl = is_rtl;
 window.is_vertical = is_vertical;
 window.add_chord_zwjs = add_chord_zwjs;
 window.songxml_to_divs = songxml_to_divs;
-window.format_html_chords = (elem: any) => format_html_chords(elem[0]); // jquery item
+window.format_html_chords = ((elem: { 0: HTMLElement }) => format_html_chords(elem[0])) as typeof window.format_html_chords; // jquery item
 window.convert_to_elvanto = convert_to_elvanto;
 window.convert_to_pre = convert_to_pre;
 window.SORT_TITLE_SORT = SORT_TITLE_SORT;
@@ -20,7 +20,7 @@ window.unidecode = unidecode;
 
 window.HOST = API_HOST;
 
-// Legacy string formatting hack
+// Legacy string formatting hack for the editor
 (String.prototype as any).format = function (...arg: unknown[]) {
     return format_string(this as unknown as string, ...arg);
 };

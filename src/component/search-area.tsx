@@ -34,7 +34,7 @@ function SearchAreaBase(props: SearchAreaProps) {
 
     const [cur_value, setCurValue] = useState('');
     const [show_dropdown, setShowDropdown] = useState(false);
-    const [redirect, setRedirect] = useState<any>(undefined);
+    const [redirect, setRedirect] = useState<{ to: string } | undefined>(undefined);
 
     useEffect(() => {
         setCurValue(search || '');
