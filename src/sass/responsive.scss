@@ -2,7 +2,6 @@
     .song-and-details {
         display: flex;
         flex-wrap: wrap-reverse;
-        overflow-x: hidden;
 
         // Setting width on these sections seems to work better than using flex-basis
         > .songs {
