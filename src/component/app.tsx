@@ -1,5 +1,5 @@
 import { GlobalStyles } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { lazy, Suspense, useEffect, useState } from 'react';
 import { HashRouter, Navigate, Route, Routes, useParams, useSearchParams } from 'react-router-dom';
 import LANGPACK_INDEX from '../../langpack/index.json';
 import { Spinner } from '../component/lock-screen';
@@ -8,16 +8,6 @@ import { get_db_chosen_langs, save_db_chosen_langs } from '../db/common';
 import { is_firsttime } from '../globals';
 import { get_app_languages } from '../langdetect.es5';
 import { useAppLang } from '../langpack';
-import { PageDbLangs } from '../page/db-langs';
-import { PageEditTextarea } from '../page/edit';
-import { PageFirsttimeWelcome } from '../page/firsttime-welcome';
-import { PageList } from '../page/list';
-import { PageNativePrompter } from '../page/native-prompter';
-import { PagePrintSongbook } from '../page/page-print-songbook';
-import { PageSetList } from '../page/set-list';
-import { PageSetView } from '../page/set-view';
-import { PageSettings } from '../page/settings';
-import { PageSongInfo } from '../page/songinfo';
 import type { CreateSetOptions } from '../set';
 import { create_set_from_url } from '../set';
 import { get_default_db_languages } from '../song-languages';
@@ -26,19 +16,42 @@ import { deferred_promise } from '../util';
 import { GATracker } from './analytics';
 import { PagesContainer } from './container';
 
+const LazyPageFirsttimeWelcome = lazy(() => import('../page/firsttime-welcome').then((m) => ({ default: m.PageFirsttimeWelcome })));
+const LazyPageDbLangs = lazy(() => import('../page/db-langs').then((m) => ({ default: m.PageDbLangs })));
+const LazyPageSongInfo = lazy(() => import('../page/songinfo').then((m) => ({ default: m.PageSongInfo })));
+const LazyPageSetView = lazy(() => import('../page/set-view').then((m) => ({ default: m.PageSetView })));
+const LazyPagePrintSongbook = lazy(() => import('../page/page-print-songbook').then((m) => ({ default: m.PagePrintSongbook })));
+const LazyPageSetList = lazy(() => import('../page/set-list').then((m) => ({ default: m.PageSetList })));
+const LazyPageSettings = lazy(() => import('../page/settings').then((m) => ({ default: m.PageSettings })));
+const LazyPageEditTextarea = lazy(() => import('../page/edit').then((m) => ({ default: m.PageEditTextarea })));
+const LazyPageNativePrompter = lazy(() => import('../page/native-prompter').then((m) => ({ default: m.PageNativePrompter })));
+const LazyPageList = lazy(() => import('../page/list').then((m) => ({ default: m.PageList })));
+
 function PageSongInfoWrapper() {
     const { song_id, set_id } = useParams();
-    return <PageSongInfo requested_song_id={song_id ? parseInt(song_id) : undefined} set_id={set_id ? parseInt(set_id) : undefined} />;
+    return (
+        <Suspense fallback={<Spinner />}>
+            <LazyPageSongInfo requested_song_id={song_id ? parseInt(song_id) : undefined} set_id={set_id ? parseInt(set_id) : undefined} />
+        </Suspense>
+    );
 }
 
 function PageSetViewWrapper() {
     const { set_id } = useParams();
-    return <PageSetView set_id={set_id ? parseInt(set_id) : 0} />;
+    return (
+        <Suspense fallback={<Spinner />}>
+            <LazyPageSetView set_id={set_id ? parseInt(set_id) : 0} />
+        </Suspense>
+    );
 }
 
 function PagePrintSongbookWrapper() {
     const { set_id } = useParams();
-    return <PagePrintSongbook set_id={set_id ? parseInt(set_id) : 0} />;
+    return (
+        <Suspense fallback={<Spinner />}>
+            <LazyPagePrintSongbook set_id={set_id ? parseInt(set_id) : 0} />
+        </Suspense>
+    );
 }
 
 function OldSongInfo() {
@@ -163,8 +176,11 @@ export const App = () => {
     // appropriate page without modifying the hash at the correct times.
     // Once all startup is done then we can go into the router.
     if (appState == AppState.FirsttimeScreenRequired) {
-        // TODO: Remove this _deferred and figure out proper signalling
-        return <PageFirsttimeWelcome onComplete={() => firsttime_shown_deferred.resolve()} />;
+        return (
+            <Suspense fallback={<Spinner />}>
+                <LazyPageFirsttimeWelcome onComplete={() => firsttime_shown_deferred.resolve()} />
+            </Suspense>
+        );
     }
 
     if (appState < AppState.DbInitialized) {
@@ -172,7 +188,11 @@ export const App = () => {
     }
 
     if (appState == AppState.NeedsLanguageSelection) {
-        return <PageDbLangs onClose={() => setAppState(AppState.Running)} />;
+        return (
+            <Suspense fallback={<Spinner />}>
+                <LazyPageDbLangs onClose={() => setAppState(AppState.Running)} />
+            </Suspense>
+        );
     }
 
     if (appState != AppState.Running) {
@@ -224,20 +244,57 @@ export const App = () => {
             />
             <HashRouter>
                 <GATracker>
-                    <PageNativePrompter />
+                    <Suspense fallback={null}>
+                        <LazyPageNativePrompter />
+                    </Suspense>
 
                     <PagesContainer>
                         <Routes>
-                            <Route path="/" element={<PageList />} />
-                            <Route path="/page-list" element={<PageList />} />
+                            <Route
+                                path="/"
+                                element={
+                                    <Suspense fallback={<Spinner />}>
+                                        <LazyPageList />
+                                    </Suspense>
+                                }
+                            />
+                            <Route
+                                path="/page-list"
+                                element={
+                                    <Suspense fallback={<Spinner />}>
+                                        <LazyPageList />
+                                    </Suspense>
+                                }
+                            />
                             <Route path="/song/:song_id" element={<PageSongInfoWrapper />} />
                             <Route path="/song/:song_id/:set_id" element={<PageSongInfoWrapper />} />
 
-                            <Route path="/settings" element={<PageSettings />} />
-                            <Route path="/set-list" element={<PageSetList />} />
+                            <Route
+                                path="/settings"
+                                element={
+                                    <Suspense fallback={<Spinner />}>
+                                        <LazyPageSettings />
+                                    </Suspense>
+                                }
+                            />
+                            <Route
+                                path="/set-list"
+                                element={
+                                    <Suspense fallback={<Spinner />}>
+                                        <LazyPageSetList />
+                                    </Suspense>
+                                }
+                            />
                             <Route path="/set-view/:set_id" element={<PageSetViewWrapper />} />
                             <Route path="/print-songbook/:set_id" element={<PagePrintSongbookWrapper />} />
-                            <Route path="/add-song" element={<PageEditTextarea type="new" />} />
+                            <Route
+                                path="/add-song"
+                                element={
+                                    <Suspense fallback={<Spinner />}>
+                                        <LazyPageEditTextarea type="new" />
+                                    </Suspense>
+                                }
+                            />
 
                             {/* Handle legacy routes shared from jqm */}
                             <Route path="/songinfo" element={<OldSongInfo />} />

@@ -1,17 +1,18 @@
 import { Box, Button, ButtonGroup, useTheme } from '@mui/material';
 import type { ComponentType, ReactElement } from 'react';
-import { Fragment, useEffect, useState } from 'react';
+import { Fragment, lazy, Suspense, useEffect, useState } from 'react';
 import { useLocation } from 'react-router';
 import { create } from 'zustand';
 import { match_media_watcher } from '../globals';
 import { useTranslation } from '../langpack';
 import { usePagePadding } from '../page-padding';
-import { PageEditTextarea } from '../page/edit';
 import { Link } from '../preact-helpers';
 import * as Icon from './icons';
 import { Theme } from './theme';
 
 import type { SvgIconProps } from '@mui/material/SvgIcon';
+
+const LazyPageEditTextarea = lazy(() => import('../page/edit').then((m) => ({ default: m.PageEditTextarea })));
 
 export interface LastButtonHandlerComponent {
     icon: ComponentType<SvgIconProps>;
@@ -91,7 +92,11 @@ export interface PagesContainerProps {
 const defaultLastButtonHandler: LastButtonHandlerComponent = {
     icon: Icon.NewSong,
     title: 'newbtn',
-    component: (props: Record<string, unknown>) => <PageEditTextarea type="new" {...props} />,
+    component: (props: Record<string, unknown>) => (
+        <Suspense>
+            <LazyPageEditTextarea type="new" {...props} />
+        </Suspense>
+    ),
 };
 
 export function PagesContainer({ children }: PagesContainerProps) {

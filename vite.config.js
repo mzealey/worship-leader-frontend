@@ -208,15 +208,27 @@ export default defineConfig(({ command, mode }) => {
 
         config.build.rollupOptions = {
             output: {
+                manualChunks(id) {
+                    if (id.includes('node_modules/@mui/') || id.includes('node_modules/@emotion/')) return 'vendor-mui';
+                    if (id.includes('node_modules/react/') || id.includes('node_modules/react-dom/') || id.includes('node_modules/react-router/'))
+                        return 'vendor-react';
+                    if (id.includes('node_modules/@dnd-kit/')) return 'vendor-dnd';
+                    if (id.includes('node_modules/zustand/')) return 'vendor-zustand';
+                    if (id.includes('node_modules/rxjs/')) return 'vendor-rxjs';
+                },
                 assetFileNames: ({ names, originalFileNames }) => {
-                    //console.log('originalFileNames', originalFileNames, names);
                     if (originalFileNames.length == 1) {
-                        // Things that we don't want to rename and want to retain paths for
                         if (originalFileNames[0].endsWith('.wasm')) return originalFileNames[0];
                         else if (/^fonts\//.test(originalFileNames[0])) return originalFileNames[0];
                     }
                     return 'assets/[name]-[hash][extname]';
                 },
+            },
+        };
+
+        config.build.rolldownOptions = {
+            output: {
+                codeSplitting: true,
             },
         };
     }

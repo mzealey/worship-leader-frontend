@@ -359,6 +359,7 @@ const rerun_search = () => {
 };
 useSearchStore.subscribe(rerun_search);
 on_db_languages_update.subscribe(rerun_search);
+rerun_search();
 
 // Define the props that can be passed to SongList from outside
 type ScrollContainer = HTMLElement | Document | null;
