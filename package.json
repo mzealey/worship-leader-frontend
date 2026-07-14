@@ -56,7 +56,6 @@
     "@mdi/js": "^7.4.47",
     "@mui/icons-material": "^9.2.0",
     "@mui/material": "^9.2.0",
-    "@mui/styles": "^6.4.8",
     "caniuse-lite": "^1.0.30001805",
     "comlink": "^4.4.2",
     "core-js": "^3.49.0",

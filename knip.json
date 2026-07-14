@@ -30,7 +30,6 @@
         "core-js",
         "@eslint/js",
         "clsx",
-        "@mui/styles",
         "eslint-plugin-import",
         "vite-plugin-compression"
       ],
