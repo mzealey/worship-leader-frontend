@@ -520,4 +520,30 @@ describe('EventSocket', () => {
             expect(ws.sentMessages.length).toBeGreaterThan(firstSendCount);
         });
     });
+
+    describe('_ws_send edge cases', () => {
+        it('does nothing when websocket is not available', async () => {
+            const eventSocket = await createEventSocket();
+            // Don't connect the websocket, just call _ws_send
+            expect(() => (eventSocket as any)._ws_send([[1, 0, 'test']])).not.toThrow();
+        });
+    });
+
+    describe('_generate_pubsub_to_send', () => {
+        it('includes subscribed channels', async () => {
+            const eventSocket = await createEventSocket();
+            eventSocket.register_listener('channel-a', vi.fn());
+
+            const events = (eventSocket as any)._generate_pubsub_to_send() as unknown[][];
+            const channelEvent = events.find((e) => e[2] === '_sub' && (e[3] as string[])[0] === 'channel-a');
+            expect(channelEvent).toBeDefined();
+        });
+
+        it('returns empty array when no listeners', async () => {
+            const eventSocket = await createEventSocket();
+
+            const events = (eventSocket as any)._generate_pubsub_to_send();
+            expect(events).toEqual([]);
+        });
+    });
 });

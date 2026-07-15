@@ -152,4 +152,14 @@ describe('settings-store', function () {
             expect(freshMod.getSetting('display-chords')).toBe(false);
         });
     });
+
+    describe('update_poweron', function () {
+        it('is exported as a function', function () {
+            expect(typeof settingsStoreMod.update_poweron).toBe('function');
+        });
+
+        it('does nothing when not in cordova', function () {
+            expect(() => settingsStoreMod.update_poweron()).not.toThrow();
+        });
+    });
 });

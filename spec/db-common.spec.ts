@@ -274,14 +274,76 @@ describe('db/common utility functions', function () {
                 expect(result).toContainEqual({ id: 2, not_loaded: 1 });
             });
 
-            it('does not add missing IDs when include_empties is false', async function () {
-                (db._get_songs as any).mockResolvedValue([{ id: 1, title: 'Song 1' }]);
+                it('does not add missing IDs when include_empties is false', async function () {
+                    (db._get_songs as any).mockResolvedValue([{ id: 1, title: 'Song 1' }]);
 
-                const result = await db.get_songs([1, 2, 3], false, false);
+                    const result = await db.get_songs([1, 2, 3], false, false);
 
-                expect(result).toHaveLength(1);
-                expect(result).toContainEqual({ id: 1, title: 'Song 1' });
+                    expect(result).toHaveLength(1);
+                    expect(result).toContainEqual({ id: 1, title: 'Song 1' });
+                });
             });
-        });
+
+            describe('search_meta', function () {
+                it('returns sorted albums and sources', async function () {
+                    db._search_meta = vi.fn().mockResolvedValue({
+                        albums: [{ id: 1, title: 'Album B' }, { id: 2, title: 'Album A' }],
+                        sources: [{ id: 1, name: 'Source Z' }, { id: 2, name: 'Source A' }],
+                    });
+
+                    const result = await db.search_meta({} as any);
+
+                    expect(result.length).toBe(4);
+                    expect(result[0]).toMatchObject({ title: 'Album A', _type: 'album' });
+                    expect(result[3]).toMatchObject({ name: 'Source Z', _type: 'song_source' });
+                });
+
+                it('returns empty array on error', async function () {
+                    db._search_meta = vi.fn().mockRejectedValue(new Error('Search failed'));
+
+                    const result = await db.search_meta({} as any);
+
+                    expect(result).toEqual([]);
+                });
+            });
+
+            describe('search', function () {
+                it('delegates to _prepare_query and _run_search', async function () {
+                    const mockQuery = { prepared: true };
+                    db._prepare_query = vi.fn().mockReturnValue(mockQuery);
+                    db._run_search = vi.fn().mockResolvedValue({ data: [{ id: 1 }], total: 1 });
+
+                    const result = await db.search({} as any, { start: 0, size: 10 });
+
+                    expect(db._prepare_query).toHaveBeenCalledWith({});
+                    expect(db._run_search).toHaveBeenCalledWith(mockQuery, { start: 0, size: 10 });
+                    expect(result.data).toEqual([{ id: 1 }]);
+                    expect(result.total).toBe(1);
+                });
+            });
+
+            describe('initialize_db and populate_db', function () {
+                it('initialize_db resolves db_initialized promise', async function () {
+                    db._initialize_db = vi.fn().mockResolvedValue(undefined);
+
+                    await db.initialize_db();
+
+                    expect(db._initialize_db).toHaveBeenCalled();
+                    await expect(db.db_initialized).resolves.toBeUndefined();
+                });
+
+                it('populate_db resolves db_populated promise', async function () {
+                    db.has_any_songs = vi.fn().mockResolvedValue(false);
+                    db._populate_db = vi.fn().mockResolvedValue(undefined);
+
+                    // We need db_initialized to be resolved first
+                    db._db_initialized.resolve();
+
+                    await db.populate_db();
+
+                    expect(db._populate_db).toHaveBeenCalled();
+                    await expect(db.db_populated).resolves.toBeUndefined();
+                });
+            });
     });
 });

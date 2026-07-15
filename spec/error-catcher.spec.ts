@@ -186,4 +186,17 @@ describe('error-catcher', () => {
         expect(console.error).toHaveBeenCalled();
         expect(mocks.sendReport).not.toHaveBeenCalled();
     });
+
+    it('sends report without StackTrace when no error_obj', async () => {
+        errorCatcherMod.send_error_report('test_type', undefined);
+
+        await new Promise((resolve) => setTimeout(resolve, 10));
+
+        expect(mocks.sendReport).toHaveBeenCalledWith(
+            expect.objectContaining({
+                type: 'test_type',
+                v: '1.0.0',
+            }),
+        );
+    });
 });

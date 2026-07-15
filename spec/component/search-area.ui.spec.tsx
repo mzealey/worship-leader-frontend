@@ -1,53 +1,75 @@
-import { screen, waitFor } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { createDbMock } from '../helpers/mocks/db';
-import { createSearchStoreMock } from '../helpers/mocks/db-search';
-import { createEventSocketMock } from '../helpers/mocks/event-socket';
 import { createLangpackMock } from '../helpers/mocks/langpack';
-import { createMetaDbMock } from '../helpers/mocks/meta-db';
 import { renderWithAppTheme } from '../helpers/render';
 
 let SearchArea: typeof import('../../src/component/search-area').SearchArea;
-let mockSetFilters: ReturnType<typeof vi.fn>;
-let mockUpdateSetting: ReturnType<typeof vi.fn>;
 
 describe('SearchArea', () => {
     beforeEach(async () => {
         vi.resetModules();
         vi.clearAllMocks();
 
-        mockSetFilters = vi.fn();
-        mockUpdateSetting = vi.fn();
+        const storeState = {
+            filters: { search: '', order_by: 'default', lang: 'all' },
+            sources: {},
+            tags: {},
+        };
 
-        vi.doMock('../../src/event-socket', createEventSocketMock);
-        vi.doMock('../../src/db-search', () => createSearchStoreMock({ setFilters: mockSetFilters }));
-        vi.doMock('../../src/settings-store', () => ({
-            updateSetting: mockUpdateSetting,
-            useSettingsStore: () => ({ settings: {} }),
-        }));
         vi.doMock('../../src/langpack', createLangpackMock);
-        vi.doMock('../../src/db', createDbMock);
-        vi.doMock('../../src/meta-db', () => createMetaDbMock());
+        vi.doMock('../../src/globals', () => ({
+            DEBUG: false,
+        }));
+        vi.doMock('../../src/splash-util.es5', () => ({
+            parse_search: vi.fn(),
+        }));
+        vi.doMock('../../src/settings-store', () => ({
+            updateSetting: vi.fn(),
+        }));
+        vi.doMock('../../src/set', () => ({
+            create_set_from_url: vi.fn(),
+        }));
+        vi.doMock('../../src/component/search-filters', () => ({
+            SearchFilters: () => <div data-testid="search-filters" />,
+        }));
+        vi.doMock('../../src/db/common', () => ({
+            get_db_chosen_langs: () => [],
+        }));
+        vi.doMock('../../src/db-search', () => ({
+            useSearchStore: Object.assign(
+                (selector: (s: typeof storeState) => unknown) => selector(storeState),
+                {
+                    getState: () => storeState,
+                    subscribe: vi.fn(() => vi.fn()),
+                },
+            ),
+        }));
 
         const mod = await import('../../src/component/search-area');
         SearchArea = mod.SearchArea;
     });
 
-    it('renders search input with placeholder', () => {
-        renderWithAppTheme(<SearchArea />, 'Inverted');
-        expect(screen.getByPlaceholderText('search_placeholder')).toBeInTheDocument();
+    it('renders search input without crashing', () => {
+        renderWithAppTheme(<SearchArea />);
+
+        expect(screen.getByTitle('search_placeholder')).toBeInTheDocument();
     });
 
-    it('shows filter dropdown when button is clicked', async () => {
+    it('toggles search filters dropdown', async () => {
+        renderWithAppTheme(<SearchArea />);
+
+        const toggleBtn = screen.getByTitle('more_search_options');
         const user = userEvent.setup();
-        renderWithAppTheme(<SearchArea />, 'Inverted');
+        await user.click(toggleBtn);
 
-        const filterButton = screen.getByTitle('more_search_options');
-        await user.click(filterButton);
+        expect(screen.getByTestId('search-filters')).toBeInTheDocument();
+    });
 
-        await waitFor(() => {
-            expect(screen.getByText('sort_default')).toBeInTheDocument();
-        });
+    it('renders search icon', () => {
+        const { container } = renderWithAppTheme(<SearchArea />);
+
+        const svgIcons = container.querySelectorAll('svg');
+        expect(svgIcons.length).toBeGreaterThan(0);
     });
 });

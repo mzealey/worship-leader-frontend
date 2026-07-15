@@ -4,7 +4,7 @@ import Cookies from 'js-cookie';
 // in-memory) as some browsers notably safari mobile in private mode don't
 // allow use of localStorage.
 
-abstract class PerstentStorageCommon {
+export abstract class PerstentStorageCommon {
     // base class
     abstract type(): string;
     abstract set(key: string, val: string): void;
@@ -27,7 +27,7 @@ abstract class PerstentStorageCommon {
 
 type StorageObject = unknown;
 
-class PersistentStorageCookie extends PerstentStorageCommon {
+export class PersistentStorageCookie extends PerstentStorageCommon {
     type() {
         return 'cookie';
     }
@@ -47,7 +47,7 @@ class PersistentStorageCookie extends PerstentStorageCommon {
     }
 }
 
-class PersistentStorageLocal extends PerstentStorageCommon {
+export class PersistentStorageLocal extends PerstentStorageCommon {
     type() {
         return 'localStorage';
     }
@@ -83,7 +83,7 @@ class PersistentStorageLocal extends PerstentStorageCommon {
     }
 }
 
-class PersistentStorageInMemory extends PerstentStorageCommon {
+export class PersistentStorageInMemory extends PerstentStorageCommon {
     mem: Record<string, string> = {};
 
     type() {

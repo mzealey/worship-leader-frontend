@@ -6,7 +6,7 @@ global.window = jsdom.window as unknown as Window & typeof globalThis;
 global.document = jsdom.window.document;
 global.Node = jsdom.window.Node;
 
-import { add_chord_zwjs, convert_to_elvanto, convert_to_pre, format_html_chords, songxml_to_divs } from '../src/songxml-util';
+import { add_chord_zwjs, convert_to_elvanto, convert_to_pre, format_html_chords, render_chord, songxml_to_divs, split_songxml_chords } from '../src/songxml-util';
 
 describe('songxml', function () {
     describe('convert_to_pre', function () {
@@ -262,6 +262,73 @@ describe('songxml', function () {
             expect(result).toBe(
                 '<div class="verse"><span class=\'word-with-chord\'><span class="chord"><span class="chord-inner">&#x202D;Am7</span></span>Test</span></div>',
             );
+        });
+    });
+
+    describe('split_songxml_chords', function () {
+        it('splits multiple chords in a single chord tag', function () {
+            const result = split_songxml_chords('<verse><chord>Am G C</chord>Test</verse>');
+            expect(result).toBe('<verse><chord>Am</chord><chord>G</chord><chord>C</chord>Test</verse>');
+        });
+
+        it('handles single chord without change', function () {
+            const result = split_songxml_chords('<verse><chord>Am</chord>Test</verse>');
+            expect(result).toBe('<verse><chord>Am</chord>Test</verse>');
+        });
+
+        it('strips LTR override characters from chord content', function () {
+            const result = split_songxml_chords('<verse><chord>Am\u202D G</chord>Test</verse>');
+            expect(result).toBe('<verse><chord>Am</chord><chord>G</chord>Test</verse>');
+        });
+
+        it('trims whitespace from chords', function () {
+            const result = split_songxml_chords('<verse><chord>  Am  G  </chord>Test</verse>');
+            expect(result).toBe('<verse><chord>Am</chord><chord>G</chord>Test</verse>');
+        });
+    });
+
+    describe('render_chord', function () {
+        it('converts b to flat symbol', function () {
+            const result = render_chord('Bb');
+            expect(result).toBe('\u202DB\u266D');
+        });
+
+        it('converts & to flat symbol', function () {
+            const result = render_chord('B&');
+            expect(result).toBe('\u202DB\u266D');
+        });
+
+        it('converts # to sharp symbol', function () {
+            const result = render_chord('F#');
+            expect(result).toBe('\u202DF\u266F');
+        });
+
+        it('adds LTR override character', function () {
+            const result = render_chord('Am');
+            expect(result).toBe('\u202DAm');
+        });
+    });
+
+    describe('format_html_chords with chord rendering', function () {
+        it('handles inline-progress class', () => {
+            const elem = document.createElement('div');
+            elem.classList.add('in-progress');
+            expect(() => format_html_chords(elem)).not.toThrow();
+        });
+
+        it('schedules chord rendering via setTimeout', () => {
+            vi.useFakeTimers();
+
+            const elem = document.createElement('div');
+            elem.innerHTML = '<span class="chord">Am</span>The rest';
+
+            format_html_chords(elem);
+            expect(elem.classList.contains('in-progress')).toBe(true);
+            expect(elem.classList.contains('rendered')).toBe(false);
+
+            vi.advanceTimersByTime(20);
+
+            vi.useRealTimers();
         });
     });
 });
