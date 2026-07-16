@@ -5,7 +5,7 @@ import { useAppLang } from './langpack';
 import { persistentStorage } from './persistent-storage.es5';
 
 export function setup_feedback_sender() {
-    const send_usage_time = eventSocket.add_queue('usage', 1, 0);
+    const send_usage_time = eventSocket.ensure_queue('usage', 1, 0);
 
     // Roughly track the amount of time the app has been used (in the foreground)
     let stored_track_time = persistentStorage.getObj<number>('usage-time', 0);
@@ -24,7 +24,7 @@ export function setup_feedback_sender() {
     // Send initial info about this app, give db and other systems like
     // app_lang time to init before sending this info
     DB_AVAILABLE.then((db) => {
-        const send_initial_data = eventSocket.add_queue('initial', 1, 0);
+        const send_initial_data = eventSocket.ensure_queue('initial', 1, 0);
         send_initial_data({
             ui: appLang,
             db: db.type(),

@@ -462,7 +462,7 @@ export const PageSongInfo: ComponentType<PageSongInfoProps> = ({ requested_song_
                                 {hide_sidebar ? <Icon.ListShow /> : <Icon.ListHide />}
                             </IconButton>
                         ) : (
-                            <IconButton color="primary" title={t('back')} component={Link} to="/">
+                            <IconButton nativeButton={false} color="primary" title={t('back')} component={Link} to="/">
                                 <Icon.Back />
                             </IconButton>
                         )

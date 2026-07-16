@@ -166,7 +166,7 @@ export const SetPrevNext = ({ song_id: _song_id, set_switcher }: { song_id: numb
     return (
         <Grid container sx={{ justifyContent: 'space-between', alignItems: 'center' }}>
             <Box sx={{ displayPrint: 'none', visibility: set_switcher.can_prev() ? 'visible' : 'hidden' }}>
-                <Button component={Link} to={`/song/${set_switcher.move(-1)}/${set_switcher.set_id}`}>
+                <Button nativeButton={false} component={Link} to={`/song/${set_switcher.move(-1)}/${set_switcher.set_id}`}>
                     {t('pager_prev')}
                 </Button>
             </Box>
@@ -178,7 +178,7 @@ export const SetPrevNext = ({ song_id: _song_id, set_switcher }: { song_id: numb
             </Box>
 
             <Box sx={{ displayPrint: 'none', visibility: set_switcher.can_next() ? 'visible' : 'hidden' }}>
-                <Button component={Link} to={`/song/${set_switcher.move(1)}/${set_switcher.set_id}`}>
+                <Button nativeButton={false} component={Link} to={`/song/${set_switcher.move(1)}/${set_switcher.set_id}`}>
                     {t('pager_next')}
                 </Button>
             </Box>
@@ -219,6 +219,7 @@ const PresentationMover: React.FC<PresentationMoverProps> = ({ set_switcher, exi
             />
             {set_switcher && set_switcher.can_prev() ? (
                 <IconButton
+                    nativeButton={false}
                     component={Link}
                     to={`/song/${set_switcher.move(-1)}/${set_switcher.set_id}`}
                     sx={(theme) => ({
@@ -235,6 +236,7 @@ const PresentationMover: React.FC<PresentationMoverProps> = ({ set_switcher, exi
             ) : null}
             {set_switcher && set_switcher.can_next() ? (
                 <IconButton
+                    nativeButton={false}
                     component={Link}
                     to={`/song/${set_switcher.move(1)}/${set_switcher.set_id}`}
                     sx={(theme) => ({
@@ -560,6 +562,7 @@ export const SongsDisplay = ({
                             <Box sx={{ mx: 1, displayPrint: 'none' }}>
                                 <Grid container>
                                     <IconButton
+                                        nativeButton={false}
                                         color="primary"
                                         size="small"
                                         component={Link}

@@ -16,6 +16,7 @@ export const ImageButton = memo(function ({ icon: Icon, size = 'small', children
     return (
         <Button
             size={size}
+            nativeButton={props.component ? false : undefined}
             sx={(theme) => ({
                 minHeight: theme.mixins.toolbar.height,
                 '& .icon': {

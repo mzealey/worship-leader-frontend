@@ -165,7 +165,7 @@ export const PageSetView = ({ set_id }: PageSetViewProps) => {
         <div>
             <TopBar
                 before={
-                    <IconButton color="inherit" title={t('back')} component={Link} to="/set-list" size="large">
+                    <IconButton nativeButton={false} color="inherit" title={t('back')} component={Link} to="/set-list" size="large">
                         <Icon.Back />
                     </IconButton>
                 }

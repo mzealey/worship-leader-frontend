@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { send_ui_notification } from './component/notification';
+import { send_ui_notification } from './component/notify';
 import { BUILD_TYPE, DEBUG } from './globals';
 import type { DBLangCode } from './lang-types';
 import { updateSetting } from './settings-store';

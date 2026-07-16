@@ -152,6 +152,7 @@ export const PageSharer = ({ url: propUrl, subject, title, file, onClose }: Page
                 <List>
                     <ListItem disablePadding>
                         <ListItemButton
+                            nativeButton={false}
                             component="a"
                             onClick={closeWithShare}
                             href={'mailto:?' + generate_search_params({ subject: displaySubject, body: displayUrl })}
@@ -166,6 +167,7 @@ export const PageSharer = ({ url: propUrl, subject, title, file, onClose }: Page
                     {is_mobile_browser() && (
                         <ListItem disablePadding>
                             <ListItemButton
+                                nativeButton={false}
                                 component="a"
                                 target="_blank"
                                 onClick={closeWithShare}
@@ -183,6 +185,7 @@ export const PageSharer = ({ url: propUrl, subject, title, file, onClose }: Page
 
                     <ListItem disablePadding>
                         <ListItemButton
+                            nativeButton={false}
                             component="a"
                             target="_blank"
                             onClick={closeWithShare}
@@ -198,7 +201,12 @@ export const PageSharer = ({ url: propUrl, subject, title, file, onClose }: Page
 
                     {is_mobile_browser() && (
                         <ListItem disablePadding>
-                            <ListItemButton component="a" onClick={closeWithShare} href={'sms:?' + generate_search_params({ body: urlAndMsg })}>
+                            <ListItemButton
+                                nativeButton={false}
+                                component="a"
+                                onClick={closeWithShare}
+                                href={'sms:?' + generate_search_params({ body: urlAndMsg })}
+                            >
                                 <ListItemIcon>
                                     <Icon.ShareSMS />
                                 </ListItemIcon>
@@ -208,6 +216,7 @@ export const PageSharer = ({ url: propUrl, subject, title, file, onClose }: Page
                     )}
                     <ListItem disablePadding>
                         <ListItemButton
+                            nativeButton={false}
                             component="a"
                             onClick={closeWithShare}
                             target="_blank"

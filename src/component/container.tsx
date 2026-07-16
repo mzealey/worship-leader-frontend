@@ -46,7 +46,7 @@ function TopButton({ children, to, ...props }: TopButtonProps) {
         buttonProps.color = 'primary';
     }
     return (
-        <Button component={Link} to={to} sx={{ mx: 1 }} {...buttonProps}>
+        <Button nativeButton={false} component={Link} to={to} sx={{ mx: 1 }} {...buttonProps}>
             {children}
         </Button>
     );
@@ -66,7 +66,7 @@ function BottomButton({ to, icon: ThisIcon, scaleSize = 1, ...props }: BottomBut
     if (to) buttonProps.component = Link;
 
     return (
-        <Button component={Link} to={to} {...buttonProps}>
+        <Button nativeButton={false} component={Link} to={to} {...buttonProps}>
             <Box
                 component={ThisIcon}
                 sx={{

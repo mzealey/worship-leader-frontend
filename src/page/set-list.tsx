@@ -54,7 +54,7 @@ const SetListItem = ({ withActions, set, ...props }: SetListItemProps) => {
             {showRename ? <PageSetRename set_id={set.id} onClose={() => setShowRename(false)} /> : null}
 
             <ListItem key={set.id} disablePadding>
-                <ListItemButton component={Link} to={`/set-view/${set.id}`} {...props}>
+                <ListItemButton nativeButton={false} component={Link} to={`/set-view/${set.id}`} {...props}>
                     <ListItemText
                         primary={
                             <span>

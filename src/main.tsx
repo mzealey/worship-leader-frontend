@@ -20,7 +20,12 @@ function update_usage_counter() {
     persistentStorage.setObj('uses', uses + 1);
 }
 
+let _main_setup_done = false;
+
 function main_setup() {
+    if (_main_setup_done) return;
+    _main_setup_done = true;
+
     /* TODO: Move all this stuff into react as context or similar */
     const setup_fns: (() => void)[] = [
         // Key init functions
@@ -49,8 +54,13 @@ function main_setup() {
     const elem = document.getElementById('app');
     if (!elem) throw new Error('Could not find app element');
 
-    elem.innerHTML = ''; // kill any prepopulated stuff
-    const root = createRoot(elem);
+    elem.innerHTML = '';
+
+    let root = (elem as Element & { _reactRoot?: ReturnType<typeof createRoot> })._reactRoot;
+    if (!root) {
+        root = createRoot(elem);
+        (elem as Element & { _reactRoot?: ReturnType<typeof createRoot> })._reactRoot = root;
+    }
 
     root.render(
         <ThemeApp>

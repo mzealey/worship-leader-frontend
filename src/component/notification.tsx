@@ -1,15 +1,8 @@
 import { Snackbar } from '@mui/material';
 import { useEffect, useRef, useState } from 'react';
-import { Subject } from 'rxjs';
 import { useTranslation } from '../langpack';
-
-interface UINotificationProps {
-    autoHideDuration?: number;
-    message_code: string; // Message key to be translated
-}
-
-const _ui_notifications = new Subject<UINotificationProps>();
-export const send_ui_notification = (notification: UINotificationProps) => _ui_notifications.next(notification);
+import type { UINotificationProps } from './notify';
+import { _ui_notifications } from './notify';
 
 interface NotificationProps {
     onClose: () => void;

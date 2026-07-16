@@ -247,6 +247,18 @@ class EventSocket {
     add_queue<T = EventData>(name: string, max_items = 100, max_age = -1): (item: T, dup_key?: DupKey) => void {
         if (this.queues[name]) throw new Error(`Queue ${name} already created`);
 
+        return this._add_queue<T>(name, max_items, max_age);
+    }
+
+    // Idempotent version that returns the existing queue if already created,
+    // rather than throwing. Useful when re-initialization may happen (e.g. HMR).
+    ensure_queue<T = EventData>(name: string, max_items = 100, max_age = -1): (item: T, dup_key?: DupKey) => void {
+        if (this.queues[name]) return (item: T, dup_key?: DupKey) => this._add_item(name, item, dup_key);
+
+        return this._add_queue<T>(name, max_items, max_age);
+    }
+
+    private _add_queue<T = EventData>(name: string, max_items: number, max_age: number): (item: T, dup_key?: DupKey) => void {
         const queue: QueueState<T> = {
             name,
             items: [],

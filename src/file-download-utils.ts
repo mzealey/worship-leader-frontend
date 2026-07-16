@@ -1,4 +1,4 @@
-import { send_ui_notification } from './component/notification';
+import { send_ui_notification } from './component/notify';
 import { file_feedback } from './feedback';
 import { get_client_type } from './globals';
 import { get_translation } from './langpack';

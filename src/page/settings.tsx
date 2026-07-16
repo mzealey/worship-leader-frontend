@@ -17,7 +17,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import { ImageButton, ThinPage } from '../component/basic';
 import { ChordColorPicker } from '../component/chord-color-picker';
 import * as Icon from '../component/icons';
-import { send_ui_notification } from '../component/notification';
+import { send_ui_notification } from '../component/notify';
 import { TopBar } from '../component/top-bar';
 import { UILanguageChooser } from '../component/uilanguagechooser';
 import * as dbModule from '../db';

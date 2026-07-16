@@ -4,7 +4,7 @@ import { Alert } from '../component/alert';
 import { DialogTitleWithClose } from '../component/basic';
 import { ContentEditable } from '../component/content-editable';
 import { LockScreen } from '../component/lock-screen';
-import { send_ui_notification } from '../component/notification';
+import { send_ui_notification } from '../component/notify';
 import { API_HOST, get_uuid } from '../globals';
 import { useTranslation } from '../langpack';
 import type { Song } from '../song';
