@@ -35,7 +35,7 @@ describe('notification', () => {
         });
 
         it('shows snackbar when notification is triggered', () => {
-            const { container } = renderWithProviders(<NotificationWidget />);
+            renderWithProviders(<NotificationWidget />);
 
             act(() => {
                 send_ui_notification({ message_code: 'hello_world', autoHideDuration: 2000 });

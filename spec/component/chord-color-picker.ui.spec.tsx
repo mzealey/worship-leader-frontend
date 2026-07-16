@@ -34,7 +34,7 @@ describe('ChordColorPicker', () => {
         const onOpen = vi.fn();
         const onClose = vi.fn();
 
-        const { container } = renderWithProviders(
+        renderWithProviders(
             <div>
                 <ChordColorPicker color="#000000" onChange={onChange} open={true} anchorEl={anchorEl} onOpen={onOpen} onClose={onClose} />
             </div>,
