@@ -6,7 +6,15 @@ global.window = jsdom.window as unknown as Window & typeof globalThis;
 global.document = jsdom.window.document;
 global.Node = jsdom.window.Node;
 
-import { add_chord_zwjs, convert_to_elvanto, convert_to_pre, format_html_chords, render_chord, songxml_to_divs, split_songxml_chords } from '../src/songxml-util';
+import {
+    add_chord_zwjs,
+    convert_to_elvanto,
+    convert_to_pre,
+    format_html_chords,
+    render_chord,
+    songxml_to_divs,
+    split_songxml_chords,
+} from '../src/songxml-util';
 
 describe('songxml', function () {
     describe('convert_to_pre', function () {

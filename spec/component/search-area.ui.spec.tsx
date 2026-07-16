@@ -37,13 +37,10 @@ describe('SearchArea', () => {
             get_db_chosen_langs: () => [],
         }));
         vi.doMock('../../src/db-search', () => ({
-            useSearchStore: Object.assign(
-                (selector: (s: typeof storeState) => unknown) => selector(storeState),
-                {
-                    getState: () => storeState,
-                    subscribe: vi.fn(() => vi.fn()),
-                },
-            ),
+            useSearchStore: Object.assign((selector: (s: typeof storeState) => unknown) => selector(storeState), {
+                getState: () => storeState,
+                subscribe: vi.fn(() => vi.fn()),
+            }),
         }));
 
         const mod = await import('../../src/component/search-area');

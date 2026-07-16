@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
-import { PersistentStorageInMemory, PersistentStorageCookie, persistentStorage } from '../src/persistent-storage.es5';
+import { PersistentStorageCookie, PersistentStorageInMemory, persistentStorage } from '../src/persistent-storage.es5';
 
 describe('persistentStorage', function () {
     beforeEach(() => {

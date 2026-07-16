@@ -6,6 +6,7 @@
     "src/component/song-list.tsx": ["exports"],
     "src/db-search.ts": ["exports"],
     "src/db/compressed-key-map.ts": ["exports"],
+    "src/persistent-storage.es5.ts": ["exports"],
     "src/file-download-utils.ts": ["exports", "types"],
     "src/page/set-list.tsx": ["exports"],
     "src/song.ts": ["types"],
