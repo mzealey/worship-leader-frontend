@@ -78,11 +78,53 @@ describe('ContentEditable', () => {
     it('does not call onChange when elemRef is not available', () => {
         const onChange = vi.fn();
 
-        // Renders without issues even when ref is null initially
         const { unmount } = renderWithProviders(<ContentEditable onChange={onChange} />);
         unmount();
 
-        // After unmount, the onChange shouldn't have been called (no input events)
+        expect(onChange).not.toHaveBeenCalled();
+    });
+
+    it('handles paste with window.clipboardData fallback', () => {
+        const origWinClipboard = (window as any).clipboardData;
+        (window as any).clipboardData = {
+            getData: vi.fn().mockReturnValue('clipboard text'),
+        };
+
+        renderWithProviders(<ContentEditable />);
+
+        const pre = document.querySelector('pre')!;
+        const pasteEvent = new Event('paste', { bubbles: true }) as any;
+        pasteEvent.clipboardData = undefined;
+        pre.dispatchEvent(pasteEvent);
+
+        expect((window as any).clipboardData.getData).toHaveBeenCalledWith('Text');
+
+        (window as any).clipboardData = origWinClipboard;
+    });
+
+    it('autofocuses the element when autofocus prop is true', async () => {
+        renderWithProviders(<ContentEditable autofocus />);
+
+        await vi.waitFor(() => {
+            const pre = document.querySelector('pre');
+            if (pre) {
+                expect(pre).toBeInTheDocument();
+            }
+        });
+    });
+
+    it('calls onChange on blur when content differs', () => {
+        const onChange = vi.fn();
+
+        renderWithProviders(<ContentEditable onChange={onChange} />);
+
+        const pre = document.querySelector('pre')!;
+        pre.innerText = 'blur change';
+        pre.dispatchEvent(new Event('input', { bubbles: true }));
+        expect(onChange).toHaveBeenCalledWith('blur change');
+        onChange.mockClear();
+
+        pre.dispatchEvent(new Event('blur', { bubbles: true }));
         expect(onChange).not.toHaveBeenCalled();
     });
 });

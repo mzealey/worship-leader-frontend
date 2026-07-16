@@ -72,4 +72,51 @@ describe('DialogAddToSet', () => {
 
         expect(mockSET_DB.add_song_to_set).toHaveBeenCalledWith(1, 123, '', 0);
     });
+
+    it('creates new set when name entered and button clicked', async () => {
+        const user = userEvent.setup();
+        mockSET_DB.create_set.mockResolvedValue(5);
+        mockSET_DB.add_song_to_set.mockResolvedValue(undefined);
+        const onClose = vi.fn();
+
+        renderWithProviders(<DialogAddToSet song_id={123} onClose={onClose} />);
+
+        const input = document.querySelector('input')!;
+        await user.type(input, 'New Set Name');
+
+        const createBtn = screen.getByText('set_create');
+        expect(createBtn.closest('button')).not.toBeDisabled();
+
+        await user.click(createBtn);
+
+        expect(mockSET_DB.create_set).toHaveBeenCalledWith('New Set Name');
+        await vi.waitFor(() => {
+            expect(mockSET_DB.add_song_to_set).toHaveBeenCalledWith(5, 123, '', 0);
+        });
+    });
+
+    it('shows duplicate alert when addSongToSet fails', async () => {
+        const user = userEvent.setup();
+        mockSET_DB.add_song_to_set.mockRejectedValue(new Error('duplicate'));
+
+        renderWithProviders(<DialogAddToSet song_id={123} />);
+
+        const mySetBtn = await screen.findByText('My Set');
+        await user.click(mySetBtn);
+
+        await screen.findByText('already_in_set');
+        expect(screen.getByText('already_in_set')).toBeInTheDocument();
+    });
+
+    it('passes transpose key and capo when provided', async () => {
+        const user = userEvent.setup();
+        mockSET_DB.add_song_to_set.mockResolvedValue(undefined);
+
+        renderWithProviders(<DialogAddToSet song_id={123} transpose={{ keyName: 'D', capo: 2 }} />);
+
+        const mySetBtn = await screen.findByText('My Set');
+        await user.click(mySetBtn);
+
+        expect(mockSET_DB.add_song_to_set).toHaveBeenCalledWith(1, 123, 'D', 2);
+    });
 });

@@ -30,4 +30,10 @@ describe('PageNativePrompter', () => {
         const { container } = renderWithProviders(<PageNativePrompter />);
         expect(container.innerHTML).toBe('');
     });
+
+    it('does not crash when onClose is provided', () => {
+        const onClose = vi.fn();
+        const { container } = renderWithProviders(<PageNativePrompter onClose={onClose} />);
+        expect(container.innerHTML).toBe('');
+    });
 });

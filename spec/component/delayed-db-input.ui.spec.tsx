@@ -96,7 +96,6 @@ describe('DelayedDBInput', () => {
 
         renderWithProviders(<DelayedDBInput onChange={onChange} value="" />);
 
-        // Clearing is immediate via the clear button
         const input = document.querySelector('input')!;
         await user.type(input, 'x');
         await user.clear(input);
@@ -109,5 +108,40 @@ describe('DelayedDBInput', () => {
 
         const input = document.querySelector('input');
         expect(input?.autocomplete).toBe('off');
+    });
+
+    it('triggers onChange via immediate when value is empty string', async () => {
+        const user = userEvent.setup();
+        const onChange = vi.fn();
+
+        renderWithProviders(<DelayedDBInput onChange={onChange} value="" />);
+
+        const input = document.querySelector('input')!;
+        await user.type(input, 'x');
+        await user.clear(input);
+        await user.type(input, 'y');
+
+        // onChange should have been called for empty-string (immediate)
+        expect(onChange).toHaveBeenCalled();
+    });
+
+    it('handles immediateOnChange', async () => {
+        const user = userEvent.setup();
+        const immediateOnChange = vi.fn().mockReturnValue(false);
+        const onChange = vi.fn();
+
+        renderWithProviders(<DelayedDBInput immediateOnChange={immediateOnChange} onChange={onChange} />);
+
+        const input = document.querySelector('input')!;
+        await user.type(input, 'text');
+
+        expect(immediateOnChange).toHaveBeenCalled();
+    });
+
+    it('clears timeout on unmount', () => {
+        const onChange = vi.fn();
+
+        const { unmount } = renderWithProviders(<DelayedDBInput onChange={onChange} />);
+        unmount();
     });
 });

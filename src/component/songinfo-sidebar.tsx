@@ -1,4 +1,4 @@
-import { Box, Button, Grid, List, ListItem, ListItemButton, ListItemText, Rating, Typography, useTheme } from '@mui/material';
+import { Box, Button, Grid, List, ListItem, ListItemButton, ListItemText, Rating, Typography } from '@mui/material';
 import type { SvgIconProps } from '@mui/material/SvgIcon';
 import type { TypographyProps } from '@mui/material/Typography';
 import type { ComponentType, ReactNode, SyntheticEvent } from 'react';

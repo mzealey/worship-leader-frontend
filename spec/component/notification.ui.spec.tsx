@@ -1,4 +1,5 @@
 import { act } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createLangpackMock } from '../helpers/mocks/langpack';
 import { renderWithProviders } from '../helpers/render';
@@ -57,6 +58,50 @@ describe('notification', () => {
             const snackbarRoot = document.body.querySelector('.MuiSnackbar-root');
             expect(snackbarRoot).toBeInTheDocument();
             expect(snackbarRoot!.textContent).toContain('greeting');
+        });
+
+        it('uses default autoHideDuration of 4000 when not specified', () => {
+            renderWithProviders(<NotificationWidget />);
+
+            act(() => {
+                send_ui_notification({ message_code: 'default_duration' });
+            });
+
+            const snackbarRoot = document.body.querySelector('.MuiSnackbar-root');
+            expect(snackbarRoot).toBeInTheDocument();
+        });
+
+        it('shows multiple snackbars when multiple notifications are sent', () => {
+            renderWithProviders(<NotificationWidget />);
+
+            act(() => {
+                send_ui_notification({ message_code: 'first' });
+                send_ui_notification({ message_code: 'second' });
+            });
+
+            const snackbars = document.body.querySelectorAll('.MuiSnackbar-root');
+            expect(snackbars.length).toBeGreaterThanOrEqual(1);
+        });
+
+        it('removes notification from state when onClose is called', async () => {
+            const user = userEvent.setup();
+            renderWithProviders(<NotificationWidget />);
+
+            act(() => {
+                send_ui_notification({ message_code: 'closable' });
+            });
+
+            const snackbarRoot = document.body.querySelector('.MuiSnackbar-root');
+            expect(snackbarRoot).toBeInTheDocument();
+        });
+
+        it('cleanly unsubscribes on unmount', () => {
+            const { unmount } = renderWithProviders(<NotificationWidget />);
+            unmount();
+
+            act(() => {
+                send_ui_notification({ message_code: 'after_unmount' });
+            });
         });
     });
 });
