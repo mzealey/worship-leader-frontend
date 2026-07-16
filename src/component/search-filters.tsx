@@ -24,7 +24,7 @@ const FilterGridItem = ({ children, thin }: { children: ReactNode; thin?: boolea
 
 const FilterSelect = (props: React.ComponentProps<typeof NativeSelect>) => (
     <FormControl fullWidth>
-        <NativeSelect input={<InputBase />} {...props} />
+        <NativeSelect input={<InputBase />} inputProps={{ style: { textAlign: 'center' } }} {...props} />
     </FormControl>
 );
 
