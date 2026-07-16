@@ -79,7 +79,7 @@ export default defineConfig(({ command, mode }) => {
 
     // Add in linting plugins on dev only - on prod they take a long time (~70% of the runtime), and probably not
     // useful anyway.
-    if(is_watch) {
+    if (is_watch) {
         config.plugins.push(
             eslint({
                 //lintOnStart: true,

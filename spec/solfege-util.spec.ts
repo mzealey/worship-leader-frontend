@@ -1,4 +1,5 @@
 import { beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
+import { getSetting as getSetting_mock } from '../src/settings-store';
 import { maybe_convert_solfege } from '../src/solfege-util';
 
 // Mock the dependencies
@@ -25,8 +26,7 @@ describe('solfege-util', function () {
     let getSetting: Mock<typeof import('../src/settings-store').getSetting>;
 
     beforeEach(async function () {
-        const settingsStore = await import('../src/settings-store');
-        getSetting = settingsStore.getSetting as Mock<typeof import('../src/settings-store').getSetting>;
+        getSetting = getSetting_mock as Mock<typeof import('../src/settings-store').getSetting>;
         vi.clearAllMocks();
     });
 

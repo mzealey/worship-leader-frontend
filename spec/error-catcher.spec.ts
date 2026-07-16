@@ -1,5 +1,6 @@
 // @vitest-environment jsdom
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
+import * as errorCatcherMod_ from '../src/error-catcher';
 
 const mocks = vi.hoisted(() => ({
     sendReport: vi.fn(),
@@ -57,7 +58,7 @@ describe('error-catcher', () => {
         (globalThis as Record<string, unknown>).BUILD_TYPE = 'test';
         (globalThis as Record<string, unknown>).APP_VERSION = '1.0.0';
 
-        errorCatcherMod = await import('../src/error-catcher');
+        errorCatcherMod = errorCatcherMod_;
     });
 
     beforeEach(() => {

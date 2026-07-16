@@ -1,4 +1,5 @@
 import { screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createLangpackMock } from '../helpers/mocks/langpack';
 import { renderWithProviders } from '../helpers/render';
@@ -46,8 +47,7 @@ describe('PageSetShare', () => {
     });
 
     it('shows sharer when live share button clicked', async () => {
-        const user = (await import('@testing-library/user-event')).default;
-        const usr = user.setup();
+        const usr = userEvent.setup();
 
         renderWithProviders(<PageSetShare set={mockSet} />);
 
@@ -57,8 +57,7 @@ describe('PageSetShare', () => {
     });
 
     it('shows sharer when normal share button clicked', async () => {
-        const user = (await import('@testing-library/user-event')).default;
-        const usr = user.setup();
+        const usr = userEvent.setup();
 
         renderWithProviders(<PageSetShare set={mockSet} />);
 

@@ -56,10 +56,7 @@ describe('SetList', () => {
         it('shows empty message when no sets', async () => {
             mockSET_DB.get_set_list.mockResolvedValue([]);
 
-            const mod = await import('../../src/page/set-list');
-            const LocalSetList = mod.SetList;
-
-            renderWithProviders(<LocalSetList />);
+            renderWithProviders(<SetList />);
 
             expect(await screen.findByText('no-sets')).toBeInTheDocument();
         });
@@ -67,10 +64,7 @@ describe('SetList', () => {
         it('returns nothing when noEmptyText is true and no sets', async () => {
             mockSET_DB.get_set_list.mockResolvedValue([]);
 
-            const mod = await import('../../src/page/set-list');
-            const LocalSetList = mod.SetList;
-
-            const { container } = renderWithProviders(<LocalSetList noEmptyText />);
+            const { container } = renderWithProviders(<SetList noEmptyText />);
 
             await vi.waitFor(() => {
                 expect(container.textContent).toBe('');

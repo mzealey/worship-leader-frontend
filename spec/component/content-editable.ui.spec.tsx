@@ -1,18 +1,14 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { ContentEditable } from '../../src/component/content-editable';
 import { renderWithProviders } from '../helpers/render';
 
-let ContentEditable: typeof import('../../src/component/content-editable').ContentEditable;
-
 describe('ContentEditable', () => {
-    beforeEach(async () => {
+    beforeEach(() => {
         vi.resetModules();
         vi.clearAllMocks();
 
         document.queryCommandSupported = vi.fn().mockReturnValue(true);
         document.execCommand = vi.fn();
-
-        const mod = await import('../../src/component/content-editable');
-        ContentEditable = mod.ContentEditable;
     });
 
     afterEach(() => {

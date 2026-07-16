@@ -1,4 +1,5 @@
 import { screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createLangpackMock } from '../helpers/mocks/langpack';
 import { renderWithProviders } from '../helpers/render';
@@ -53,8 +54,7 @@ describe('PageCopyTextarea', () => {
     });
 
     it('calls onClose when cancel clicked', async () => {
-        const user = (await import('@testing-library/user-event')).default;
-        const usr = user.setup();
+        const usr = userEvent.setup();
         const onClose = vi.fn();
 
         renderWithProviders(<PageCopyTextarea song={mockSong} onClose={onClose} />);

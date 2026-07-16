@@ -4,6 +4,8 @@ import { describe, expect, it, vi } from 'vitest';
 import {
     clear_object,
     date_as_utc,
+    deferred_promise,
+    ensure_visible,
     fetch_json,
     format_string,
     generate_search_params,
@@ -14,7 +16,9 @@ import {
     is_vertical_lang,
     normalize_url,
     prepare_search_string,
+    scroll_to,
     timeout,
+    try_to_run_fn,
 } from '../src/util';
 
 describe('util functions', function () {
@@ -161,7 +165,6 @@ describe('util functions', function () {
 
     describe('deferred_promise', function () {
         it('creates a promise with external resolve', async function () {
-            const { deferred_promise } = await import('../src/util');
             const [control, promise] = deferred_promise<string>();
 
             control.resolve('success');
@@ -169,7 +172,6 @@ describe('util functions', function () {
         });
 
         it('creates a promise with external reject', async function () {
-            const { deferred_promise } = await import('../src/util');
             const [control, promise] = deferred_promise<string>();
 
             control.reject(new Error('failed'));
@@ -299,7 +301,6 @@ describe('util functions', function () {
 
     describe('try_to_run_fn', function () {
         it('runs a function found on the element', async function () {
-            const { try_to_run_fn } = await import('../src/util');
             const fn = vi.fn();
             const elem = { existingMethod: fn };
             try_to_run_fn(elem, ['existingMethod']);
@@ -307,19 +308,16 @@ describe('util functions', function () {
         });
 
         it('does nothing when element is null', async function () {
-            const { try_to_run_fn } = await import('../src/util');
             expect(() => try_to_run_fn(null, ['someFn'])).not.toThrow();
         });
 
         it('does nothing when function not found', async function () {
-            const { try_to_run_fn } = await import('../src/util');
             const elem = { otherMethod: () => 'x' };
             try_to_run_fn(elem, ['nonExistent']);
             // Should not throw
         });
 
         it('tries multiple function names', async function () {
-            const { try_to_run_fn } = await import('../src/util');
             const fn = vi.fn();
             const elem = { thirdFn: fn };
             try_to_run_fn(elem, ['firstFn', 'secondFn', 'thirdFn']);
@@ -329,7 +327,6 @@ describe('util functions', function () {
 
     describe('scroll_to', function () {
         it('sets scrollTop immediately when no animation', async function () {
-            const { scroll_to } = await import('../src/util');
             const elem = document.createElement('div');
             elem.scrollTop = 50;
             scroll_to(elem, 0);
@@ -337,7 +334,6 @@ describe('util functions', function () {
         });
 
         it('clamps negative scrollTop to 0', async function () {
-            const { scroll_to } = await import('../src/util');
             const elem = document.createElement('div');
             elem.scrollTop = 50;
             scroll_to(elem, -10);
@@ -345,7 +341,6 @@ describe('util functions', function () {
         });
 
         it('does nothing when already at target scroll', async function () {
-            const { scroll_to } = await import('../src/util');
             const elem = document.createElement('div');
             elem.scrollTop = 100;
             scroll_to(elem, 100);
@@ -355,7 +350,6 @@ describe('util functions', function () {
 
     describe('ensure_visible', function () {
         it('scrolls element into view when below viewport', async function () {
-            const { ensure_visible } = await import('../src/util');
             const parent = document.createElement('div');
             Object.defineProperty(parent, 'clientHeight', { value: 500, configurable: true });
             Object.defineProperty(parent, 'scrollTop', { value: 0, writable: true });

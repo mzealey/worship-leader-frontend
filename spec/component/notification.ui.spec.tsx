@@ -1,10 +1,10 @@
 import { act } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { send_ui_notification } from '../../src/component/notify';
 import { createLangpackMock } from '../helpers/mocks/langpack';
 import { renderWithProviders } from '../helpers/render';
 
 let NotificationWidget: typeof import('../../src/component/notification').NotificationWidget;
-let send_ui_notification: typeof import('../../src/component/notification').send_ui_notification;
 
 describe('notification', () => {
     beforeEach(async () => {
@@ -15,7 +15,6 @@ describe('notification', () => {
 
         const mod = await import('../../src/component/notification');
         NotificationWidget = mod.NotificationWidget;
-        send_ui_notification = mod.send_ui_notification;
     });
 
     describe('send_ui_notification', () => {

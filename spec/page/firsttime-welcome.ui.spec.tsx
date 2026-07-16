@@ -1,4 +1,5 @@
 import { screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createLangpackMock } from '../helpers/mocks/langpack';
 import { renderWithProviders } from '../helpers/render';
@@ -33,8 +34,7 @@ describe('PageFirsttimeWelcome', () => {
     });
 
     it('calls onComplete when continue is clicked', async () => {
-        const user = (await import('@testing-library/user-event')).default;
-        const usr = user.setup();
+        const usr = userEvent.setup();
         const onComplete = vi.fn();
 
         renderWithProviders(<PageFirsttimeWelcome onComplete={onComplete} />);

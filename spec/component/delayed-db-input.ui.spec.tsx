@@ -1,19 +1,16 @@
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { SearchInput } from '../../src/component/delayed-db-input';
 import { createDbMock } from '../helpers/mocks/db';
 import { renderWithProviders } from '../helpers/render';
 
-let SearchInput: typeof import('../../src/component/delayed-db-input').SearchInput;
 let DelayedDBInput: typeof import('../../src/component/delayed-db-input').DelayedDBInput;
 
 describe('SearchInput', () => {
-    beforeEach(async () => {
+    beforeEach(() => {
         vi.resetModules();
         vi.clearAllMocks();
-
-        const mod = await import('../../src/component/delayed-db-input');
-        SearchInput = mod.SearchInput;
     });
 
     it('renders an input field', () => {
@@ -84,7 +81,6 @@ describe('DelayedDBInput', () => {
 
         const mod = await import('../../src/component/delayed-db-input');
         DelayedDBInput = mod.DelayedDBInput;
-        SearchInput = mod.SearchInput;
     });
 
     it('renders a SearchInput by default', () => {
