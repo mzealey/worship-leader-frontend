@@ -69,67 +69,71 @@ export function TopBar({ sx, noMenu, noSpacer, className, menuOnly, before, docu
     }, [doc_title, t]);
 
     const show_menu = !noMenu && (children || menuOnly);
+    const has_content = !!before || !!title || !!children || show_menu;
+
     return (
         <Box sx={{ displayPrint: 'none' }}>
-            <AppBar
-                color="default"
-                elevation={0}
-                position={noSpacer ? 'static' : undefined}
-                className={className}
-                sx={(theme) => ({
-                    top: 'auto',
-                    backgroundColor: theme.palette.background.topbar,
-                    [theme.breakpoints.down('xs')]: {
-                        // TODO class names
-                        '& .MuiButton-root': {
-                            minWidth: 36,
-                            '& .text': {
-                                display: 'none',
+            {has_content ? (
+                <AppBar
+                    color="default"
+                    elevation={0}
+                    position={noSpacer ? 'static' : undefined}
+                    className={className}
+                    sx={(theme) => ({
+                        top: 'auto',
+                        backgroundColor: theme.palette.background.topbar,
+                        [theme.breakpoints.down('xs')]: {
+                            // TODO class names
+                            '& .MuiButton-root': {
+                                minWidth: 36,
+                                '& .text': {
+                                    display: 'none',
+                                },
                             },
                         },
-                    },
-                    ...(typeof sx === 'function' ? sx(theme) : sx || {}),
-                })}
-            >
-                <Toolbar
-                    disableGutters={true}
-                    sx={(theme) => ({
-                        flexWrap: 'wrap',
-                        overflow: 'hidden',
-                        ...(show_menu && { marginRight: '50px' }),
-                        ...(!show_menu && {
-                            paddingRight: theme.spacing(2),
-                            [theme.breakpoints.up('sm')]: {
-                                paddingRight: theme.spacing(3),
-                            },
-                        }),
-                        ...(!before && {
-                            paddingLeft: theme.spacing(2),
-                            [theme.breakpoints.up('sm')]: {
-                                paddingLeft: theme.spacing(3),
-                            },
-                        }),
+                        ...(typeof sx === 'function' ? sx(theme) : sx || {}),
                     })}
                 >
-                    <Box sx={{ flexShrink: 0, display: 'flex', alignItems: 'center' }}>
-                        {before}
+                    <Toolbar
+                        disableGutters={true}
+                        sx={(theme) => ({
+                            flexWrap: 'wrap',
+                            overflow: 'hidden',
+                            ...(show_menu && { marginRight: '50px' }),
+                            ...(!show_menu && {
+                                paddingRight: theme.spacing(2),
+                                [theme.breakpoints.up('sm')]: {
+                                    paddingRight: theme.spacing(3),
+                                },
+                            }),
+                            ...(!before && {
+                                paddingLeft: theme.spacing(2),
+                                [theme.breakpoints.up('sm')]: {
+                                    paddingLeft: theme.spacing(3),
+                                },
+                            }),
+                        })}
+                    >
+                        <Box sx={{ flexShrink: 0, display: 'flex', alignItems: 'center' }}>
+                            {before}
 
-                        {!!title && <Typography variant="h6">{title}</Typography>}
-                    </Box>
+                            {!!title && <Typography variant="h6">{title}</Typography>}
+                        </Box>
 
-                    <Box sx={{ flexGrow: 1, minWidth: 16 }} />
-                    {children}
-                </Toolbar>
-                {show_menu ? (
-                    <Box sx={{ position: 'absolute', right: 0 }}>
-                        <MenuButton>
-                            {children}
-                            {menuOnly}
-                        </MenuButton>
-                    </Box>
-                ) : null}
-            </AppBar>
-            {!noSpacer && <Toolbar />}
+                        <Box sx={{ flexGrow: 1, minWidth: 16 }} />
+                        {children}
+                    </Toolbar>
+                    {show_menu ? (
+                        <Box sx={{ position: 'absolute', right: 0 }}>
+                            <MenuButton>
+                                {children}
+                                {menuOnly}
+                            </MenuButton>
+                        </Box>
+                    ) : null}
+                </AppBar>
+            ) : null}
+            {has_content && !noSpacer ? <Toolbar /> : null}
         </Box>
     );
 }

@@ -16,7 +16,6 @@ import clsx from 'clsx';
 import debounce from 'lodash/debounce';
 import React, { Fragment, memo, useCallback, useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useShallow } from 'zustand/react/shallow';
 import unknown_album_icon from '../../img/unknown_album_icon.png';
 import { DB, on_db_languages_update } from '../db';
 import { DBSearch, useSearchStore, useSongListStore } from '../db-search';
@@ -112,13 +111,13 @@ const SongListLinkHeader = memo(function SongListLinkHeader({ prefix, song, chil
     const whiteSpaceStyle = { whiteSpace: 'nowrap' as const };
 
     const titleElement = (
-        <TextDirection {...whiteSpaceStyle} text={title} lang={fullSong.lang} title={title}>
+        <TextDirection style={whiteSpaceStyle} text={title} lang={fullSong.lang} title={title}>
             {title}
         </TextDirection>
     );
 
     const fullTitle = prefix ? (
-        <span {...whiteSpaceStyle}>
+        <span style={whiteSpaceStyle}>
             {prefix}
             {titleElement}
         </span>
@@ -315,7 +314,7 @@ interface PagerElemProps {
 
 export function PagerElem({ current_search, on_change }: PagerElemProps) {
     const { t } = useTranslation();
-    const pager = useSongListStore(useShallow((state) => state.pager));
+    const pager = useSongListStore((state) => state.pager);
 
     const pager_prev = () => {
         current_search?.change_page(-1);
@@ -367,9 +366,9 @@ export interface SongListProps {
 
 export function SongList({ container, active_song_id }: SongListProps) {
     const { t } = useTranslation();
-    const current_search = useSearchStore(useShallow((state) => state.current_search));
-    const requested_items = useSongListStore(useShallow((state) => state.requested_items));
-    const items = useSongListStore(useShallow((state) => state.items));
+    const current_search = useSearchStore((state) => state.current_search);
+    const requested_items = useSongListStore((state) => state.requested_items);
+    const items = useSongListStore((state) => state.items);
 
     const [is_loading, setIsLoading] = useState(false);
     const [show_spinner, setShowSpinner] = useState(false);
