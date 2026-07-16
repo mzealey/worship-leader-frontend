@@ -6,6 +6,8 @@ import { renderWithRouter } from '../helpers/render';
 let PageSetView: typeof import('../../src/page/set-view').PageSetView;
 
 describe('PageSetView', () => {
+    const mockSongs = ['not_loaded' in {} ? null : { id: 10, title: 'Song 1' }, { id: 20, title: 'Song 2' }].filter(Boolean);
+
     beforeEach(async () => {
         vi.resetModules();
         vi.clearAllMocks();
@@ -13,30 +15,32 @@ describe('PageSetView', () => {
         vi.doMock('../../src/langpack', createLangpackMock);
         vi.doMock('../../src/db', () => ({
             DB: Promise.resolve({
-                get_songs: vi.fn().mockResolvedValue([]),
+                get_songs: vi.fn().mockResolvedValue(mockSongs),
             }),
             DB_AVAILABLE: Promise.resolve({}),
         }));
         vi.doMock('../../src/set-db', () => ({
             SET_DB: {
-                get_songs: vi.fn(() => []),
+                get_songs: vi.fn(() => [{ song_id: 10 }, { song_id: 20 }]),
                 get_set: vi.fn().mockResolvedValue({
                     id: 1,
                     name: 'My Set',
                     songs: [],
                     ro: 0,
                     uuid: 'set-uuid',
-                    total_songs: 0,
+                    total_songs: 2,
                 }),
                 remove_song_from_set: vi.fn().mockResolvedValue(undefined),
                 reorder_set_songs: vi.fn().mockResolvedValue(undefined),
+                update_set_db_order: vi.fn(),
+                delete_song_from_set: vi.fn(),
             },
             on_set_db_update: { subscribe: vi.fn(() => ({ unsubscribe: vi.fn() })) },
         }));
         vi.doMock('../../src/set-utils', () => ({
             generate_set_share_link: vi.fn().mockReturnValue('https://example.com/share/abc'),
         }));
-        vi.doMock('../../src/dialog-set-share', () => ({
+        vi.doMock('../../src/page/dialog-set-share', () => ({
             PageSetShare: () => <div data-testid="share-dialog" />,
         }));
         vi.doMock('../../src/page/sharer', () => ({
@@ -52,7 +56,12 @@ describe('PageSetView', () => {
             ),
         }));
         vi.doMock('../../src/component/song-list', () => ({
-            SongListLink: ({ song, children }: any) => <div data-testid={`song-${song?.id || 'x'}`}>{children}</div>,
+            SongListLink: ({ song, children }: any) => (
+                <div data-testid={`song-link-${song?.id || 'x'}`}>
+                    {song?.title || 'no title'}
+                    {children}
+                </div>
+            ),
         }));
         vi.doMock('../../src/component/router-link', () => ({
             Link: ({ to, children, ...props }: any) => (
@@ -74,7 +83,7 @@ describe('PageSetView', () => {
             restrictToWindowEdges: vi.fn(),
         }));
         vi.doMock('@dnd-kit/sortable', () => ({
-            SortableContext: ({ children }: any) => <div>{children}</div>,
+            SortableContext: ({ children }: any) => <div data-testid="sortable-context">{children}</div>,
             useSortable: vi.fn(() => ({
                 setNodeRef: vi.fn(),
                 transform: null,
@@ -92,10 +101,24 @@ describe('PageSetView', () => {
         PageSetView = mod.PageSetView;
     });
 
-    it('renders set view page', async () => {
+    it('renders set name in title', async () => {
         renderWithRouter(<PageSetView set_id={1} />);
 
         const topbar = await screen.findByTestId('topbar');
         expect(topbar).toBeInTheDocument();
+    });
+
+    it('renders song list links', async () => {
+        renderWithRouter(<PageSetView set_id={1} />);
+
+        await screen.findByTestId('song-link-10');
+        expect(screen.getByTestId('song-link-20')).toBeInTheDocument();
+    });
+
+    it('renders print and share buttons', async () => {
+        renderWithRouter(<PageSetView set_id={1} />);
+
+        await screen.findByText('print-songbook');
+        expect(screen.getByText('sharebtn')).toBeInTheDocument();
     });
 });
