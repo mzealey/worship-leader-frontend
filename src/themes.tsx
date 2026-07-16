@@ -218,7 +218,6 @@ function generate_theme(base_palette: Palette) {
         },
     ]);
 
-    const checkbox_padding = 6;
     const isDark = base_palette.mode === 'dark';
     const inverted_bg_default = isDark ? base_palette.background.grey : '#998EF1';
     const inverted_theme = deepmerge(theme, {
