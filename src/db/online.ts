@@ -136,11 +136,6 @@ export class OnlineDB extends CommonDB<BaseQuery> {
         // Abort any pending search before starting a new one
         if (this.search_query) this.search_query.abort();
 
-        /* TODO
-        if( is_set('setting-show-key-in-list') )
-            query.list_songkey = 1;
-            */
-
         // Save the query promise so we can abort it above
         this.search_query = fetch_json<{ data: SongShortData | SongShortData[]; total?: number }>(
             this.api_url('grid', query as Record<string, string | number | boolean | undefined>),

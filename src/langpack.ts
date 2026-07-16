@@ -32,8 +32,8 @@ export async function lang_setup(lang = 'en') {
 
         Object.assign(translations, new_translation);
 
-        // Get the special string saying the direction of the language pack
-        // TODO: React-ify this stuff
+        // Set document-level dir/lang attributes. These are outside React's DOM so
+        // handled directly; also set in a useEffect in App.tsx for React synchronisation.
         [document.documentElement, document.body].map((e) => {
             e.setAttribute('dir', get_translation('langpack_direction'));
             e.setAttribute('lang', new_lang);

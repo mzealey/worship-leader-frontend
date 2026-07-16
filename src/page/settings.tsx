@@ -38,7 +38,7 @@ interface VersionOptions {
     db_load_errors?: string;
 }
 
-// TODO: Redux this
+// Uses local state; could be lifted to Zustand store for sharing across components
 const SettingsPageVersion = () => {
     const [options, setOptions] = useState<VersionOptions>({});
 
@@ -238,7 +238,6 @@ export const PageSettings = () => {
                 </Grid>
 
                 <Grid>
-                    {/* TODO: translate */}
                     <FormControlLabel
                         style={{ width: '100%' }}
                         label={t('setting-theme')}

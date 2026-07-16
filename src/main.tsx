@@ -26,7 +26,9 @@ function main_setup() {
     if (_main_setup_done) return;
     _main_setup_done = true;
 
-    /* TODO: Move all this stuff into react as context or similar */
+    // Pre-React initialization: these services must be set up before the React tree
+    // mounts. Consider moving stateful services (lang detection, abc2svg) into React
+    // context or Zustand stores where possible.
     const setup_fns: (() => void)[] = [
         // Key init functions
         cordova_setup,

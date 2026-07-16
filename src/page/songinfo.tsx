@@ -393,7 +393,6 @@ export const PageSongInfo: ComponentType<PageSongInfoProps> = ({ requested_song_
             <SongInfoSide
                 related_songs={related_songs}
                 song={song}
-                /*refresh_song={refresh_song} TODO */
                 on_filter_change={on_filter_change}
                 update_item_refs={update_item_refs_ref.current || dummy}
             />

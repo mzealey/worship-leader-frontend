@@ -126,7 +126,8 @@ export const App = () => {
         });
 
         (async () => {
-            // Various legacy stuff to do with location - TODO: Figure out how to react-ify this
+            // Legacy location handling: clean up hash and detect referral URLs.
+            // This predates the React Router setup and runs before it initialises.
             window.location.hash = window.location.hash.replace(/\?.*/, '');
 
             if (!window.location.hash) {
@@ -226,7 +227,7 @@ export const App = () => {
 
     return (
         <>
-            {/* TODO: Move this to css */}
+            {/* Global styles applied via MUI GlobalStyles component */}
             <GlobalStyles
                 styles={(theme) => ({
                     body: {

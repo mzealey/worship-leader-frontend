@@ -258,7 +258,6 @@ function AlbumEntry({ lang, album_song, on_filter_change }: { lang: string; albu
                 rel="noopener noreferrer"
                 href={album_song.album.purchase_path}
                 sx={(theme) => ({
-                    // TODO: Style this
                     marginBottom: 5 / 8,
                     '&:last-child': { marginBottom: 0 },
                     verticalAlign: 'top',
@@ -278,7 +277,6 @@ function AlbumEntry({ lang, album_song, on_filter_change }: { lang: string; albu
                     on_filter_change();
                 }}
                 sx={(theme) => ({
-                    // TODO: Style this
                     marginBottom: 5 / 8,
                     '&:last-child': { marginBottom: 0 },
                     verticalAlign: 'top',

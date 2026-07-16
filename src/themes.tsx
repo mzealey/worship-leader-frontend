@@ -121,7 +121,6 @@ function generate_theme(base_palette: Palette) {
                     },
                     scrollPaper: {
                         '@media (max-height: 400px)': {
-                            // TODO
                             // When virtual keyboard shown allow taller dialogs
                             maxHeight: 'calc(100% - 10px)',
                         },

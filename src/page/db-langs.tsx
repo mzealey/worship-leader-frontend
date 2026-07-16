@@ -149,12 +149,12 @@ const DbLanguageSelectorInner = ({
             <p>{t('db-langs-intro')}</p>
 
             <List dense>
-                <ListSubheader disableSticky>Top languages in your area</ListSubheader> {/* TODO: Trans */}
+                <ListSubheader disableSticky>{t('db-langs-top-languages')}</ListSubheader>
                 <LanguageSelectorGroup entries={topLangs} selectedLangs={selectedLangs} onChange={updateSelectedLangs} />
             </List>
 
             <List dense>
-                <ListSubheader disableSticky>Other languages</ListSubheader> {/* TODO: Trans */}
+                <ListSubheader disableSticky>{t('db-langs-other-languages')}</ListSubheader>
                 <ListItem disablePadding>
                     <TextField
                         label={t('choose_language')}
