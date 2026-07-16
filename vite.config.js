@@ -77,15 +77,17 @@ export default defineConfig(({ command, mode }) => {
         },
     };
 
-    // Add in linting plugins. TODO: Disable on production build would reduce time from 21 to 15sec
-    config.plugins.push(
-        // TODO: Can take a while - don't run in some contexts?
-        eslint({
-            //lintOnStart: true,
-            include: ['src/**/*.{js,jsx,ts,tsx}'],
-        }),
-        circleDependency(),
-    );
+    // Add in linting plugins on dev only - on prod they take a long time (~70% of the runtime), and probably not
+    // useful anyway.
+    if(is_watch) {
+        config.plugins.push(
+            eslint({
+                //lintOnStart: true,
+                include: ['src/**/*.{js,jsx,ts,tsx}'],
+            }),
+            circleDependency(),
+        );
+    }
 
     if (build_type == 'phonegap') config.base = '/android_asset/www';
     if (build_type == 'www') config.base = ''; // relative base
