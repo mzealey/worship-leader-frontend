@@ -235,7 +235,7 @@ function generate_theme(base_palette: Palette) {
             MuiCheckbox: {
                 styleOverrides: {
                     root: {
-                        color: theme.palette.primary.main,
+                        color: isDark ? theme.palette.primary.main : theme.palette.primary.contrastText,
                         padding: checkbox_padding,
                         marginLeft: -checkbox_padding,
                     },
@@ -244,7 +244,7 @@ function generate_theme(base_palette: Palette) {
             MuiFormControlLabel: {
                 styleOverrides: {
                     label: {
-                        color: theme.palette.primary.main,
+                        color: isDark ? theme.palette.primary.main : theme.palette.primary.contrastText,
                         display: 'flex',
                     },
                 },
