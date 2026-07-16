@@ -5,6 +5,7 @@ import { createUseDialogMock } from '../helpers/mocks/use-dialog';
 import { renderWithRouter } from '../helpers/render';
 
 let DialogDbLangs: typeof import('../../src/page/db-langs').DialogDbLangs;
+let PageDbLangs: typeof import('../../src/page/db-langs').PageDbLangs;
 
 describe('DialogDbLangs', () => {
     beforeEach(async () => {
@@ -25,9 +26,13 @@ describe('DialogDbLangs', () => {
         vi.doMock('../../src/component/notify', () => ({
             send_ui_notification: vi.fn(),
         }));
+        vi.doMock('../../src/component/top-bar', () => ({
+            TopBar: ({ title }: any) => <div data-testid="topbar">{title}</div>,
+        }));
 
         const mod = await import('../../src/page/db-langs');
         DialogDbLangs = mod.DialogDbLangs;
+        PageDbLangs = mod.PageDbLangs;
     });
 
     it('renders language selection dialog', async () => {
@@ -35,5 +40,12 @@ describe('DialogDbLangs', () => {
 
         await screen.findByText('db_langs_title');
         expect(screen.getByText('db_langs_title')).toBeInTheDocument();
+    });
+
+    describe('PageDbLangs', () => {
+        it('renders top-level page', () => {
+            renderWithRouter(<PageDbLangs />);
+            expect(screen.getByTestId('topbar')).toBeInTheDocument();
+        });
     });
 });
