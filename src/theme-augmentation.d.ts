@@ -2,34 +2,6 @@
 import '@mui/material/styles';
 
 declare module '@mui/material/styles' {
-    interface Theme {
-        searchLink: {
-            fontWeight: string;
-            cursor: string;
-            '@media only print': {
-                color: string;
-            };
-        };
-        score: {
-            highlight: string;
-            color: string;
-        };
-    }
-
-    interface ThemeOptions {
-        searchLink?: {
-            fontWeight?: string;
-            cursor?: string;
-            '@media only print'?: {
-                color?: string;
-            };
-        };
-        score?: {
-            highlight?: string;
-            color?: string;
-        };
-    }
-
     interface Palette {
         border: {
             main: string;
@@ -89,13 +61,5 @@ declare module '@mui/material/styles' {
     interface TypeText {
         highlight?: string;
         link?: string;
-    }
-
-    interface PaletteColor {
-        icon?: string;
-    }
-
-    interface SimplePaletteColorOptions {
-        icon?: string;
     }
 }

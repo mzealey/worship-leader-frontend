@@ -2,7 +2,7 @@ import { alpha } from '@mui/material';
 import { createTheme, type Shadows, type ThemeOptions } from '@mui/material/styles';
 import deepmerge from 'deepmerge';
 
-const disable_shadows = [...new Array(25)].map(() => 'none') as Shadows;
+const disable_shadows = Array(25).fill('none') as Shadows;
 
 type Palette = {
     mode: 'light' | 'dark';
@@ -15,7 +15,6 @@ type Palette = {
         gradient?: string;
     };
     primary: {
-        icon?: string;
         main: string;
         contrastText: string;
     };
@@ -151,17 +150,6 @@ function generate_theme(base_palette: Palette) {
     const BaseTheme = createTheme(base_theme);
 
     const theme = deepmerge(base_theme, {
-        searchLink: {
-            fontWeight: 'normal',
-            cursor: 'pointer',
-            '@media only print': {
-                color: 'black',
-            },
-        },
-        score: {
-            highlight: base_palette.primary.main,
-            color: base_palette.text.highlight,
-        },
         palette: base_palette,
         components: {
             MuiChip: {
@@ -218,8 +206,11 @@ function generate_theme(base_palette: Palette) {
         },
     ]);
 
+    const checkbox_padding = 6;
     const isDark = base_palette.mode === 'dark';
     const inverted_bg_default = isDark ? base_palette.background.grey : '#998EF1';
+
+    // For search area mostly
     const inverted_theme = deepmerge(theme, {
         palette: {
             background: {
@@ -241,6 +232,23 @@ function generate_theme(base_palette: Palette) {
             },
         },
         components: {
+            MuiCheckbox: {
+                styleOverrides: {
+                    root: {
+                        color: theme.palette.primary.main,
+                        padding: checkbox_padding,
+                        marginLeft: -checkbox_padding,
+                    },
+                },
+            },
+            MuiFormControlLabel: {
+                styleOverrides: {
+                    label: {
+                        color: theme.palette.primary.main,
+                        display: 'flex',
+                    },
+                },
+            },
             MuiButtonGroup: {
                 styleOverrides: {
                     root: {
@@ -261,31 +269,12 @@ function generate_theme(base_palette: Palette) {
             MuiButton: {
                 styleOverrides: {
                     root: {
-                        // Style the same as Input
+                        // Style the same as Select Input
                         fontFamily: BaseTheme.typography.fontFamily,
                         fontWeight: BaseTheme.typography.body1.fontWeight,
                         fontSize: BaseTheme.typography.pxToRem(16),
                         lineHeight: 'inherit',
                         letterSpacing: 0,
-                    },
-                },
-            },
-            MuiNativeSelect: {
-                styleOverrides: {
-                    select: {
-                        paddingTop: 0,
-                        paddingBottom: 0,
-                        paddingRight: 32,
-                        fontSize: BaseTheme.typography.pxToRem(16),
-                        lineHeight: 'inherit',
-                        minHeight: 0,
-                        '&:focus': {
-                            backgroundColor: 'transparent',
-                        },
-                    },
-                    icon: {
-                        right: 10,
-                        color: theme.palette.text.link,
                     },
                 },
             },
@@ -332,7 +321,6 @@ const base_light_palette: Palette = {
         stripe_active: alpha('#C4C4C4', 0.35),
     },
     primary: {
-        icon: '#A88EF2',
         main: '#A88EF2',
         contrastText: '#fff',
     },
@@ -379,7 +367,6 @@ const base_dark_palette = deepmerge(base_light_palette, {
         stripe_active: '#555',
     },
     primary: {
-        icon: '#BBBBBB',
         main: '#BBBBBB',
         contrastText: '#3D3D3D',
     },

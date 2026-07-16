@@ -27,6 +27,14 @@ import { SongListLink, TextDirection } from './song-list';
 
 const rating_event = eventSocket.add_queue('rating', 500);
 
+const searchLink = {
+    fontWeight: 'normal',
+    cursor: 'pointer',
+    '@media only print': {
+        color: 'black',
+    },
+};
+
 type AudioSectionItem = {
     file: SongFile;
     song: Song;
@@ -276,7 +284,7 @@ function AlbumEntry({ lang, album_song, on_filter_change }: { lang: string; albu
                     verticalAlign: 'top',
                     textDecoration: 'none',
                     color: theme.palette.primary.main,
-                    ...theme.searchLink,
+                    ...searchLink,
                 })}
             >
                 {entry}
@@ -418,7 +426,6 @@ const RatingSection = ({ song }: { song: Song }) => {
 };
 const SongInfoSection = ({ song, on_filter_change }: { song: Song; on_filter_change: () => void }) => {
     const { t, lang_name } = useTranslation();
-    const theme = useTheme();
 
     const info_render = useMemo(() => {
         const entries: ReactNode[] = [];
@@ -437,7 +444,7 @@ const SongInfoSection = ({ song, on_filter_change }: { song: Song; on_filter_cha
                                     on_filter_change();
                                 }}
                                 sx={{
-                                    ...theme.searchLink,
+                                    ...searchLink,
                                 }}
                             >
                                 {source.name}
@@ -463,7 +470,7 @@ const SongInfoSection = ({ song, on_filter_change }: { song: Song; on_filter_cha
                                 on_filter_change();
                             }}
                             sx={{
-                                ...theme.searchLink,
+                                ...searchLink,
                             }}
                         >
                             {value}
@@ -479,7 +486,7 @@ const SongInfoSection = ({ song, on_filter_change }: { song: Song; on_filter_cha
             });
 
         return entries;
-    }, [on_filter_change, song, t, theme]);
+    }, [on_filter_change, song, t]);
 
     return (
         <SidebarHeader section="song-info" title="details" partialDisplay>

@@ -1,7 +1,7 @@
 import { Box, IconButton, Typography, useTheme } from '@mui/material';
 import type { ComponentType } from 'react';
 import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 import type { Subscription } from 'rxjs';
 import { useCanPrint } from '../can-print';
 import { ImageButton } from '../component/basic';
@@ -39,7 +39,6 @@ import { TransposeDetails } from '../transpose-details';
 import { is_cordova, scroll_to, try_to_run_fn } from '../util';
 import { DialogAddToSet } from './add-to-set';
 import { PageCopyTextarea } from './copy';
-import { PageEditTextarea } from './edit';
 import { PageSharer } from './sharer';
 
 const FULL_SCREEN_EVENTS = ['webkitfullscreenchange', 'mozfullscreenchange', 'fullscreenchange', 'MSFullscreenChange'];
@@ -54,6 +53,7 @@ export const PageSongInfo: ComponentType<PageSongInfoProps> = ({ requested_song_
     const { t, lang_name } = useTranslation();
     const { appLang } = useAppLang();
     const theme = useTheme();
+    const navigate = useNavigate();
     const { set: setLastButtonHandler } = useLastButtonHandler();
     const [display_lyrics] = useSetting('display-lyrics');
     const { canPrint } = useCanPrint();
@@ -71,7 +71,6 @@ export const PageSongInfo: ComponentType<PageSongInfoProps> = ({ requested_song_
     const [set_switcher, setSetSwitcher] = useState<SetSwitcher | undefined>(undefined);
     const [show_scroller, setShowScroller] = useState<boolean>(false);
     const [show_copy, setShowCopy] = useState<boolean>(false);
-    const [show_edit, setShowEdit] = useState<'edit' | 'new' | undefined>(undefined);
     const [show_present, setShowPresent] = useState<boolean>(false);
     const [share_link, setShareLink] = useState<string | undefined>(undefined);
     const [add_to_set, setAddToSet] = useState<boolean>(false);
@@ -364,8 +363,10 @@ export const PageSongInfo: ComponentType<PageSongInfoProps> = ({ requested_song_
     };
     const show_add_to_set = () => setAddToSet(true);
     const do_show_copy = () => setShowCopy(true);
-    const do_show_edit = () => setShowEdit('edit');
-    const show_new = () => setShowEdit('new');
+    const do_show_edit = () => {
+        if (song) navigate(`/edit-song/${song.id}`);
+    };
+    const show_new = () => navigate('/add-song');
     const do_show_present = () => setShowPresent(true);
     const show_share = () => {
         if (song) setShareLink(`song.html?song_id=${song.id}`);
@@ -532,7 +533,6 @@ export const PageSongInfo: ComponentType<PageSongInfoProps> = ({ requested_song_
                     />
                 ) : null}
                 {show_copy && song ? <PageCopyTextarea song={song} onClose={() => setShowCopy(false)} /> : null}
-                {show_edit ? <PageEditTextarea type={show_edit} song={show_edit === 'new' ? undefined : song} onClose={() => setShowEdit(undefined)} /> : null}
 
                 {song && set_id ? <SetPrevNext song_id={song.id} set_switcher={set_switcher} /> : null}
 

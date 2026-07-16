@@ -1,6 +1,7 @@
 import { Box, IconButton, InputAdornment } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { Navigate } from 'react-router-dom';
+import { create } from 'zustand';
 import { DropDownIcon } from '../component/basic';
 import { DelayedDBInput } from '../component/delayed-db-input';
 import { SearchFilters } from '../component/search-filters';
@@ -13,6 +14,12 @@ import { updateSetting } from '../settings-store';
 import { parse_search } from '../splash-util.es5';
 import * as Icon from './icons';
 import { Theme } from './theme';
+
+// Zustand store survives HMR reloads during development but resets on full page reload
+const useSearchDropdownStore = create<{ open: boolean; toggle: () => void }>((set) => ({
+    open: false,
+    toggle: () => set((s) => ({ open: !s.open })),
+}));
 
 export interface SearchAreaProps {
     thin?: boolean;
@@ -33,7 +40,8 @@ function SearchAreaBase(props: SearchAreaProps) {
     });
 
     const [cur_value, setCurValue] = useState('');
-    const [show_dropdown, setShowDropdown] = useState(false);
+    const show_dropdown = useSearchDropdownStore((s) => s.open);
+    const toggleDropdown = useSearchDropdownStore((s) => s.toggle);
     const [redirect, setRedirect] = useState<{ to: string } | undefined>(undefined);
 
     useEffect(() => {
@@ -97,12 +105,7 @@ function SearchAreaBase(props: SearchAreaProps) {
                     </InputAdornment>
                 }
                 endAdornment={
-                    <IconButton
-                        onClick={() => setShowDropdown(!show_dropdown)}
-                        color={has_custom_value ? 'primary' : 'inherit'}
-                        title={t('more_search_options')}
-                        size="small"
-                    >
+                    <IconButton onClick={toggleDropdown} color={has_custom_value ? 'primary' : 'inherit'} title={t('more_search_options')} size="small">
                         <DropDownIcon collapsed={!show_dropdown} />
                     </IconButton>
                 }

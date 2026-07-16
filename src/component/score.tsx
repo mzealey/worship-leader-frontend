@@ -210,9 +210,9 @@ export const SheetMusicDisplay = ({ song, abc_file, transpose, is_printing, in_p
                 sx={(theme) => ({
                     '& svg': {
                         marginBottom: 15 / 8,
-                        color: theme.score.color,
+                        color: theme.palette.text.highlight,
                         '& .overlay': {
-                            fill: theme.score.highlight,
+                            fill: theme.palette.primary.main,
                             fillOpacity: 0,
                             '@media only print': { display: 'none' },
                         },

@@ -23,6 +23,7 @@ const LazyPagePrintSongbook = lazy(() => import('../page/page-print-songbook').t
 const LazyPageSetList = lazy(() => import('../page/set-list').then((m) => ({ default: m.PageSetList })));
 const LazyPageSettings = lazy(() => import('../page/settings').then((m) => ({ default: m.PageSettings })));
 const LazyPageEditTextarea = lazy(() => import('../page/edit').then((m) => ({ default: m.PageEditTextarea })));
+const LazyPageEditSong = lazy(() => import('../page/edit').then((m) => ({ default: m.PageEditSong })));
 const LazyPageNativePrompter = lazy(() => import('../page/native-prompter').then((m) => ({ default: m.PageNativePrompter })));
 const LazyPageList = lazy(() => import('../page/list').then((m) => ({ default: m.PageList })));
 const LazyPageDbLoadFailed = lazy(() => import('../page/dbload-failed').then((m) => ({ default: m.PageDbLoadFailed })));
@@ -316,6 +317,14 @@ export const App = () => {
                                 element={
                                     <Suspense fallback={<Spinner />}>
                                         <LazyPageEditTextarea type="new" />
+                                    </Suspense>
+                                }
+                            />
+                            <Route
+                                path="/edit-song/:song_id"
+                                element={
+                                    <Suspense fallback={<Spinner />}>
+                                        <LazyPageEditSong />
                                     </Suspense>
                                 }
                             />

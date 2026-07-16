@@ -1,10 +1,13 @@
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, Grid, ToggleButton, ToggleButtonGroup } from '@mui/material';
+import { Box, Button, CircularProgress, Grid, IconButton, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material';
 import { useCallback, useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Alert } from '../component/alert';
-import { DialogTitleWithClose } from '../component/basic';
 import { ContentEditable } from '../component/content-editable';
+import * as Icon from '../component/icons';
 import { LockScreen } from '../component/lock-screen';
 import { send_ui_notification } from '../component/notify';
+import { TopBar } from '../component/top-bar';
+import { DB } from '../db';
 import { API_HOST, get_uuid } from '../globals';
 import { useTranslation } from '../langpack';
 import type { Song } from '../song';
@@ -42,19 +45,19 @@ interface PageEditTextareaProps {
 
 export const PageEditTextarea = ({ type, song, onClose }: PageEditTextareaProps) => {
     const { t } = useTranslation();
+    const navigate = useNavigate();
     const [format, setFormat] = useState('chords');
-    const [closed, setClosed] = useState(false);
     const [orig, setOrig] = useState('');
     const [cont, setCont] = useState('');
     const [submitting, setSubmitting] = useState(false);
     const [submitFailed, setSubmitFailed] = useState(false);
 
     const handleClose = useCallback(() => {
-        setClosed(true);
         if (onClose) {
             onClose();
         }
-    }, [onClose]);
+        navigate(-1);
+    }, [onClose, navigate]);
 
     const updateCont = useCallback(
         (force?: boolean) => {
@@ -96,7 +99,6 @@ export const PageEditTextarea = ({ type, song, onClose }: PageEditTextareaProps)
             };
 
             if (orig === cont) {
-                // Not changed
                 return success();
             }
 
@@ -127,13 +129,10 @@ export const PageEditTextarea = ({ type, song, onClose }: PageEditTextareaProps)
 
     const formatChange = (newFormat: string) => {
         setFormat(newFormat);
-        // Will be picked up by updateCont effect
     };
 
-    // Update content when format changes
     useEffect(() => {
         if (format !== 'chords') {
-            // Skip initial render
             updateCont(false);
         }
     }, [format, updateCont]);
@@ -144,24 +143,58 @@ export const PageEditTextarea = ({ type, song, onClose }: PageEditTextareaProps)
 
     return (
         <form onSubmit={onSubmit}>
-            <Dialog open={!closed} onClose={handleClose} fullWidth maxWidth="md">
-                <DialogTitleWithClose handleClose={handleClose}>{t(type === 'new' ? 'newbtn' : 'editbtn')}</DialogTitleWithClose>
-                <DialogContent>
-                    <DialogContentText dangerouslySetInnerHTML={{ __html: t('edit_welcome_text') }} />
+            <TopBar
+                title={t(type === 'new' ? 'newbtn' : 'editbtn')}
+                before={
+                    <IconButton onClick={handleClose} aria-label="back">
+                        <Icon.Back />
+                    </IconButton>
+                }
+            />
+            <Box sx={{ maxWidth: 600, mx: 'auto', px: 2, py: 2 }}>
+                <Typography variant="body1" gutterBottom dangerouslySetInnerHTML={{ __html: t('edit_welcome_text') }} />
 
-                    <EditTypeChooser onChange={formatChange} format={format} elvanto={1} />
+                <EditTypeChooser onChange={formatChange} format={format} elvanto={1} />
 
+                <Box sx={{ mt: 2, mb: 2 }}>
                     <ContentEditable content={cont} onChange={setCont} autofocus />
-                </DialogContent>
-                <DialogActions>
+                </Box>
+
+                <Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end' }}>
                     <Button onClick={handleClose}>{t('cancel_btn')}</Button>
-                    <Button onClick={onSubmit} color="primary">
+                    <Button onClick={onSubmit} color="primary" variant="contained">
                         {t('editsubmit')}
                     </Button>
-                </DialogActions>
+                </Box>
 
                 {submitFailed ? <Alert message={t('edit_submit_failed')} onClose={() => setSubmitFailed(false)} /> : null}
-            </Dialog>
+            </Box>
         </form>
     );
+};
+
+export const PageEditSong = () => {
+    const { song_id } = useParams();
+    const [song, setSong] = useState<Song>();
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        if (song_id) {
+            const id = parseInt(song_id, 10);
+            DB.then((db) => db.get_song(id, true)).then((s) => {
+                setSong(s ?? undefined);
+                setLoading(false);
+            });
+        }
+    }, [song_id]);
+
+    if (loading) {
+        return (
+            <Box sx={{ display: 'flex', justifyContent: 'center', py: 8 }}>
+                <CircularProgress />
+            </Box>
+        );
+    }
+
+    return <PageEditTextarea type="edit" song={song} />;
 };

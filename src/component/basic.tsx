@@ -1,4 +1,4 @@
-import { Button, Checkbox, DialogTitle, IconButton, TextField } from '@mui/material';
+import { Button, Checkbox, Container, DialogTitle, IconButton, TextField } from '@mui/material';
 import { memo } from 'react';
 import * as Icon from './icons';
 
@@ -20,7 +20,7 @@ export const ImageButton = memo(function ({ icon: Icon, size = 'small', children
             sx={(theme) => ({
                 minHeight: theme.mixins.toolbar.height,
                 '& .icon': {
-                    color: iconColor || theme.palette.primary.icon,
+                    color: iconColor || theme.palette.primary.main,
                 },
             })}
             {...props}
@@ -80,5 +80,9 @@ export function ListCheckbox(props: React.ComponentProps<typeof Checkbox>) {
 }
 
 export function ThinPage({ children }: { children: React.ReactNode }) {
-    return <div style={{ maxWidth: '100vw', width: 500, margin: 'auto', paddingLeft: 8, paddingRight: 8 }}>{children}</div>;
+    return (
+        <Container maxWidth="sm" sx={{ px: 1 }}>
+            {children}
+        </Container>
+    );
 }
