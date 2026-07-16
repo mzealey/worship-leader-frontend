@@ -1,11 +1,11 @@
 This is a React/Material UI project in modern TypeScript.
 
-After you have made changes, run `yarn lint` to check for linting/typing errors, and `yarn test:unit` to run the unit tests.
+After you have made changes, run `yarn lint` to check for linting/typing errors, and `yarn test:coverage` to run the unit tests.
 
 Most source code lives under src/. Files are named .tsx if they are to do with View, otherwise .ts if they are more
 to do with Controllers or Models.
 
-Unit tests live under spec/ and can be run with `yarn test:unit`. When writing tests, try to use minimal mocking
+Unit tests live under spec/ and can be run with `yarn test:coverage`. When writing tests, try to use minimal mocking
 (rather depend on the library code), although spying on functions to ensure they were called correctly is perfectly
 fine. In particular don't mock persistentStorage but rather just run .clear() between tests. Don't test basic constants
 or functionality but rather focus on running the code in a realistic way and especially checking edge cases. If you
