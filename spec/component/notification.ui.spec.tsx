@@ -1,5 +1,4 @@
 import { act } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createLangpackMock } from '../helpers/mocks/langpack';
 import { renderWithProviders } from '../helpers/render';
@@ -83,8 +82,7 @@ describe('notification', () => {
             expect(snackbars.length).toBeGreaterThanOrEqual(1);
         });
 
-        it('removes notification from state when onClose is called', async () => {
-            const user = userEvent.setup();
+        it('removes notification from state when onClose is called', () => {
             renderWithProviders(<NotificationWidget />);
 
             act(() => {

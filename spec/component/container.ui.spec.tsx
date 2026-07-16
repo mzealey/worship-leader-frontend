@@ -1,14 +1,9 @@
 import { screen } from '@testing-library/react';
-import { MemoryRouter } from 'react-router';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createLangpackMock } from '../helpers/mocks/langpack';
-import { renderWithProviders } from '../helpers/render';
+import { renderWithRouter } from '../helpers/render';
 
 let PagesContainer: typeof import('../../src/component/container').PagesContainer;
-
-const renderWithRouter = (ui: React.ReactNode) => {
-    return renderWithProviders(<MemoryRouter>{ui}</MemoryRouter>);
-};
 
 describe('PagesContainer', () => {
     beforeEach(async () => {
@@ -23,9 +18,11 @@ describe('PagesContainer', () => {
         }));
         vi.doMock('../../src/page-padding', () => {
             const store = { top: 0, bottom: 0, reset: vi.fn() };
-            const fn = vi.fn((selector: (s: any) => any) => selector(store));
-            (fn as any).reset = store.reset;
-            return { usePagePadding: fn, default: fn };
+            const fn = Object.assign(
+                vi.fn((selector: (s: any) => any) => selector(store)),
+                { reset: store.reset },
+            );
+            return { usePagePadding: fn };
         });
         vi.doMock('../../src/component/theme', () => ({
             Theme: ({ children, section }: { children: React.ReactNode; section: string }) => <div data-testid={`theme-${section}`}>{children}</div>,
@@ -50,9 +47,9 @@ describe('PagesContainer', () => {
         expect(document.body).toBeInTheDocument();
     });
 
-    it('renders bottom nav buttons in mobile mode', () => {
-        const container = renderWithRouter(<PagesContainer />);
-        expect(container.getByTestId('theme-Bottom')).toBeInTheDocument();
+    it('renders bottom nav in mobile mode', () => {
+        renderWithRouter(<PagesContainer />);
+        expect(screen.getByTestId('theme-Bottom')).toBeInTheDocument();
     });
 
     it('renders children content', () => {

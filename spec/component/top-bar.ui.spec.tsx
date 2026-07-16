@@ -63,7 +63,7 @@ describe('TopBar', () => {
     });
 
     it('renders menu button when children or menuOnly provided', () => {
-        const { container } = renderWithProviders(
+        renderWithProviders(
             <TopBar>
                 <button data-testid="menu-item">Menu Item</button>
             </TopBar>,
@@ -84,9 +84,9 @@ describe('TopBar', () => {
     });
 
     it('renders menu button when menuOnly is provided', () => {
-        const { container } = renderWithProviders(<TopBar menuOnly={<span data-testid="menu-only">Menu Only Item</span>} />);
+        renderWithProviders(<TopBar menuOnly={<span data-testid="menu-only">Menu Only Item</span>} />);
 
-        const menuButton = container.querySelector('.MuiIconButton-root');
+        const menuButton = document.querySelector('.MuiIconButton-root');
         expect(menuButton).toBeInTheDocument();
     });
 
@@ -97,7 +97,7 @@ describe('TopBar', () => {
     });
 
     it('renders without spacer when noSpacer is true', () => {
-        const { container } = renderWithProviders(<TopBar title="Test" noSpacer />);
+        renderWithProviders(<TopBar title="Test" noSpacer />);
 
         expect(screen.getByText('Test')).toBeInTheDocument();
     });

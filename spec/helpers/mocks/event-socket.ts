@@ -7,6 +7,7 @@ export function createEventSocketMock() {
             is_setup: () => Promise.resolve(),
             register_listener: vi.fn(),
             unregister_listener: vi.fn(),
+            type: () => 'mock',
         },
     };
 }
