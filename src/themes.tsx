@@ -242,49 +242,6 @@ function generate_theme(base_palette: Palette) {
             },
         },
         components: {
-            MuiCheckbox: {
-                styleOverrides: {
-                    root: {
-                        color: theme.palette.background.default,
-                        zIndex: 0,
-                        padding: checkbox_padding,
-                        marginLeft: -checkbox_padding,
-
-                        // Do a white background
-                        '& > span:first-child:before': {
-                            content: '""',
-                            display: 'inline-block',
-                            backgroundColor: theme.palette.background.default,
-                            position: 'absolute',
-                            width: 13, //24 - 4 * 2,
-                            height: 13, //24 - 4 * 2,
-                            left: checkbox_padding + 4,
-                            top: checkbox_padding + 4,
-                            pointerEvents: 'none',
-                            zIndex: -1,
-                        },
-                    },
-                    checked: {
-                        //backgroundColor: '#fff',
-                    },
-                    indeterminate: {
-                        color: '#93DEDC',
-                    },
-                },
-            },
-            MuiFormControlLabel: {
-                styleOverrides: {
-                    root: {
-                        alignItems: 'center',
-                    },
-                    label: {
-                        color: theme.palette.primary.contrastText,
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: 4,
-                    },
-                },
-            },
             MuiButtonGroup: {
                 styleOverrides: {
                     root: {
