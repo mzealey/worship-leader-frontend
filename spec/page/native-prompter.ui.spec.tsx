@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createLangpackMock } from '../helpers/mocks/langpack';
-import { renderWithProviders } from '../helpers/render';
+import { renderWithRouter } from '../helpers/render';
 
 let PageNativePrompter: typeof import('../../src/page/native-prompter').PageNativePrompter;
 
@@ -27,13 +27,13 @@ describe('PageNativePrompter', () => {
     });
 
     it('returns null when no prompt is set', () => {
-        const { container } = renderWithProviders(<PageNativePrompter />);
+        const { container } = renderWithRouter(<PageNativePrompter />);
         expect(container.innerHTML).toBe('');
     });
 
     it('does not crash when onClose is provided', () => {
         const onClose = vi.fn();
-        const { container } = renderWithProviders(<PageNativePrompter onClose={onClose} />);
+        const { container } = renderWithRouter(<PageNativePrompter onClose={onClose} />);
         expect(container.innerHTML).toBe('');
     });
 });

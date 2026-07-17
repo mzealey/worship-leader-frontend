@@ -41,11 +41,20 @@ export const useSongListStore = create<SongListStore>((set) => ({
 }));
 
 // Zustand store for search/filter state
+// NOTE: current_search stores a mutable DBSearch object. Zustand uses
+// reference equality (Object.is) by default, so mutations to the DBSearch
+// instance will NOT trigger re-renders for selectors of current_search.
+// This is intentional: reactive updates are handled through useSongListStore
+// (items, pager) and the DBSearch Subject. current_search is only for
+// identity comparison (is this the active search?) and method access.
+// For any future selectors that need to react to DBSearch mutations, use
+// search_stamp in combination with current_search.
 interface SearchStore {
     filters: SearchFiltersState;
     tags: TagFilterMap;
     sources: SourceFilterMap;
     current_search?: DBSearch;
+    search_stamp: number;
 
     setFilters: (filters: Partial<SearchFiltersState>) => void;
     updateSourceFilter: (sources: SourceFilterMap) => void;
@@ -53,6 +62,7 @@ interface SearchStore {
     updateTagFilter: (tags: TagFilterMap) => void;
     resetTagFilter: () => void;
     setCurrentSearch: (search: DBSearch | undefined) => void;
+    bumpSearchStamp: () => void;
 }
 
 export const useSearchStore = create<SearchStore>((set) => ({
@@ -64,6 +74,7 @@ export const useSearchStore = create<SearchStore>((set) => ({
     tags: {},
     sources: persistentStorage.getObj<SourceFilterMap>('source-select', {}),
     current_search: undefined,
+    search_stamp: 0,
 
     setFilters: (filters) => {
         set((state) => ({
@@ -100,6 +111,7 @@ export const useSearchStore = create<SearchStore>((set) => ({
         }),
     resetTagFilter: () => set({ tags: {} }),
     setCurrentSearch: (current_search) => set({ current_search }),
+    bumpSearchStamp: () => set((state) => ({ search_stamp: state.search_stamp + 1 })),
 }));
 
 const send_search_event = eventSocket.add_queue('search', 100, 30 * 24 * 60 * 60);
@@ -345,6 +357,7 @@ export class DBSearch {
                     useSongListStore.getState().setSongList(song_list, requested_items, this.pager);
 
                     this.state.next({ state: 'resolved', infinite_scroll });
+                    useSearchStore.getState().bumpSearchStamp();
                 }
 
                 return songs;
@@ -383,6 +396,7 @@ export class DBSearch {
                         if (this._is_active()) {
                             this.pager.set_total(total);
                             useSongListStore.getState().setPager(this.pager.clone()); // clone to force a rerender - nasty hack for PagerElem updates
+                            useSearchStore.getState().bumpSearchStamp();
                         }
                         songs.total = total;
 

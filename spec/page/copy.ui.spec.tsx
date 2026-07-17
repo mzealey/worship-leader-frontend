@@ -2,7 +2,7 @@ import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createLangpackMock } from '../helpers/mocks/langpack';
-import { renderWithProviders } from '../helpers/render';
+import { renderWithRouter } from '../helpers/render';
 
 let PageCopyTextarea: typeof import('../../src/page/copy').PageCopyTextarea;
 
@@ -18,6 +18,12 @@ describe('PageCopyTextarea', () => {
         vi.clearAllMocks();
 
         vi.doMock('../../src/langpack', createLangpackMock);
+        vi.doMock('../../src/use-dialog', () => ({
+            useDialog: (onClose?: () => void) => ({
+                closed: false,
+                handleClose: () => onClose?.(),
+            }),
+        }));
         vi.doMock('../../src/songxml-util', () => ({
             convert_to_pre: vi.fn().mockReturnValue('<pre>converted content</pre>'),
         }));
@@ -36,19 +42,19 @@ describe('PageCopyTextarea', () => {
     });
 
     it('renders copy dialog', () => {
-        renderWithProviders(<PageCopyTextarea song={mockSong} />);
+        renderWithRouter(<PageCopyTextarea song={mockSong} />);
 
         expect(screen.getByText('Copy Song')).toBeInTheDocument();
     });
 
     it('renders cancel button', () => {
-        renderWithProviders(<PageCopyTextarea song={mockSong} />);
+        renderWithRouter(<PageCopyTextarea song={mockSong} />);
 
         expect(screen.getByText('Cancel')).toBeInTheDocument();
     });
 
     it('renders type chooser dropdown', () => {
-        renderWithProviders(<PageCopyTextarea song={mockSong} />);
+        renderWithRouter(<PageCopyTextarea song={mockSong} />);
 
         expect(screen.getByTestId('type-chooser')).toBeInTheDocument();
     });
@@ -57,7 +63,7 @@ describe('PageCopyTextarea', () => {
         const usr = userEvent.setup();
         const onClose = vi.fn();
 
-        renderWithProviders(<PageCopyTextarea song={mockSong} onClose={onClose} />);
+        renderWithRouter(<PageCopyTextarea song={mockSong} onClose={onClose} />);
 
         await usr.click(screen.getByText('Cancel'));
 

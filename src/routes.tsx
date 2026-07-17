@@ -37,7 +37,8 @@ function PageSetViewWrapper() {
     return <PageSetView set_id={set_id ? parseInt(set_id) : 0} />;
 }
 
-function OldSongInfo() {
+// Exported for testing legacy URL redirects
+export function OldSongInfo() {
     const [searchParams] = useSearchParams();
     let song_path = searchParams.get('song_id');
     if (!song_path) return <Navigate to="/" />;
@@ -47,7 +48,8 @@ function OldSongInfo() {
     return <Navigate to={`/song/${song_path}`} />;
 }
 
-function OldSetList() {
+// Exported for testing legacy URL redirects
+export function OldSetList() {
     const [searchParams] = useSearchParams();
     const [redirect, setRedirect] = useState<string | null>(null);
 

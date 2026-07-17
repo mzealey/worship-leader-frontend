@@ -2,7 +2,7 @@ import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createLangpackMock } from '../helpers/mocks/langpack';
-import { renderWithProviders } from '../helpers/render';
+import { renderWithRouter } from '../helpers/render';
 
 let DialogAddToSet: typeof import('../../src/page/add-to-set').DialogAddToSet;
 let mockSET_DB: {
@@ -39,14 +39,14 @@ describe('DialogAddToSet', () => {
     });
 
     it('renders the dialog with title and input field', () => {
-        renderWithProviders(<DialogAddToSet song_id={123} />);
+        renderWithRouter(<DialogAddToSet song_id={123} />);
 
         expect(screen.getByText('Add Song to Set')).toBeInTheDocument();
         expect(screen.getByText('Create and add song to set')).toBeInTheDocument();
     });
 
     it('renders existing writable sets', async () => {
-        renderWithProviders(<DialogAddToSet song_id={123} />);
+        renderWithRouter(<DialogAddToSet song_id={123} />);
 
         const mySet = await screen.findByText('My Set');
         expect(mySet).toBeInTheDocument();
@@ -54,7 +54,7 @@ describe('DialogAddToSet', () => {
     });
 
     it('create button is disabled when no set name entered', () => {
-        renderWithProviders(<DialogAddToSet song_id={123} />);
+        renderWithRouter(<DialogAddToSet song_id={123} />);
 
         const createBtn = screen.getByText('Create and add song to set');
         expect(createBtn.closest('button')).toBeDisabled();
@@ -64,7 +64,7 @@ describe('DialogAddToSet', () => {
         mockSET_DB.add_song_to_set.mockResolvedValue(undefined);
         const onClose = vi.fn();
 
-        renderWithProviders(<DialogAddToSet song_id={123} onClose={onClose} />);
+        renderWithRouter(<DialogAddToSet song_id={123} onClose={onClose} />);
 
         const mySetBtn = await screen.findByText('My Set');
         const user = userEvent.setup();
@@ -79,7 +79,7 @@ describe('DialogAddToSet', () => {
         mockSET_DB.add_song_to_set.mockResolvedValue(undefined);
         const onClose = vi.fn();
 
-        renderWithProviders(<DialogAddToSet song_id={123} onClose={onClose} />);
+        renderWithRouter(<DialogAddToSet song_id={123} onClose={onClose} />);
 
         const input = document.querySelector('input')!;
         await user.type(input, 'New Set Name');
@@ -99,7 +99,7 @@ describe('DialogAddToSet', () => {
         const user = userEvent.setup();
         mockSET_DB.add_song_to_set.mockRejectedValue(new Error('duplicate'));
 
-        renderWithProviders(<DialogAddToSet song_id={123} />);
+        renderWithRouter(<DialogAddToSet song_id={123} />);
 
         const mySetBtn = await screen.findByText('My Set');
         await user.click(mySetBtn);
@@ -112,7 +112,7 @@ describe('DialogAddToSet', () => {
         const user = userEvent.setup();
         mockSET_DB.add_song_to_set.mockResolvedValue(undefined);
 
-        renderWithProviders(<DialogAddToSet song_id={123} transpose={{ keyName: 'D', capo: 2 }} />);
+        renderWithRouter(<DialogAddToSet song_id={123} transpose={{ keyName: 'D', capo: 2 }} />);
 
         const mySetBtn = await screen.findByText('My Set');
         await user.click(mySetBtn);

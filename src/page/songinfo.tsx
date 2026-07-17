@@ -215,12 +215,12 @@ export const PageSongInfo: ComponentType<PageSongInfoProps> = ({ requested_song_
             if (!is_input && !e.altKey && set_switcher && e.keyCode == 37) {
                 // left
                 e.preventDefault();
-                window.location.hash = `#song/${set_switcher.move(-1)}/${set_switcher.set_id}`;
+                navigate(`/song/${set_switcher.move(-1)}/${set_switcher.set_id}`);
                 presentation_area_ref.current?.focus();
             } else if (!is_input && !e.altKey && set_switcher && e.keyCode == 39) {
                 // right
                 e.preventDefault();
-                window.location.hash = `#song/${set_switcher.move(1)}/${set_switcher.set_id}`;
+                navigate(`/song/${set_switcher.move(1)}/${set_switcher.set_id}`);
                 presentation_area_ref.current?.focus();
             } else if (e.keyCode == 122) {
                 // F11
@@ -233,7 +233,7 @@ export const PageSongInfo: ComponentType<PageSongInfoProps> = ({ requested_song_
                 exit_single_presentor_mode();
             }
         },
-        [set_switcher, in_presentation, exit_single_presentor_mode, enter_single_presentor_mode],
+        [set_switcher, in_presentation, exit_single_presentor_mode, enter_single_presentor_mode, navigate],
     );
 
     const update_set_switcher = useCallback(

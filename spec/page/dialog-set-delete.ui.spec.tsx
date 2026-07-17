@@ -2,7 +2,7 @@ import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createLangpackMock } from '../helpers/mocks/langpack';
-import { renderWithProviders } from '../helpers/render';
+import { renderWithRouter } from '../helpers/render';
 
 let PageSetDelete: typeof import('../../src/page/dialog-set-delete').PageSetDelete;
 let mockSET_DB: { delete_set: ReturnType<typeof vi.fn> };
@@ -15,6 +15,12 @@ describe('PageSetDelete', () => {
         mockSET_DB = { delete_set: vi.fn() };
 
         vi.doMock('../../src/langpack', createLangpackMock);
+        vi.doMock('../../src/use-dialog', () => ({
+            useDialog: (onClose?: () => void) => ({
+                closed: false,
+                handleClose: () => onClose?.(),
+            }),
+        }));
         vi.doMock('../../src/set-db', () => ({
             SET_DB: mockSET_DB,
         }));
@@ -24,14 +30,14 @@ describe('PageSetDelete', () => {
     });
 
     it('renders delete confirmation dialog', () => {
-        renderWithProviders(<PageSetDelete set_id={1} />);
+        renderWithRouter(<PageSetDelete set_id={1} />);
 
         expect(screen.getByText('Delete Set?')).toBeInTheDocument();
         expect(screen.getByText('Do you really want to delete this set?')).toBeInTheDocument();
     });
 
     it('renders cancel and delete buttons', () => {
-        renderWithProviders(<PageSetDelete set_id={1} />);
+        renderWithRouter(<PageSetDelete set_id={1} />);
 
         expect(screen.getByText('Cancel')).toBeInTheDocument();
         expect(screen.getByText('Delete')).toBeInTheDocument();
@@ -40,7 +46,7 @@ describe('PageSetDelete', () => {
     it('calls SET_DB.delete_set when delete button clicked', async () => {
         const user = userEvent.setup();
 
-        renderWithProviders(<PageSetDelete set_id={42} />);
+        renderWithRouter(<PageSetDelete set_id={42} />);
 
         await user.click(screen.getByText('Delete'));
 
@@ -51,7 +57,7 @@ describe('PageSetDelete', () => {
         const user = userEvent.setup();
         const onClose = vi.fn();
 
-        renderWithProviders(<PageSetDelete set_id={1} onClose={onClose} />);
+        renderWithRouter(<PageSetDelete set_id={1} onClose={onClose} />);
 
         await user.click(screen.getByText('Delete'));
 

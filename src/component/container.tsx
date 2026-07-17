@@ -72,6 +72,7 @@ function BottomButton({ to, icon: ThisIcon, scaleSize = 1, ...props }: BottomBut
                     opacity: 0.5,
                     transition: 'opacity 0.5s linear, transform 0.5s linear',
                     transform: 'scale(1)',
+                    willChange: 'transform',
                     ...(isActive && {
                         opacity: 1,
                         transform: 'scale(1.5)',

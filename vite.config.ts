@@ -6,15 +6,16 @@ import { viteCommonjs } from '@originjs/vite-plugin-commonjs';
 import legacy from '@vitejs/plugin-legacy';
 import react from '@vitejs/plugin-react';
 import { copyFileSync } from 'fs';
-import { defineConfig } from 'vite';
+import { defineConfig, type PluginOption, type UserConfig } from 'vite';
 import { DynamicPublicDirectory } from 'vite-multiple-assets';
 import circleDependency from 'vite-plugin-circular-dependency';
 import eslint from 'vite-plugin-eslint';
 import { createHtmlPlugin } from 'vite-plugin-html';
-import { VitePWA } from 'vite-plugin-pwa';
+import { VitePWA, type ManifestOptions } from 'vite-plugin-pwa';
+import package_conf from './package.json';
+import web_manifest from './web-manifest.json';
 
-const package_conf = require('./package.json');
-const browserslist = {
+const browserslist: Record<string, string | string[]> = {
     // Let www build use the default targets from package.json
     www: package_conf.browserslist,
     chrome: 'since 2023 and chrome > 0',
@@ -26,6 +27,15 @@ const browserslist = {
     editor: ['last 2 versions', 'last 10 chrome versions', 'since 2020', 'not ie <= 11'],
 };
 
+// UserConfig, but with the pieces we mutate below guaranteed to exist
+interface AppConfig extends UserConfig {
+    build: NonNullable<UserConfig['build']>;
+    plugins: PluginOption[];
+}
+
+type HtmlPluginOptions = NonNullable<Parameters<typeof createHtmlPlugin>[0]>;
+type HtmlPages = NonNullable<HtmlPluginOptions['pages']>;
+
 export default defineConfig(({ command, mode }) => {
     const build_type = mode == 'development' || mode == 'test' ? 'www' : mode;
     if (!build_type) throw new Error('Must specify build type eg --mode=www');
@@ -35,11 +45,11 @@ export default defineConfig(({ command, mode }) => {
     const is_watch = mode != 'test' && mode != 'serve'; // Bit of a nasty hack as --watch detail is not passed in
 
     process.env.VITE_BUILD_TYPE = build_type;
-    process.env.VITE_DEBUG = !is_production;
+    process.env.VITE_DEBUG = String(!is_production);
     process.env.VITE_APP_VERSION = is_production ? package_conf.version : 'debug';
     //process.env.VITE_API_HOST = is_production ? 'https://songs.worshipleaderapp.com' : process.env.VITE_API_HOST;
 
-    const config = {
+    const config: AppConfig = {
         //root: 'src',
         // Copied by the DynamicPublicDirectory plugin
 
@@ -50,12 +60,11 @@ export default defineConfig(({ command, mode }) => {
         },
         publicDir: false,
         optimizeDeps: {
-            esbuildOptions: {},
+            rolldownOptions: {},
         },
         css: {
             preprocessorOptions: {
                 scss: {
-                    api: 'modern-compiler',
                     // Noisy warnings go away
                     silenceDeprecations: ['slash-div', 'import', 'color-functions', 'global-builtin'],
                 },
@@ -93,51 +102,51 @@ export default defineConfig(({ command, mode }) => {
     if (build_type == 'www') config.base = ''; // relative base
 
     if (build_type == 'editor') {
-        config.build.rollupOptions = {
+        config.build.rolldownOptions = {
             input: {
                 'common-functions': 'src/common-functions.js',
             },
             output: {
                 entryFileNames: '[name].js',
+                minify: {
+                    mangle: {
+                        keepNames: true,
+                    },
+                },
             },
         };
         config.build.copyPublicDir = false;
-        config.esbuild = {
-            minifyIdentifiers: false,
-        };
     } else {
-        const html_config = {
-            pages: [
-                {
-                    filename: 'index.html',
-                    template: 'index.html',
-                    injectOptions: {
-                        data: {
-                            htmlWebpackPlugin: {
-                                options: {
-                                    build: build_type,
-                                    is_production,
-                                },
+        const html_pages: HtmlPages = [
+            {
+                filename: 'index.html',
+                template: 'index.html',
+                injectOptions: {
+                    data: {
+                        htmlWebpackPlugin: {
+                            options: {
+                                build: build_type,
+                                is_production,
                             },
                         },
                     },
                 },
-                {
-                    filename: 'presentor.html',
-                    template: 'presentor.html',
-                },
-                {
-                    filename: 'songbook-viewer.html',
-                    template: 'songbook-viewer.html',
-                },
-            ],
-        };
+            },
+            {
+                filename: 'presentor.html',
+                template: 'presentor.html',
+            },
+            {
+                filename: 'songbook-viewer.html',
+                template: 'songbook-viewer.html',
+            },
+        ];
 
         if (is_production && build_type == 'www') {
             // The html templater is not great but it's the best we have. Seems like it cannot support multiple outputs
             // from the same template for some reason so we have to hack-copy the file.
             copyFileSync('index.html', 'song_templ.tt.html');
-            html_config.pages.push({
+            html_pages.push({
                 filename: 'song_templ.tt.html',
                 template: 'song_templ.tt.html',
                 injectOptions: {
@@ -169,19 +178,21 @@ export default defineConfig(({ command, mode }) => {
                 [
                     {
                         input: `public/all/**`,
+                        output: '',
                         watch: is_watch,
                     },
                     {
                         input: `public/${build_type}/**`,
+                        output: '',
                         watch: is_watch,
                     },
                 ],
                 {
-                    followSymlinks: true,
+                    followSymbolicLinks: true,
                 },
             ),
 
-            createHtmlPlugin(html_config),
+            createHtmlPlugin({ pages: html_pages }),
         );
 
         // TODO: The legacy shim seems to break phonegap build for some reason on my phone - causes the js to load twice
@@ -195,12 +206,6 @@ export default defineConfig(({ command, mode }) => {
                     //modernPolyfills: true,
                 }),
             );
-
-            // For supporting 'legacy' functionality, don't worry about sqlite using bigints - it auto-falls back to web
-            // API if problematic
-            config.esbuild = {
-                supported: { bigint: true },
-            };
         }
 
         config.build.assetsInlineLimit = (filePath, content) => {
@@ -209,29 +214,16 @@ export default defineConfig(({ command, mode }) => {
             return content.length < 7000;
         };
 
-        config.build.rollupOptions = {
+        config.build.rolldownOptions = {
             output: {
-                manualChunks(id) {
-                    if (id.includes('node_modules/@mui/') || id.includes('node_modules/@emotion/')) return 'vendor-mui';
-                    if (id.includes('node_modules/react/') || id.includes('node_modules/react-dom/') || id.includes('node_modules/react-router/'))
-                        return 'vendor-react';
-                    if (id.includes('node_modules/@dnd-kit/')) return 'vendor-dnd';
-                    if (id.includes('node_modules/zustand/')) return 'vendor-zustand';
-                    if (id.includes('node_modules/rxjs/')) return 'vendor-rxjs';
-                },
-                assetFileNames: ({ names, originalFileNames }) => {
+                codeSplitting: true,
+                assetFileNames: ({ originalFileNames }) => {
                     if (originalFileNames.length == 1) {
                         if (originalFileNames[0].endsWith('.wasm')) return originalFileNames[0];
                         else if (/^fonts\//.test(originalFileNames[0])) return originalFileNames[0];
                     }
                     return 'assets/[name]-[hash][extname]';
                 },
-            },
-        };
-
-        config.build.rolldownOptions = {
-            output: {
-                codeSplitting: true,
             },
         };
     }
@@ -301,7 +293,7 @@ export default defineConfig(({ command, mode }) => {
                         'unidecode/data/xff.json',
                     ],
                 },
-                manifest: require('./web-manifest.json'),
+                manifest: web_manifest as Partial<ManifestOptions>,
             }),
         );
     }

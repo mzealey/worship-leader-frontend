@@ -1,7 +1,7 @@
 import { screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createLangpackMock } from '../helpers/mocks/langpack';
-import { renderWithProviders } from '../helpers/render';
+import { renderWithRouter } from '../helpers/render';
 
 let PageSourceSelect: typeof import('../../src/page/source-select').PageSourceSelect;
 
@@ -35,14 +35,14 @@ describe('PageSourceSelect', () => {
     });
 
     it('renders source select dialog', async () => {
-        renderWithProviders(<PageSourceSelect />);
+        renderWithRouter(<PageSourceSelect />);
 
         expect(await screen.findByText('Choose Song Books')).toBeInTheDocument();
         expect(screen.getByText('Continue')).toBeInTheDocument();
     });
 
     it('renders language headings for each source language', async () => {
-        renderWithProviders(<PageSourceSelect />);
+        renderWithRouter(<PageSourceSelect />);
 
         // lang_name mock returns the code as-is
         expect(await screen.findByText('en')).toBeInTheDocument();

@@ -2,7 +2,7 @@ import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createLangpackMock } from '../helpers/mocks/langpack';
-import { renderWithProviders } from '../helpers/render';
+import { renderWithRouter } from '../helpers/render';
 
 let PageSetRename: typeof import('../../src/page/dialog-set-rename').PageSetRename;
 let mockSET_DB: {
@@ -30,14 +30,14 @@ describe('PageSetRename', () => {
     });
 
     it('renders rename dialog', () => {
-        renderWithProviders(<PageSetRename set_id={1} />);
+        renderWithRouter(<PageSetRename set_id={1} />);
 
         expect(screen.getByText('Rename Set')).toBeInTheDocument();
         expect(screen.getByText('Cancel')).toBeInTheDocument();
     });
 
     it('loads current set name', async () => {
-        renderWithProviders(<PageSetRename set_id={1} />);
+        renderWithRouter(<PageSetRename set_id={1} />);
 
         await waitFor(() => {
             expect(mockSET_DB.get_set_title).toHaveBeenCalledWith(1);
@@ -47,7 +47,7 @@ describe('PageSetRename', () => {
     it('disables rename button when name is empty', () => {
         mockSET_DB.get_set_title.mockResolvedValue('');
 
-        renderWithProviders(<PageSetRename set_id={1} />);
+        renderWithRouter(<PageSetRename set_id={1} />);
 
         const renameBtn = screen.getByText('Rename');
         expect(renameBtn).toBeDisabled();
@@ -56,7 +56,7 @@ describe('PageSetRename', () => {
     it('calls rename_set on rename button click', async () => {
         const user = userEvent.setup();
 
-        renderWithProviders(<PageSetRename set_id={5} />);
+        renderWithRouter(<PageSetRename set_id={5} />);
 
         // The input has preloaded value 'Current Name' from get_set_title
         const input = document.querySelector('input')!;

@@ -7,6 +7,7 @@ setup_error_catcher();
 import { createRoot } from 'react-dom/client';
 import { setup_abc2svg } from './abc2svg';
 import { App } from './component/app';
+import { ErrorBoundary } from './component/error-boundary';
 import { NotificationWidget } from './component/notification';
 import { ThemeApp } from './component/theme';
 import { cordova_setup } from './cordova-setup';
@@ -66,7 +67,9 @@ function main_setup() {
 
     root.render(
         <ThemeApp>
-            <App />
+            <ErrorBoundary>
+                <App />
+            </ErrorBoundary>
             <NotificationWidget />
         </ThemeApp>,
     );

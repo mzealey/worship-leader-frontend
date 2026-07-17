@@ -2,7 +2,7 @@ import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createLangpackMock } from '../helpers/mocks/langpack';
-import { renderWithProviders } from '../helpers/render';
+import { renderWithRouter } from '../helpers/render';
 
 let PageSetShare: typeof import('../../src/page/dialog-set-share').PageSetShare;
 
@@ -33,13 +33,13 @@ describe('PageSetShare', () => {
     });
 
     it('renders share dialog', () => {
-        renderWithProviders(<PageSetShare set={mockSet} />);
+        renderWithRouter(<PageSetShare set={mockSet} />);
 
         expect(screen.getByText('Share Set')).toBeInTheDocument();
     });
 
     it('renders share buttons', () => {
-        renderWithProviders(<PageSetShare set={mockSet} />);
+        renderWithRouter(<PageSetShare set={mockSet} />);
 
         expect(screen.getByText('Share Live Set')).toBeInTheDocument();
         expect(screen.getByText('Share Copy')).toBeInTheDocument();
@@ -49,7 +49,7 @@ describe('PageSetShare', () => {
     it('shows sharer when live share button clicked', async () => {
         const usr = userEvent.setup();
 
-        renderWithProviders(<PageSetShare set={mockSet} />);
+        renderWithRouter(<PageSetShare set={mockSet} />);
 
         await usr.click(screen.getByText('Share Live Set'));
 
@@ -59,7 +59,7 @@ describe('PageSetShare', () => {
     it('shows sharer when normal share button clicked', async () => {
         const usr = userEvent.setup();
 
-        renderWithProviders(<PageSetShare set={mockSet} />);
+        renderWithRouter(<PageSetShare set={mockSet} />);
 
         await usr.click(screen.getByText('Share Copy'));
 

@@ -1,39 +1,46 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { useSearchParams } from 'react-router';
+
+let nextDialogId = 1;
 
 export function useDialog(onClose?: () => void) {
+    const [searchParams, setSearchParams] = useSearchParams();
     const [closed, setClosed] = useState(false);
-    const startHashRef = useRef<string | null>(null);
+    const dialogIdRef = useRef<string | null>(null);
     const onCloseRef = useRef(onClose);
+    const initializedRef = useRef(false);
+    const prevDialogRef = useRef<string | null>(null);
 
     useEffect(() => {
         onCloseRef.current = onClose;
     }, [onClose]);
 
     useEffect(() => {
-        if (!closed && !startHashRef.current) {
-            startHashRef.current = window.location.hash;
-            window.location.hash += '?dialog';
-
-            const handlePopstate = (ev: PopStateEvent) => {
-                console.log('close', ev);
-                if (window.location.hash === startHashRef.current) {
-                    window.removeEventListener('popstate', handlePopstate);
-                    setClosed(true);
-                    onCloseRef.current?.();
-                }
-            };
-
-            window.addEventListener('popstate', handlePopstate);
-
-            return () => {
-                window.removeEventListener('popstate', handlePopstate);
-            };
+        if (!initializedRef.current) {
+            initializedRef.current = true;
+            const id = `d${nextDialogId++}`;
+            dialogIdRef.current = id;
+            const newParams = new URLSearchParams(searchParams);
+            newParams.set('_dialog', id);
+            setSearchParams(newParams);
         }
-    }, [closed]);
+    }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-    const handleClose = () => {
+    const currentDialog = searchParams.get('_dialog');
+
+    useEffect(() => {
+        const prev = prevDialogRef.current;
+        prevDialogRef.current = currentDialog;
+
+        if (prev === dialogIdRef.current && currentDialog !== dialogIdRef.current && !closed) {
+            setClosed(true);
+            onCloseRef.current?.();
+        }
+    }, [currentDialog, closed]);
+
+    const handleClose = useCallback(() => {
         window.history.back();
-    };
+    }, []);
 
     return {
         closed,

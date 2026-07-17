@@ -1,10 +1,8 @@
 import { defineConfig, mergeConfig } from 'vitest/config';
-import viteConfig from './vite.config.js';
-
-const baseConfig = typeof viteConfig === 'function' ? viteConfig({ command: '', mode: 'test' }) : viteConfig;
+import viteConfig from './vite.config';
 
 export default defineConfig(
-    mergeConfig(baseConfig, {
+    mergeConfig(viteConfig({ command: 'serve', mode: 'test' }), {
         test: {
             globals: true,
             environment: 'jsdom',
