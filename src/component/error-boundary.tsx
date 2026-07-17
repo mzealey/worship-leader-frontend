@@ -64,7 +64,8 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
                         {get_translation('error-boundary-body')}
                     </Typography>
 
-                    {DEBUG && this.state.error ? <Box
+                    {DEBUG && this.state.error ? (
+                        <Box
                             component="pre"
                             sx={{
                                 maxWidth: 600,
@@ -83,7 +84,8 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
                         >
                             {this.state.error.message}
                             {this.state.error.stack ? `\n\n${this.state.error.stack}` : null}
-                        </Box> : null}
+                        </Box>
+                    ) : null}
 
                     <Box sx={{ display: 'flex', gap: 2 }}>
                         <Button variant="contained" onClick={this.handleRetry}>

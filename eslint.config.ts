@@ -12,7 +12,9 @@ export default defineConfig(
         files: ['**/*.{js,jsx,ts,tsx}'],
         plugins: {
             react,
-            'react-hooks': reactHooks,
+            // The full plugin object declares a `configs.flat` shape that is incompatible with eslint's Plugin type,
+            // so just pass the parts that are actually used at runtime.
+            'react-hooks': { meta: reactHooks.meta, rules: reactHooks.rules },
         },
         languageOptions: {
             globals: {

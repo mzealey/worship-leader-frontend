@@ -48,8 +48,7 @@ export function OldSongInfo() {
     return <Navigate to={`/song/${song_path}`} />;
 }
 
-// Exported for testing legacy URL redirects
-export function OldSetList() {
+function OldSetList() {
     const [searchParams] = useSearchParams();
     const [redirect, setRedirect] = useState<string | null>(null);
 
