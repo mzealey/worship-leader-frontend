@@ -5,7 +5,7 @@ import { Navigate, useNavigate } from 'react-router';
 import type { Subscription } from 'rxjs';
 import { useCanPrint } from '../can-print';
 import { ImageButton } from '../component/basic';
-import { useLastButtonHandler, type LastButtonHandlerComponent } from '../component/container';
+import { useLastButtonHandler, type LastButtonHandler } from '../component/container';
 import * as Icon from '../component/icons';
 import { Link } from '../component/router-link';
 import { TextDirection } from '../component/song-list';
@@ -93,23 +93,20 @@ export const PageSongInfo: ComponentType<PageSongInfoProps> = ({ requested_song_
         };
     }, [transpose]);
 
-    const add_button_handler: LastButtonHandlerComponent = useMemo(
+    const add_button_handler: LastButtonHandler = useMemo(
         () => ({
-            icon: Icon.AddToSet,
-            title: 'add_to_set',
-            component: (props) => <DialogAddToSet transpose={transposePayload} song_id={song?.id ?? 0} {...props} />,
+            icon: Icon.NewSong,
+            title: 'editbtn',
+            to: `/edit-song/${song?.id ?? 0}`,
         }),
-        [transposePayload, song],
+        [song],
     );
 
-    const exit_button_handler: LastButtonHandlerComponent = useMemo(
+    const exit_button_handler: LastButtonHandler = useMemo(
         () => ({
             icon: Icon.ExitSet,
             title: 'exit_set',
-            component: ({ onClose }: { onClose: () => void }) => {
-                onClose();
-                return <Navigate replace={false} to={`/song/${requested_song_id}`} />;
-            },
+            to: `/song/${requested_song_id}`,
         }),
         [requested_song_id],
     );
@@ -344,7 +341,6 @@ export const PageSongInfo: ComponentType<PageSongInfoProps> = ({ requested_song_
     }, []);
 
     useEffect(() => {
-        // Check if us being-in-a-set changed
         setLastButtonHandler(set_id ? exit_button_handler : add_button_handler);
     }, [set_id, exit_button_handler, add_button_handler, setLastButtonHandler]);
 

@@ -210,27 +210,27 @@ export function SearchFilters(props: SearchFiltersProps) {
                 <SongKeyInput fullWidth onChange={(v: string) => updateFilter({ songkey: v == '' ? undefined : v })} />
             </FilterGridItem>
             <FilterGridItem thin={thin}>
-                <TristateCheckbox onChange={(state?: 1 | 0) => updateFilter({ has_mp3: state })}>
+                <TristateCheckbox state={filters.has_mp3} onChange={(state?: 1 | 0) => updateFilter({ has_mp3: state })}>
                     {t('listen_words')} <Icon.SymbolHasMP3 />
                 </TristateCheckbox>
             </FilterGridItem>
             <FilterGridItem thin={thin}>
-                <TristateCheckbox onChange={(state?: 1 | 0) => updateFilter({ has_chord: state })}>
+                <TristateCheckbox state={filters.has_chord} onChange={(state?: 1 | 0) => updateFilter({ has_chord: state })}>
                     {t('edit_chords')} <Icon.SymbolHasChord />
                 </TristateCheckbox>
             </FilterGridItem>
             <FilterGridItem thin={thin}>
-                <TristateCheckbox onChange={(state?: 1 | 0) => updateFilter({ has_sheet: state })}>
+                <TristateCheckbox state={filters.has_sheet} onChange={(state?: 1 | 0) => updateFilter({ has_sheet: state })}>
                     {t('has_sheet')} <Icon.SymbolHasSheet />
                 </TristateCheckbox>
             </FilterGridItem>
             <FilterGridItem thin={thin}>
-                <TristateCheckbox onChange={(state?: 1 | 0) => updateFilter({ is_original: state })}>
+                <TristateCheckbox state={filters.is_original} onChange={(state?: 1 | 0) => updateFilter({ is_original: state })}>
                     {t('untranslated_song')} <Icon.SymbolOriginal />
                 </TristateCheckbox>
             </FilterGridItem>
             <FilterGridItem thin={thin}>
-                <TristateCheckbox onChange={(state?: 0 | 1) => updateFilter({ favourite: state })}>
+                <TristateCheckbox state={filters.favourite} onChange={(state?: 0 | 1) => updateFilter({ favourite: state })}>
                     {t('favourite-filter')} <Icon.SymbolFavourite />
                 </TristateCheckbox>
             </FilterGridItem>

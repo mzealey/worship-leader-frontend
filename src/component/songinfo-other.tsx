@@ -42,7 +42,7 @@ import type { Song, SongShortData } from '../song';
 import { get_text_title } from '../song-utils';
 import type { TransposeDetails } from '../transpose-details';
 import { useDialog } from '../use-dialog';
-import { format_string, is_rtl, is_vertical_lang, scroll_to } from '../util';
+import { is_rtl, is_vertical_lang, scroll_to } from '../util';
 import * as Icon from './icons';
 import { Link } from './router-link';
 
@@ -173,7 +173,7 @@ export const SetPrevNext = ({ song_id: _song_id, set_switcher }: { song_id: numb
 
             <Box sx={{ flexGrow: 1 }}>
                 <Typography align="center" variant="h6">
-                    {format_string(t('set_title') + ': {0}', title)} {position > -1 && `(${position + 1})`}
+                    {t('set_title')}: {title} {position > -1 && ` (${position + 1})`}
                 </Typography>
             </Box>
 

@@ -17,6 +17,19 @@ describe('TristateCheckbox', () => {
         expect(checkbox).not.toHaveAttribute('data-indeterminate', 'true');
     });
 
+    it('starts checked when state=1 is passed', () => {
+        renderWithProviders(<TristateCheckbox state={1}>Filter</TristateCheckbox>);
+        const checkbox = screen.getByRole('checkbox');
+        expect(checkbox).toBeChecked();
+    });
+
+    it('starts indeterminate when state=0 is passed', () => {
+        renderWithProviders(<TristateCheckbox state={0}>Filter</TristateCheckbox>);
+        const checkbox = screen.getByRole('checkbox');
+        expect(checkbox).not.toBeChecked();
+        expect(checkbox.getAttribute('aria-checked')).toBe('mixed');
+    });
+
     it('cycles checked -> indeterminate -> unchecked on click', async () => {
         const user = userEvent.setup();
         const onChange = vi.fn();

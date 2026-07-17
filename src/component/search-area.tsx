@@ -105,7 +105,26 @@ function SearchAreaBase(props: SearchAreaProps) {
                     </InputAdornment>
                 }
                 endAdornment={
-                    <IconButton onClick={toggleDropdown} color={has_custom_value ? 'primary' : 'inherit'} title={t('more_search_options')} size="small">
+                    <IconButton
+                        onClick={toggleDropdown}
+                        color="inherit"
+                        title={t('more_search_options')}
+                        size="small"
+                        sx={
+                            has_custom_value
+                                ? {
+                                      backgroundColor: 'rgba(255, 255, 255, 0.15)',
+                                      animation: 'filter_pulse 2s ease-in-out infinite',
+                                      '&:hover': { backgroundColor: 'rgba(255, 255, 255, 0.35)', animation: 'none' },
+                                      '@keyframes filter_pulse': {
+                                          '0%': { backgroundColor: 'rgba(255, 255, 255, 0.1)' },
+                                          '50%': { backgroundColor: 'rgba(255, 255, 255, 0.3)' },
+                                          '100%': { backgroundColor: 'rgba(255, 255, 255, 0.1)' },
+                                      },
+                                  }
+                                : undefined
+                        }
+                    >
                         <DropDownIcon collapsed={!show_dropdown} />
                     </IconButton>
                 }

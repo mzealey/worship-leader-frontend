@@ -43,13 +43,13 @@ const SongListSortable = ({ id, index, song, set, onDeleteItem }: SongListSortab
         <div ref={setNodeRef} style={style}>
             <SongListLink withStripe={index % 2 == 1} song={song} set_id={set?.id} noAddToSet>
                 {!set.ro && (
-                    <IconButton title={t('sort')} disableRipple style={{ cursor: 'move' }} size="large" {...attributes} {...listeners}>
-                        <Icon.Drag />
+                    <IconButton onClick={onDeleteItem} size="large">
+                        <Icon.Delete />
                     </IconButton>
                 )}
                 {!set.ro && (
-                    <IconButton onClick={onDeleteItem} size="large">
-                        <Icon.Delete />
+                    <IconButton title={t('sort')} disableRipple style={{ cursor: 'move' }} size="large" {...attributes} {...listeners}>
+                        <Icon.Drag />
                     </IconButton>
                 )}
             </SongListLink>
@@ -64,6 +64,22 @@ interface SetViewSortableProps {
     onDeleteItem: (song_id: number) => void;
 }
 
+const DRAG_STYLE_ID = 'dnd-drag-prevents-clicks';
+const addDragPreventionStyle = () => {
+    if (document.getElementById(DRAG_STYLE_ID)) return;
+    const style = document.createElement('style');
+    style.id = DRAG_STYLE_ID;
+    style.textContent = 'a { pointer-events: none !important; }';
+    document.head.appendChild(style);
+};
+const removeDragPreventionStyle = () => {
+    // Delay removal so any queued click events fire harmlessly
+    setTimeout(() => {
+        const style = document.getElementById(DRAG_STYLE_ID);
+        if (style) style.remove();
+    }, 0);
+};
+
 const SetViewSortable = ({ songs, set, onSortEnd, onDeleteItem }: SetViewSortableProps) => {
     const [activeSong, setActiveSong] = useState<number | string | null>(null);
     const sensors = useSensors(useSensor(MouseSensor), useSensor(TouchSensor));
@@ -74,6 +90,7 @@ const SetViewSortable = ({ songs, set, onSortEnd, onDeleteItem }: SetViewSortabl
             collisionDetection={closestCenter}
             onDragStart={({ active }) => {
                 if (!active) return;
+                addDragPreventionStyle();
                 setActiveSong(active.id);
             }}
             onDragEnd={({ over }) => {
@@ -84,8 +101,12 @@ const SetViewSortable = ({ songs, set, onSortEnd, onDeleteItem }: SetViewSortabl
                         songs.findIndex((s) => s.id === over.id),
                     );
                 setActiveSong(null);
+                removeDragPreventionStyle();
             }}
-            onDragCancel={() => setActiveSong(null)}
+            onDragCancel={() => {
+                setActiveSong(null);
+                removeDragPreventionStyle();
+            }}
         >
             <List disablePadding>
                 <SortableContext strategy={verticalListSortingStrategy} items={songs}>

@@ -1,6 +1,6 @@
 import { Box, Button, ButtonGroup, useTheme } from '@mui/material';
-import type { ComponentType, ReactElement } from 'react';
-import { Fragment, lazy, Suspense, useEffect, useState } from 'react';
+import type { ComponentType } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { useLocation } from 'react-router';
 import { create } from 'zustand';
 import { match_media_watcher } from '../globals';
@@ -12,20 +12,18 @@ import { Theme } from './theme';
 
 import type { SvgIconProps } from '@mui/material/SvgIcon';
 
-const LazyPageEditTextarea = lazy(() => import('../page/edit').then((m) => ({ default: m.PageEditTextarea })));
-
-export interface LastButtonHandlerComponent {
+export interface LastButtonHandler {
     icon: ComponentType<SvgIconProps>;
     title: string;
-    component: (props: Record<string, unknown> & { onClose: () => void }) => ReactElement;
+    to: string;
 }
 
-interface LastButtonHandler {
-    handler: LastButtonHandlerComponent | undefined;
-    set: (newState: LastButtonHandlerComponent | undefined) => void;
+interface LastButtonHandlerStore {
+    handler: LastButtonHandler | undefined;
+    set: (newState: LastButtonHandler | undefined) => void;
 }
 
-export const useLastButtonHandler = create<LastButtonHandler>((set) => ({
+export const useLastButtonHandler = create<LastButtonHandlerStore>((set) => ({
     handler: undefined,
     set: (handler) => set({ handler }),
 }));
@@ -89,23 +87,12 @@ export interface PagesContainerProps {
     children?: React.ReactNode;
 }
 
-const defaultLastButtonHandler: LastButtonHandlerComponent = {
-    icon: Icon.NewSong,
-    title: 'newbtn',
-    component: (props: Record<string, unknown>) => (
-        <Suspense>
-            <LazyPageEditTextarea type="new" {...props} />
-        </Suspense>
-    ),
-};
-
 export function PagesContainer({ children }: PagesContainerProps) {
     const { t } = useTranslation();
     const theme = useTheme();
     const { handler: lastButtonHandler } = useLastButtonHandler();
 
     const [desktop_mode, setDesktopMode] = useState(false);
-    const [show_new, setShowNew] = useState(false);
 
     const resetPagePadding = usePagePadding((s) => s.reset);
     useEffect(() => {
@@ -116,9 +103,6 @@ export function PagesContainer({ children }: PagesContainerProps) {
 
         return watcher?.unsubscribe;
     }, [theme, resetPagePadding]);
-
-    const new_btn: LastButtonHandlerComponent = lastButtonHandler || defaultLastButtonHandler;
-    const AddComponent = new_btn.component;
 
     return (
         <Fragment>
@@ -163,8 +147,6 @@ export function PagesContainer({ children }: PagesContainerProps) {
             {/* preact bug requires div wrap here otherwise padding can go before it */}
             <div>{children}</div>
 
-            {show_new ? <AddComponent onClose={() => setShowNew(false)} /> : null}
-
             {!desktop_mode && (
                 <Fragment>
                     <Box sx={{ displayPrint: 'none' }} style={{ height: MOBILE_BOTTOM_HEIGHT }} />
@@ -172,7 +154,7 @@ export function PagesContainer({ children }: PagesContainerProps) {
                         sx={(theme) => ({
                             position: 'fixed',
                             displayPrint: 'none',
-                            zIndex: theme.zIndex.appBar,
+                            zIndex: theme.zIndex.modal + 1,
                             bottom: 0,
                             height: MOBILE_BOTTOM_HEIGHT,
                             width: '100%',
@@ -184,7 +166,11 @@ export function PagesContainer({ children }: PagesContainerProps) {
                                 <BottomButton to="/set-list" title={t('set_list')} icon={Icon.Set} />
                                 <BottomButton to="/" scaleSize={1.6} icon={Icon.Logo} />
                                 <BottomButton to="/settings" title={t('settings')} icon={Icon.Settings} />
-                                <BottomButton title={t(new_btn.title)} icon={new_btn.icon} onClick={() => setShowNew(true)} />
+                                <BottomButton
+                                    to={lastButtonHandler?.to || '/add-song'}
+                                    title={t(lastButtonHandler?.title || 'newbtn')}
+                                    icon={lastButtonHandler?.icon || Icon.NewSong}
+                                />
                             </ButtonGroup>
                         </Theme>
                     </Box>

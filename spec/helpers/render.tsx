@@ -16,7 +16,5 @@ export function renderWithProviders(ui: ReactNode, options?: Omit<RenderOptions,
 }
 
 export function renderWithRouter(ui: ReactNode, initialEntries?: string[]) {
-    return renderWithProviders(
-        <MemoryRouter initialEntries={initialEntries}>{ui}</MemoryRouter>,
-    );
+    return renderWithProviders(<MemoryRouter initialEntries={initialEntries}>{ui}</MemoryRouter>);
 }
