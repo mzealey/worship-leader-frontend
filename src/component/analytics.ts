@@ -1,6 +1,6 @@
 import type { PropsWithChildren, ReactNode } from 'react';
 import { useEffect, useRef } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation } from 'react-router';
 import { BUILD_TYPE, DEBUG } from '../globals';
 
 type TrackerProps = PropsWithChildren<unknown>;

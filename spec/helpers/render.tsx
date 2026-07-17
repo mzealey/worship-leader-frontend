@@ -3,7 +3,6 @@ import type { RenderOptions } from '@testing-library/react';
 import { render } from '@testing-library/react';
 import type { ReactNode } from 'react';
 import { MemoryRouter } from 'react-router';
-import { MemoryRouter as MemoryRouterDom } from 'react-router-dom';
 import { Themes } from '../../src/themes';
 
 const defaultTheme = createTheme(Themes.light.Base);
@@ -18,8 +17,6 @@ export function renderWithProviders(ui: ReactNode, options?: Omit<RenderOptions,
 
 export function renderWithRouter(ui: ReactNode, initialEntries?: string[]) {
     return renderWithProviders(
-        <MemoryRouter initialEntries={initialEntries}>
-            <MemoryRouterDom>{ui}</MemoryRouterDom>
-        </MemoryRouter>,
+        <MemoryRouter initialEntries={initialEntries}>{ui}</MemoryRouter>,
     );
 }

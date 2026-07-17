@@ -19,6 +19,7 @@ export function is_bot(): boolean {
 
 export const decode_uri_parameter = (param: string): string => decodeURIComponent(param).replace(/\+/g, ' ');
 
+// Return the hash query string as k/v object
 export function parse_search(loc?: string): Record<string, string> {
     const source = loc ? loc.replace(/^.*?#/, '') : window.location.hash;
     const [, query] = source.match(/[^?]*\?(.*)/) || [];

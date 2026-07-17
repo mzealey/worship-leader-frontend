@@ -15,7 +15,7 @@ import {
 import clsx from 'clsx';
 import debounce from 'lodash/debounce';
 import React, { Fragment, memo, useCallback, useEffect, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import unknown_album_icon from '../../img/unknown_album_icon.png';
 import { DB, on_db_languages_update } from '../db';
 import { DBSearch, useSearchStore, useSongListStore } from '../db-search';

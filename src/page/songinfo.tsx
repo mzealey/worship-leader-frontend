@@ -1,7 +1,7 @@
 import { Box, IconButton, Typography, useTheme } from '@mui/material';
 import type { ComponentType } from 'react';
 import { Fragment, useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router';
 import type { Subscription } from 'rxjs';
 import { useCanPrint } from '../can-print';
 import { ImageButton } from '../component/basic';

@@ -18,8 +18,7 @@
       "entry": [
         "src/presentor/presentor.tsx",
         "src/songbook-viewer.ts",
-        "src/common-functions.ts",
-        "eslint.config.mjs"
+        "src/common-functions.ts"
       ],
       "project": [
         "src/**/*.{ts,tsx,scss}",
@@ -28,6 +27,7 @@
         "tests/**/*.ts"
       ],
       "ignoreDependencies": [
+        "@eslint/js",
         "clsx"
       ],
       "paths": {

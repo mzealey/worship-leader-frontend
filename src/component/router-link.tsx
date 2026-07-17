@@ -1,5 +1,5 @@
 import { forwardRef } from 'react';
-import { Link as RouterLink, type LinkProps as RouterLinkProps } from 'react-router-dom';
+import { Link as RouterLink, type LinkProps as RouterLinkProps } from 'react-router';
 
 /**
  * Type-safe Link component for use with Material UI's component prop.

@@ -1,6 +1,6 @@
 import { Box, Button, CircularProgress, Grid, IconButton, ToggleButton, ToggleButtonGroup, Typography } from '@mui/material';
 import { useCallback, useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router';
 import { Alert } from '../component/alert';
 import { ContentEditable } from '../component/content-editable';
 import * as Icon from '../component/icons';

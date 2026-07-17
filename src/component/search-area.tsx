@@ -1,6 +1,6 @@
 import { Box, IconButton, InputAdornment } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate } from 'react-router';
 import { create } from 'zustand';
 import { DropDownIcon } from '../component/basic';
 import { DelayedDBInput } from '../component/delayed-db-input';

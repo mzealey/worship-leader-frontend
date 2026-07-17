@@ -1,7 +1,7 @@
 import { Box, CircularProgress, Grid, NativeSelect, useTheme } from '@mui/material';
 import * as Comlink from 'comlink';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import LANGPACK_INDEX from '../../langpack/index.json';
 import { ImageButton } from '../component/basic';
 import * as Icon from '../component/icons';
