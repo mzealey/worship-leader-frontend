@@ -154,12 +154,12 @@ describe('PageSongInfo', () => {
     it('shows add-to-set button when not in set', async () => {
         renderWithRouter(<PageSongInfo requested_song_id={1} />);
 
-        await screen.findByText('add_to_set');
+        await screen.findByText('Add to Set');
     });
 
     it('renders share button', async () => {
         renderWithRouter(<PageSongInfo requested_song_id={1} />);
 
-        await screen.findByText('sharebtn');
+        await screen.findByText('Share');
     });
 });

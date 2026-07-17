@@ -38,13 +38,13 @@ describe('PageCopyTextarea', () => {
     it('renders copy dialog', () => {
         renderWithProviders(<PageCopyTextarea song={mockSong} />);
 
-        expect(screen.getByText('copybtn')).toBeInTheDocument();
+        expect(screen.getByText('Copy Song')).toBeInTheDocument();
     });
 
     it('renders cancel button', () => {
         renderWithProviders(<PageCopyTextarea song={mockSong} />);
 
-        expect(screen.getByText('cancel_btn')).toBeInTheDocument();
+        expect(screen.getByText('Cancel')).toBeInTheDocument();
     });
 
     it('renders type chooser dropdown', () => {
@@ -59,7 +59,7 @@ describe('PageCopyTextarea', () => {
 
         renderWithProviders(<PageCopyTextarea song={mockSong} onClose={onClose} />);
 
-        await usr.click(screen.getByText('cancel_btn'));
+        await usr.click(screen.getByText('Cancel'));
 
         expect(onClose).toHaveBeenCalled();
     });

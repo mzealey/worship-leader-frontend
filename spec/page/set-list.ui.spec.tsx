@@ -58,7 +58,7 @@ describe('SetList', () => {
 
             renderWithProviders(<SetList />);
 
-            expect(await screen.findByText('no-sets')).toBeInTheDocument();
+            expect(await screen.findByText("You don't have any sets yet, choose a song and click 'Add Song to Set' to make one")).toBeInTheDocument();
         });
 
         it('returns nothing when noEmptyText is true and no sets', async () => {

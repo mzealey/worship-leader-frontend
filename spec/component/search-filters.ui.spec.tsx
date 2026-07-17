@@ -88,13 +88,13 @@ describe('SearchFilters', () => {
     it('renders sort dropdown', async () => {
         renderWithProviders(<SearchFilters />);
 
-        const sortSelect = await screen.findByTitle('sort_default');
+        const sortSelect = await screen.findByTitle('Sort Order: Default');
         expect(sortSelect).toBeInTheDocument();
     });
 
     it('renders language filter', () => {
         renderWithProviders(<SearchFilters />);
 
-        expect(screen.getByTitle('button-choose-song-languages')).toBeInTheDocument();
+        expect(screen.getByTitle('Choose Song Languages')).toBeInTheDocument();
     });
 });

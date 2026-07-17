@@ -37,8 +37,8 @@ describe('PageSourceSelect', () => {
     it('renders source select dialog', async () => {
         renderWithProviders(<PageSourceSelect />);
 
-        expect(await screen.findByText('source_str')).toBeInTheDocument();
-        expect(screen.getByText('continue')).toBeInTheDocument();
+        expect(await screen.findByText('Choose Song Books')).toBeInTheDocument();
+        expect(screen.getByText('Continue')).toBeInTheDocument();
     });
 
     it('renders language headings for each source language', async () => {

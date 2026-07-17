@@ -1,6 +1,9 @@
 import { screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { createLangpackMock } from '../helpers/mocks/langpack';
 import { renderWithProviders } from '../helpers/render';
+
+vi.doMock('../../src/langpack', createLangpackMock);
 
 let AudioPlayer: typeof import('../../src/component/audio-player').AudioPlayer;
 

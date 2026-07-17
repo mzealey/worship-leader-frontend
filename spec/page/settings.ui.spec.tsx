@@ -89,29 +89,29 @@ describe('PageSettings', () => {
 
     it('renders settings page with title', () => {
         renderWithRouter(<PageSettings />);
-        expect(screen.getByText('settings')).toBeInTheDocument();
+        expect(screen.getByText('Settings')).toBeInTheDocument();
     });
 
     it('renders language and theme selectors', () => {
         renderWithRouter(<PageSettings />);
-        expect(screen.getByText('setting-lang')).toBeInTheDocument();
+        expect(screen.getByText('App language')).toBeInTheDocument();
         expect(screen.getByText('setting-theme')).toBeInTheDocument();
     });
 
     it('renders song language button', () => {
         renderWithRouter(<PageSettings />);
-        expect(screen.getByText('button-choose-song-languages')).toBeInTheDocument();
+        expect(screen.getByText('Choose Song Languages')).toBeInTheDocument();
     });
 
     it('renders display checkboxes', () => {
         renderWithRouter(<PageSettings />);
-        expect(screen.getByText('setting-display-lyrics')).toBeInTheDocument();
-        expect(screen.getByText('setting-display-chords')).toBeInTheDocument();
+        expect(screen.getByText('Display Lyrics? (security measure for people in countries where phones may be searched)')).toBeInTheDocument();
+        expect(screen.getByText('Display Chords?')).toBeInTheDocument();
     });
 
     it('renders contact button in topbar', () => {
         renderWithRouter(<PageSettings />);
-        expect(screen.getByText('contact')).toBeInTheDocument();
+        expect(screen.getByText('Contact')).toBeInTheDocument();
     });
 
     it('renders version info section', () => {

@@ -78,7 +78,7 @@ describe('SetList', () => {
         const EmptySetList = mod2.SetList;
 
         renderWithRouter(<EmptySetList />);
-        await screen.findByText('no-sets');
+        await screen.findByText("You don't have any sets yet, choose a song and click 'Add Song to Set' to make one");
     });
 
     it('hides no-sets text when noEmptyText is true', async () => {

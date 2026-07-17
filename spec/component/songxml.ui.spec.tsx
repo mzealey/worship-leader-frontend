@@ -1,5 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { createLangpackMock } from '../helpers/mocks/langpack';
 
 let SongXMLDisplay: typeof import('../../src/component/songxml').SongXMLDisplay;
 
@@ -15,11 +16,7 @@ describe('SongXMLDisplay', () => {
         vi.resetModules();
         vi.clearAllMocks();
 
-        vi.doMock('../../src/langpack', () => ({
-            useTranslation: () => ({
-                t: (key: string) => key,
-            }),
-        }));
+        vi.doMock('../../src/langpack', createLangpackMock);
         vi.doMock('../../src/settings-store', () => ({
             useSetting: (setting: string) => {
                 const defaults: Record<string, any> = {
@@ -73,9 +70,7 @@ describe('SongXMLDisplay', () => {
         vi.resetModules();
         vi.clearAllMocks();
 
-        vi.doMock('../../src/langpack', () => ({
-            useTranslation: () => ({ t: (key: string) => key }),
-        }));
+        vi.doMock('../../src/langpack', createLangpackMock);
         vi.doMock('../../src/settings-store', () => ({
             useSetting: (setting: string) => {
                 const defaults: Record<string, any> = {
@@ -117,7 +112,7 @@ describe('SongXMLDisplay', () => {
         const EmptyDisplay = mod2.SongXMLDisplay;
 
         render(<EmptyDisplay song={mockSong} />);
-        expect(screen.getByText('nolyrics')).toBeInTheDocument();
+        expect(screen.getByText('No Lyrics')).toBeInTheDocument();
     });
 
     it('renders with presentation styling', () => {
@@ -131,9 +126,7 @@ describe('SongXMLDisplay', () => {
         vi.resetModules();
         vi.clearAllMocks();
 
-        vi.doMock('../../src/langpack', () => ({
-            useTranslation: () => ({ t: (key: string) => key }),
-        }));
+        vi.doMock('../../src/langpack', createLangpackMock);
         vi.doMock('../../src/settings-store', () => ({
             useSetting: (setting: string) => {
                 const defaults: Record<string, any> = {
@@ -176,6 +169,6 @@ describe('SongXMLDisplay', () => {
 
         const copyrightedSong = { ...mockSong, copyright_restricted: true };
         render(<CopyrightDisplay song={copyrightedSong} />);
-        expect(screen.getByText('copyright_no_show')).toBeInTheDocument();
+        expect(screen.getByText('Unfortunately, due to copyright reasons this song cannot be displayed')).toBeInTheDocument();
     });
 });

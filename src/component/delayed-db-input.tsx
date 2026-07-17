@@ -3,6 +3,7 @@ import { IconButton, Input, InputAdornment } from '@mui/material';
 import type { ChangeEvent, ClipboardEvent, ComponentType, FocusEvent, KeyboardEvent, ReactNode, Ref } from 'react';
 import { useEffect, useRef, useState } from 'react';
 import { DB_AVAILABLE } from '../db';
+import { useTranslation } from '../langpack';
 import * as Icon from './icons';
 
 interface SearchInputProps extends Omit<InputProps, 'onChange'> {
@@ -14,6 +15,7 @@ interface SearchInputProps extends Omit<InputProps, 'onChange'> {
 export const SearchInput = ({ onChange, endAdornment, value, ...props }: SearchInputProps) => {
     const [curValue, setCurValue] = useState(value || '');
     const inputRef = useRef<HTMLInputElement | null>(null);
+    const { t } = useTranslation();
 
     useEffect(() => {
         if (value !== undefined) {
@@ -47,7 +49,7 @@ export const SearchInput = ({ onChange, endAdornment, value, ...props }: SearchI
             endAdornment={
                 <InputAdornment position="end">
                     {curValue.length > 0 && (
-                        <IconButton onClick={clearSearch} title="Clear text" size="small">
+                        <IconButton onClick={clearSearch} title={t('clear_text')} size="small">
                             <Icon.Clear />
                         </IconButton>
                     )}

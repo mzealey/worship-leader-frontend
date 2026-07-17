@@ -1,4 +1,5 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
+import { useTranslation } from '../langpack';
 import { useDialog } from '../use-dialog';
 
 interface AlertProps {
@@ -9,6 +10,7 @@ interface AlertProps {
 
 export const Alert = ({ title, message, onClose }: AlertProps) => {
     const { closed, handleClose } = useDialog(onClose);
+    const { t } = useTranslation();
 
     return (
         <Dialog open={!closed} onClose={handleClose}>
@@ -18,7 +20,7 @@ export const Alert = ({ title, message, onClose }: AlertProps) => {
             </DialogContent>
             <DialogActions>
                 <Button onClick={handleClose} color="primary">
-                    OK
+                    {t('ok')}
                 </Button>
             </DialogActions>
         </Dialog>

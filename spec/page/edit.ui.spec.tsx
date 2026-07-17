@@ -20,8 +20,8 @@ describe('EditTypeChooser', () => {
 
     it('renders format toggle buttons', () => {
         renderWithRouter(<EditTypeChooser format="chords" onChange={() => {}} />);
-        expect(screen.getByText('edit_chords')).toBeInTheDocument();
-        expect(screen.getByText('edit_opensong')).toBeInTheDocument();
+        expect(screen.getByText('Chords')).toBeInTheDocument();
+        expect(screen.getByText('Opensong')).toBeInTheDocument();
     });
 
     it('renders elvanto option when elvanto prop set', () => {
@@ -70,26 +70,27 @@ describe('PageEditTextarea', () => {
 
     it('renders new song form', () => {
         renderWithRouter(<PageEditTextarea type="new" />);
-        expect(screen.getByText('newbtn')).toBeInTheDocument();
+        expect(screen.getByText('Submit New Song')).toBeInTheDocument();
     });
 
     it('renders edit song form', async () => {
         const song = { id: 1, title: 'Test Song', songxml: '<song/>' } as any;
         renderWithRouter(<PageEditTextarea type="edit" song={song} />);
 
-        await screen.findByText('editbtn');
-        expect(screen.getByText('editbtn')).toBeInTheDocument();
+        await screen.findByText('Correct Song');
+        expect(screen.getByText('Correct Song')).toBeInTheDocument();
     });
 
     it('renders submit and cancel buttons', () => {
         renderWithRouter(<PageEditTextarea type="new" />);
-        expect(screen.getByText('editsubmit')).toBeInTheDocument();
-        expect(screen.getByText('cancel_btn')).toBeInTheDocument();
+        expect(screen.getByText('Upload Song')).toBeInTheDocument();
+        expect(screen.getByText('Cancel')).toBeInTheDocument();
     });
 
     it('renders edit welcome text', () => {
         renderWithRouter(<PageEditTextarea type="new" />);
-        expect(screen.getByText('edit_welcome_text')).toBeInTheDocument();
+        expect(screen.getByText(/Please correct the song below/)).toBeInTheDocument();
+        expect(screen.getByText('contact@worshipleaderapp.com')).toBeInTheDocument();
     });
 
     it('shows content editable area', () => {
@@ -102,7 +103,7 @@ describe('PageEditTextarea', () => {
         const song = { id: 1, title: 'Test Song', songxml: '<song/>' } as any;
         renderWithRouter(<PageEditTextarea type="edit" song={song} />);
 
-        await screen.findByText('editbtn');
+        await screen.findByText('Correct Song');
     });
 
     it('shows alert on submit failure', async () => {

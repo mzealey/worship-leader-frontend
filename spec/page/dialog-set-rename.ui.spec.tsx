@@ -32,8 +32,8 @@ describe('PageSetRename', () => {
     it('renders rename dialog', () => {
         renderWithProviders(<PageSetRename set_id={1} />);
 
-        expect(screen.getByText('rename_set')).toBeInTheDocument();
-        expect(screen.getByText('cancel_btn')).toBeInTheDocument();
+        expect(screen.getByText('Rename Set')).toBeInTheDocument();
+        expect(screen.getByText('Cancel')).toBeInTheDocument();
     });
 
     it('loads current set name', async () => {
@@ -49,7 +49,7 @@ describe('PageSetRename', () => {
 
         renderWithProviders(<PageSetRename set_id={1} />);
 
-        const renameBtn = screen.getByText('rename_set_btn');
+        const renameBtn = screen.getByText('Rename');
         expect(renameBtn).toBeDisabled();
     });
 
@@ -63,7 +63,7 @@ describe('PageSetRename', () => {
         await user.tripleClick(input); // select all current text
         await user.keyboard('New Name');
 
-        await user.click(screen.getByText('rename_set_btn'));
+        await user.click(screen.getByText('Rename'));
 
         expect(mockSET_DB.rename_set).toHaveBeenCalledWith(5, 'New Name');
     });

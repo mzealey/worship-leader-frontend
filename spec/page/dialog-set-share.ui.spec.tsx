@@ -35,15 +35,15 @@ describe('PageSetShare', () => {
     it('renders share dialog', () => {
         renderWithProviders(<PageSetShare set={mockSet} />);
 
-        expect(screen.getByText('share-set')).toBeInTheDocument();
+        expect(screen.getByText('Share Set')).toBeInTheDocument();
     });
 
     it('renders share buttons', () => {
         renderWithProviders(<PageSetShare set={mockSet} />);
 
-        expect(screen.getByText('share-set-live')).toBeInTheDocument();
-        expect(screen.getByText('share-set-normal')).toBeInTheDocument();
-        expect(screen.getByText('cancel_btn')).toBeInTheDocument();
+        expect(screen.getByText('Share Live Set')).toBeInTheDocument();
+        expect(screen.getByText('Share Copy')).toBeInTheDocument();
+        expect(screen.getByText('Cancel')).toBeInTheDocument();
     });
 
     it('shows sharer when live share button clicked', async () => {
@@ -51,7 +51,7 @@ describe('PageSetShare', () => {
 
         renderWithProviders(<PageSetShare set={mockSet} />);
 
-        await usr.click(screen.getByText('share-set-live'));
+        await usr.click(screen.getByText('Share Live Set'));
 
         expect(screen.getByTestId('sharer')).toBeInTheDocument();
     });
@@ -61,7 +61,7 @@ describe('PageSetShare', () => {
 
         renderWithProviders(<PageSetShare set={mockSet} />);
 
-        await usr.click(screen.getByText('share-set-normal'));
+        await usr.click(screen.getByText('Share Copy'));
 
         expect(screen.getByTestId('sharer')).toBeInTheDocument();
     });

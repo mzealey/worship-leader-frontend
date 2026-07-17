@@ -23,14 +23,18 @@ describe('PageFirsttimeWelcome', () => {
     it('renders welcome message', () => {
         renderWithProviders(<PageFirsttimeWelcome onComplete={() => {}} />);
 
-        expect(screen.getByText('firsttime_welcome')).toBeInTheDocument();
-        expect(screen.getByText('choose_lang_msg')).toBeInTheDocument();
+        expect(
+            screen.getByText(
+                'Welcome to Worship Leader. On each page there will be a short help message appearing at the bottom of your screen. To see the full help, touch the message. To turn these messages off, go to the settings page.',
+            ),
+        ).toBeInTheDocument();
+        expect(screen.getByText('Below, you can choose the language you would like to use the app in.')).toBeInTheDocument();
     });
 
     it('renders continue button', () => {
         renderWithProviders(<PageFirsttimeWelcome onComplete={() => {}} />);
 
-        expect(screen.getByText('continue')).toBeInTheDocument();
+        expect(screen.getByText('Continue')).toBeInTheDocument();
     });
 
     it('calls onComplete when continue is clicked', async () => {
@@ -39,7 +43,7 @@ describe('PageFirsttimeWelcome', () => {
 
         renderWithProviders(<PageFirsttimeWelcome onComplete={onComplete} />);
 
-        await usr.click(screen.getByText('continue'));
+        await usr.click(screen.getByText('Continue'));
 
         expect(onComplete).toHaveBeenCalled();
     });

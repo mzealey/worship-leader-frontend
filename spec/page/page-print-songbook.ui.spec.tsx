@@ -65,28 +65,28 @@ describe('PagePrintSongbook', () => {
     it('renders print songbook page', () => {
         renderWithRouter(<PagePrintSongbook set_id={1} />);
 
-        expect(screen.getByText('print-songbook')).toBeInTheDocument();
+        expect(screen.getByText('Print Songbook')).toBeInTheDocument();
     });
 
     it('renders paper size options', () => {
         renderWithRouter(<PagePrintSongbook set_id={1} />);
 
-        expect(screen.getByText('editor.paper_size')).toBeInTheDocument();
-        expect(screen.getByText('editor.font_size')).toBeInTheDocument();
-        expect(screen.getByText('editor.columns')).toBeInTheDocument();
+        expect(screen.getByText('Paper Size')).toBeInTheDocument();
+        expect(screen.getByText('Font size')).toBeInTheDocument();
+        expect(screen.getByText('Columns')).toBeInTheDocument();
     });
 
     it('renders language selector', () => {
         renderWithRouter(<PagePrintSongbook set_id={1} />);
 
-        expect(screen.getByText('editor.songbook_language')).toBeInTheDocument();
+        expect(screen.getByText('Language to use for text in the songbook')).toBeInTheDocument();
     });
 
     it('renders boolean setting checkboxes', () => {
         renderWithRouter(<PagePrintSongbook set_id={1} />);
 
-        expect(screen.getByText('editor.include_chords')).toBeInTheDocument();
-        expect(screen.getByText('editor.include_front_page')).toBeInTheDocument();
+        expect(screen.getByText('Include Chords?')).toBeInTheDocument();
+        expect(screen.getByText('Include Front Page')).toBeInTheDocument();
     });
 
     it('renders an iframe for the songbook viewer', () => {
@@ -107,6 +107,6 @@ describe('PagePrintSongbook', () => {
     it('renders back button', () => {
         renderWithRouter(<PagePrintSongbook set_id={1} />);
 
-        expect(screen.getByText('back')).toBeInTheDocument();
+        expect(screen.getByText('Back')).toBeInTheDocument();
     });
 });

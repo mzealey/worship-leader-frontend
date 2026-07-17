@@ -118,7 +118,7 @@ describe('PageSetView', () => {
     it('renders print and share buttons', async () => {
         renderWithRouter(<PageSetView set_id={1} />);
 
-        await screen.findByText('print-songbook');
-        expect(screen.getByText('sharebtn')).toBeInTheDocument();
+        await screen.findByText('Print Songbook');
+        expect(screen.getByText('Share')).toBeInTheDocument();
     });
 });

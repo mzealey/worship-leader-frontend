@@ -53,7 +53,7 @@ describe('DownloadButton', () => {
     it('has download_link title', () => {
         renderWithProviders(<DownloadButton down_file_key="1-1" file={mockFile} song={mockSong} onDownload={mockOnDownload} />);
 
-        expect(screen.getByTitle('download_link')).toBeInTheDocument();
+        expect(screen.getByTitle('Download')).toBeInTheDocument();
     });
 
     it('shows Link icon when file has download_path', () => {

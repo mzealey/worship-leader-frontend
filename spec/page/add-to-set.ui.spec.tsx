@@ -41,8 +41,8 @@ describe('DialogAddToSet', () => {
     it('renders the dialog with title and input field', () => {
         renderWithProviders(<DialogAddToSet song_id={123} />);
 
-        expect(screen.getByText('add_song_to_set')).toBeInTheDocument();
-        expect(screen.getByText('set_create')).toBeInTheDocument();
+        expect(screen.getByText('Add Song to Set')).toBeInTheDocument();
+        expect(screen.getByText('Create and add song to set')).toBeInTheDocument();
     });
 
     it('renders existing writable sets', async () => {
@@ -56,7 +56,7 @@ describe('DialogAddToSet', () => {
     it('create button is disabled when no set name entered', () => {
         renderWithProviders(<DialogAddToSet song_id={123} />);
 
-        const createBtn = screen.getByText('set_create');
+        const createBtn = screen.getByText('Create and add song to set');
         expect(createBtn.closest('button')).toBeDisabled();
     });
 
@@ -84,7 +84,7 @@ describe('DialogAddToSet', () => {
         const input = document.querySelector('input')!;
         await user.type(input, 'New Set Name');
 
-        const createBtn = screen.getByText('set_create');
+        const createBtn = screen.getByText('Create and add song to set');
         expect(createBtn.closest('button')).not.toBeDisabled();
 
         await user.click(createBtn);
@@ -104,8 +104,8 @@ describe('DialogAddToSet', () => {
         const mySetBtn = await screen.findByText('My Set');
         await user.click(mySetBtn);
 
-        await screen.findByText('already_in_set');
-        expect(screen.getByText('already_in_set')).toBeInTheDocument();
+        await screen.findByText("This song is already in this set. Can't add a second time.");
+        expect(screen.getByText("This song is already in this set. Can't add a second time.")).toBeInTheDocument();
     });
 
     it('passes transpose key and capo when provided', async () => {

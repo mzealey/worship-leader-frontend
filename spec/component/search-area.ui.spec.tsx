@@ -81,13 +81,13 @@ describe('SearchArea', () => {
     it('renders the search input', () => {
         renderWithProviders(<SearchArea />);
 
-        expect(screen.getByTitle('search_placeholder')).toBeInTheDocument();
+        expect(screen.getByTitle('Search by title, phrase or song number')).toBeInTheDocument();
     });
 
     it('renders toggle dropdown button', () => {
         renderWithProviders(<SearchArea />);
 
-        expect(screen.getByTitle('more_search_options')).toBeInTheDocument();
+        expect(screen.getByTitle('Show more search options')).toBeInTheDocument();
     });
 
     it('toggles dropdown when button clicked', async () => {
@@ -95,7 +95,7 @@ describe('SearchArea', () => {
 
         renderWithProviders(<SearchArea />);
 
-        const toggleBtn = screen.getByTitle('more_search_options');
+        const toggleBtn = screen.getByTitle('Show more search options');
         await user.click(toggleBtn);
 
         expect(screen.getByTestId('search-filters')).toBeInTheDocument();

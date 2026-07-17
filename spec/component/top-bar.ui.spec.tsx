@@ -29,7 +29,7 @@ describe('TopBar', () => {
     it('sets document title from string title', () => {
         renderWithProviders(<TopBar title="Settings" />);
 
-        expect(document.title).toContain('worship-leader');
+        expect(document.title).toContain('Worship Leader');
         expect(document.title).toContain('Settings');
     });
 
@@ -37,13 +37,13 @@ describe('TopBar', () => {
         renderWithProviders(<TopBar title="Page Title" documentTitle="Custom Doc Title" />);
 
         expect(document.title).toContain('Custom Doc Title');
-        expect(document.title).toContain('worship-leader');
+        expect(document.title).toContain('Worship Leader');
     });
 
     it('shows only app name when no title provided', () => {
         renderWithProviders(<TopBar />);
 
-        expect(document.title).toContain('worship-leader');
+        expect(document.title).toContain('Worship Leader');
     });
 
     it('renders children inside toolbar', () => {
@@ -113,6 +113,6 @@ describe('TopBar', () => {
         renderWithProviders(<TopBar title={<span>JSX Title</span>} documentTitle="JSX Page" />);
 
         expect(document.title).toContain('JSX Page');
-        expect(document.title).toContain('worship-leader');
+        expect(document.title).toContain('Worship Leader');
     });
 });

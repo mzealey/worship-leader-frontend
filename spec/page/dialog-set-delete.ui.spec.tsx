@@ -26,15 +26,15 @@ describe('PageSetDelete', () => {
     it('renders delete confirmation dialog', () => {
         renderWithProviders(<PageSetDelete set_id={1} />);
 
-        expect(screen.getByText('delete_set')).toBeInTheDocument();
-        expect(screen.getByText('delete_set_confirm')).toBeInTheDocument();
+        expect(screen.getByText('Delete Set?')).toBeInTheDocument();
+        expect(screen.getByText('Do you really want to delete this set?')).toBeInTheDocument();
     });
 
     it('renders cancel and delete buttons', () => {
         renderWithProviders(<PageSetDelete set_id={1} />);
 
-        expect(screen.getByText('cancel_btn')).toBeInTheDocument();
-        expect(screen.getByText('delete_set_btn')).toBeInTheDocument();
+        expect(screen.getByText('Cancel')).toBeInTheDocument();
+        expect(screen.getByText('Delete')).toBeInTheDocument();
     });
 
     it('calls SET_DB.delete_set when delete button clicked', async () => {
@@ -42,7 +42,7 @@ describe('PageSetDelete', () => {
 
         renderWithProviders(<PageSetDelete set_id={42} />);
 
-        await user.click(screen.getByText('delete_set_btn'));
+        await user.click(screen.getByText('Delete'));
 
         expect(mockSET_DB.delete_set).toHaveBeenCalledWith(42);
     });
@@ -53,7 +53,7 @@ describe('PageSetDelete', () => {
 
         renderWithProviders(<PageSetDelete set_id={1} onClose={onClose} />);
 
-        await user.click(screen.getByText('delete_set_btn'));
+        await user.click(screen.getByText('Delete'));
 
         expect(onClose).toHaveBeenCalled();
     });

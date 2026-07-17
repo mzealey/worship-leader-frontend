@@ -31,20 +31,20 @@ describe('PageDbLoadFailed', () => {
 
     it('renders the title', () => {
         renderWithProviders(<PageDbLoadFailed />);
-        const titles = screen.getAllByText('dbload-failed-title');
+        const titles = screen.getAllByText('Connection Error');
         expect(titles.length).toBe(2); // in TopBar and Typography
     });
 
     it('renders the retry button', () => {
         renderWithProviders(<PageDbLoadFailed />);
-        expect(screen.getByText('retry')).toBeInTheDocument();
+        expect(screen.getByText('Retry')).toBeInTheDocument();
     });
 
     it('reloads page when retry is clicked', async () => {
         const user = userEvent.setup();
         renderWithProviders(<PageDbLoadFailed />);
 
-        await user.click(screen.getByText('retry'));
+        await user.click(screen.getByText('Retry'));
 
         expect(window.location.reload).toHaveBeenCalled();
     });

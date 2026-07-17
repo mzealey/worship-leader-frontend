@@ -1,16 +1,24 @@
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { SearchInput } from '../../src/component/delayed-db-input';
 import { createDbMock } from '../helpers/mocks/db';
+import { createLangpackMock } from '../helpers/mocks/langpack';
 import { renderWithProviders } from '../helpers/render';
 
-let DelayedDBInput: typeof import('../../src/component/delayed-db-input').DelayedDBInput;
+vi.doMock('../../src/langpack', createLangpackMock);
+
+let DelayedDBInputModule: typeof import('../../src/component/delayed-db-input');
+let SearchInput: typeof DelayedDBInputModule.SearchInput;
+let DelayedDBInput: typeof DelayedDBInputModule.DelayedDBInput;
 
 describe('SearchInput', () => {
-    beforeEach(() => {
+    beforeEach(async () => {
         vi.resetModules();
         vi.clearAllMocks();
+        vi.doMock('../../src/db', createDbMock);
+        DelayedDBInputModule = await import('../../src/component/delayed-db-input');
+        SearchInput = DelayedDBInputModule.SearchInput;
+        DelayedDBInput = DelayedDBInputModule.DelayedDBInput;
     });
 
     it('renders an input field', () => {

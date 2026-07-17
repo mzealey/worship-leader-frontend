@@ -1,6 +1,7 @@
 import { fireEvent, screen } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { createEventSocketMock } from '../helpers/mocks/event-socket';
+import { createLangpackMock } from '../helpers/mocks/langpack';
 import { renderWithProviders } from '../helpers/render';
 
 let PrintCapoDisplay: typeof import('../../src/component/songinfo-sidebar').PrintCapoDisplay;
@@ -31,14 +32,7 @@ function setupStandardMocks() {
     }));
     vi.doMock('../../src/filter-sources', () => ({ toggle_filter_source: vi.fn() }));
     vi.doMock('../../src/globals', () => ({ API_HOST: '', DEBUG: false }));
-    vi.doMock('../../src/langpack', () => ({
-        useTranslation: () => ({
-            t: (key: string) => key,
-            lang_name: (code: string) => code,
-            sorted_language_codes: (codes: string[]) => codes,
-        }),
-        useAppLang: () => ({ appLang: 'en' }),
-    }));
+    vi.doMock('../../src/langpack', createLangpackMock);
     vi.doMock('../../src/settings-store', () => ({
         useSetting: (key: string) => {
             if (key === 'observe-copyright') return [false, vi.fn()];
@@ -135,7 +129,7 @@ describe('PrintCapoDisplay', () => {
         };
 
         renderWithProviders(<PrintCapoDisplay transpose={transpose as any} />);
-        expect(screen.getByText('capo')).toBeInTheDocument();
+        expect(screen.getByText('Capo')).toBeInTheDocument();
     });
 
     it('renders key when set', () => {
@@ -180,7 +174,7 @@ describe('SongTopInfoSection', () => {
         };
 
         renderWithProviders(<SongTopInfoSection song={song as any} />);
-        expect(screen.getByText('tempo')).toBeInTheDocument();
+        expect(screen.getByText('Tempo')).toBeInTheDocument();
         expect(screen.getByText('120')).toBeInTheDocument();
     });
 
@@ -192,7 +186,7 @@ describe('SongTopInfoSection', () => {
         };
 
         renderWithProviders(<SongTopInfoSection song={song as any} />);
-        expect(screen.getByText('timesignature')).toBeInTheDocument();
+        expect(screen.getByText('Time Signature')).toBeInTheDocument();
     });
 
     it('renders multiple info items', () => {
@@ -241,7 +235,7 @@ describe('FavouriteButton', () => {
 
     it('renders with song', () => {
         renderWithProviders(<FavouriteButton song={{ id: 1, lang: 'en' } as any} />);
-        expect(screen.getByText('favourite-btn')).toBeInTheDocument();
+        expect(screen.getByText('My Favourite')).toBeInTheDocument();
     });
 
     it('toggles favourite on click', () => {
@@ -286,8 +280,8 @@ describe('SongInfoSide', () => {
     it('renders year and language', () => {
         renderWithProviders(<SongInfoSide update_item_refs={vi.fn()} related_songs={[]} song={baseSong as any} on_filter_change={vi.fn()} />);
 
-        expect(screen.getByText('year_written')).toBeInTheDocument();
-        expect(screen.getByText('language')).toBeInTheDocument();
+        expect(screen.getByText('Year written')).toBeInTheDocument();
+        expect(screen.getByText('Language')).toBeInTheDocument();
     });
 
     it('renders related songs', () => {
@@ -381,7 +375,7 @@ describe('SongInfoSide full rendering', () => {
 
         renderWithProviders(<SongInfoSide update_item_refs={vi.fn()} related_songs={[]} song={songWithSheet as any} on_filter_change={vi.fn()} />);
 
-        expect(screen.getByText('download_link')).toBeInTheDocument();
+        expect(screen.getByText('Download')).toBeInTheDocument();
     });
 
     it('renders source info', () => {
@@ -393,7 +387,7 @@ describe('SongInfoSide full rendering', () => {
 
         renderWithProviders(<SongInfoSide update_item_refs={vi.fn()} related_songs={[]} song={songWithSource as any} on_filter_change={vi.fn()} />);
 
-        expect(screen.getByText('source')).toBeInTheDocument();
+        expect(screen.getByText('Source')).toBeInTheDocument();
         expect(screen.getByText('My Source')).toBeInTheDocument();
     });
 

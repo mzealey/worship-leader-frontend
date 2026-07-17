@@ -244,9 +244,9 @@ export const PageSettings = () => {
                         labelPlacement="start"
                         control={
                             <NativeSelect onChange={(e) => setTheme(e.target.value as Settings['theme'])} value={theme} style={{ flexGrow: 1 }}>
-                                <option value="">Default on device mode</option>
-                                <option value="light">Light mode</option>
-                                <option value="dark">Dark mode</option>
+                                <option value="">{t('theme-default')}</option>
+                                <option value="light">{t('theme-light')}</option>
+                                <option value="dark">{t('theme-dark')}</option>
                             </NativeSelect>
                         }
                     />

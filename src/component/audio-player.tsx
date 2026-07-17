@@ -4,6 +4,7 @@ import { Fragment, useEffect, useRef, useState } from 'react';
 import { create } from 'zustand';
 import { file_feedback } from '../feedback';
 import { get_downloaded_file, is_local_url_allowed } from '../file-download-utils';
+import { useTranslation } from '../langpack';
 import { usePagePadding } from '../page-padding';
 import { PageSharer } from '../page/sharer';
 import type { Song } from '../song';
@@ -70,6 +71,7 @@ const parseTime = (seconds: number) => {
 
 export const AudioPlayer = ({ song, file }: AudioPlayerProps) => {
     const bottom = usePagePadding((state) => state.bottom);
+    const { t } = useTranslation();
 
     const activePlayer = useActivePlayer();
     const elemRef = useRef<HTMLDivElement>(null);
@@ -325,10 +327,12 @@ export const AudioPlayer = ({ song, file }: AudioPlayerProps) => {
             <div className="text">{parseTime(finalDuration)}</div>
             {(!file.download_path || file.download_path != 'none') && (
                 <Fragment>
-                    <IconButton size="small" color="primary" title="Share" onClick={handleShare}>
+                    <IconButton size="small" color="primary" title={t('sharebtn')} onClick={handleShare}>
                         <Icon.Share />
                     </IconButton>
-                    {shareLink ? <PageSharer url={shareLink as string} file={file.path} title="Share" subject="Share" onClose={closeSharer} /> : null}
+                    {shareLink ? (
+                        <PageSharer url={shareLink as string} file={file.path} title={t('share_title')} subject={t('share_subject')} onClose={closeSharer} />
+                    ) : null}
                     <DownloadButton song={song} file={file} onDownload={setSrc} down_file_key={downFileKey()} />
                 </Fragment>
             )}

@@ -38,8 +38,8 @@ describe('DialogDbLangs', () => {
     it('renders language selection dialog', async () => {
         renderWithRouter(<DialogDbLangs />);
 
-        await screen.findByText('db_langs_title');
-        expect(screen.getByText('db_langs_title')).toBeInTheDocument();
+        await screen.findByText('Choose Song Languages');
+        expect(screen.getByText('Choose Song Languages')).toBeInTheDocument();
     });
 
     describe('PageDbLangs', () => {

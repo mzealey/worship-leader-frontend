@@ -30,6 +30,7 @@ const SongListSortable = ({ id, index, song, set, onDeleteItem }: SongListSortab
     const { setNodeRef, transform, attributes, listeners, transition } = useSortable({
         id: id,
     });
+    const { t } = useTranslation();
     const style = {
         transform: CSS.Transform.toString(transform),
         transition,
@@ -42,7 +43,7 @@ const SongListSortable = ({ id, index, song, set, onDeleteItem }: SongListSortab
         <div ref={setNodeRef} style={style}>
             <SongListLink withStripe={index % 2 == 1} song={song} set_id={set?.id} noAddToSet>
                 {!set.ro && (
-                    <IconButton title="Sort" disableRipple style={{ cursor: 'move' }} size="large" {...attributes} {...listeners}>
+                    <IconButton title={t('sort')} disableRipple style={{ cursor: 'move' }} size="large" {...attributes} {...listeners}>
                         <Icon.Drag />
                     </IconButton>
                 )}

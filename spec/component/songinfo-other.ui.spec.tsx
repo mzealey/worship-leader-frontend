@@ -203,10 +203,10 @@ describe('DialogPresent', () => {
         renderWithProviders(<DialogPresent enter_single_presentor_mode={vi.fn()} />);
 
         expect(screen.getByTestId('dialog-title')).toBeInTheDocument();
-        expect(screen.getByText('present-choose')).toBeInTheDocument();
-        expect(screen.getByText('present-monitor')).toBeInTheDocument();
+        expect(screen.getByText('Choose presentation device')).toBeInTheDocument();
+        expect(screen.getByText('This monitor')).toBeInTheDocument();
         await waitFor(() => {
-            expect(screen.getByText('present-cast')).toBeInTheDocument();
+            expect(screen.getByText('Second monitor or wireless screen')).toBeInTheDocument();
         });
     });
 
@@ -214,13 +214,13 @@ describe('DialogPresent', () => {
         const enterFn = vi.fn();
         renderWithProviders(<DialogPresent enter_single_presentor_mode={enterFn} />);
 
-        fireEvent.click(screen.getByText('present-monitor'));
+        fireEvent.click(screen.getByText('This monitor'));
         expect(enterFn).toHaveBeenCalled();
     });
 
     it('closes on cancel', () => {
         renderWithProviders(<DialogPresent enter_single_presentor_mode={vi.fn()} />);
-        fireEvent.click(screen.getByText('cancel_btn'));
+        fireEvent.click(screen.getByText('Cancel'));
     });
 });
 
@@ -234,14 +234,14 @@ describe('SongRefreshBtn', () => {
 
     it('renders refresh button for offline DB', async () => {
         renderWithProviders(<SongRefreshBtn onClick={vi.fn()} />);
-        await screen.findByText('refreshbtn');
+        await screen.findByText('Refresh Song');
     });
 
     it('calls onClick when clicked', async () => {
         const onClick = vi.fn();
         renderWithProviders(<SongRefreshBtn onClick={onClick} />);
-        await screen.findByText('refreshbtn');
-        fireEvent.click(screen.getByText('refreshbtn'));
+        await screen.findByText('Refresh Song');
+        fireEvent.click(screen.getByText('Refresh Song'));
         expect(onClick).toHaveBeenCalled();
     });
 
@@ -273,7 +273,7 @@ describe('SongPresentBtn', () => {
     it('renders present button when not active', () => {
         renderWithProviders(<SongPresentBtn show_dialog={vi.fn()} enter_single_presentor_mode={vi.fn()} />);
 
-        expect(screen.getByText('present-btn')).toBeInTheDocument();
+        expect(screen.getByText('Present')).toBeInTheDocument();
     });
 
     it('enters single presentor mode when cast not available', () => {
@@ -310,8 +310,8 @@ describe('SetPrevNext', () => {
 
         renderWithRouter(<SetPrevNext song_id={1} set_switcher={switcher as any} />);
 
-        await screen.findByText('pager_prev');
-        expect(screen.getByText('pager_next')).toBeInTheDocument();
+        await screen.findByText('Previous');
+        expect(screen.getByText('Next')).toBeInTheDocument();
     });
 });
 
@@ -361,7 +361,7 @@ describe('SongsDisplay', () => {
     it('renders print ad box', () => {
         renderWithProviders(<SongsDisplay song={mockSong} update_item_refs={vi.fn()} />);
 
-        expect(screen.getByText('print_ad')).toBeInTheDocument();
+        expect(screen.getByText('Printed from https://worshipleaderapp.com')).toBeInTheDocument();
     });
 
     it('renders capo and chord select when transpose available', () => {
@@ -414,6 +414,6 @@ describe('SongsDisplay', () => {
 
         renderWithProviders(<SongsDisplay song={{ ...mockSong, copyright_restricted: true, lang: 'en' }} update_item_refs={vi.fn()} />);
 
-        expect(screen.getByText('copyright_no_show')).toBeInTheDocument();
+        expect(screen.getByText('Unfortunately, due to copyright reasons this song cannot be displayed')).toBeInTheDocument();
     });
 });

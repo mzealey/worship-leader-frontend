@@ -1,10 +1,19 @@
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { describe, expect, it, vi } from 'vitest';
-import { Alert } from '../../src/component/alert';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { createLangpackMock } from '../helpers/mocks/langpack';
 import { renderWithProviders } from '../helpers/render';
 
+let Alert: typeof import('../../src/component/alert').Alert;
+
 describe('Alert', () => {
+    beforeEach(async () => {
+        vi.resetModules();
+        vi.doMock('../../src/langpack', createLangpackMock);
+        const module = await import('../../src/component/alert');
+        Alert = module.Alert;
+    });
+
     it('renders with title and message', () => {
         renderWithProviders(<Alert title="Test Title" message="Test message body" />);
         expect(screen.getByText('Test Title')).toBeInTheDocument();

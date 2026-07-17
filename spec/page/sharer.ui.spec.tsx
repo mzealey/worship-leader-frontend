@@ -31,37 +31,37 @@ describe('PageSharer', () => {
     it('renders share dialog', () => {
         renderWithRouter(<PageSharer url="/test" subject="Test Subject" title="Test Title" />);
 
-        expect(screen.getByText('sharebtn')).toBeInTheDocument();
-        expect(screen.getByText('share_title')).toBeInTheDocument();
+        expect(screen.getByText('Share')).toBeInTheDocument();
+        expect(screen.getByText('How do you want to share this?')).toBeInTheDocument();
     });
 
     it('renders email share button', () => {
         renderWithRouter(<PageSharer url="/test" subject="Test Subject" title="Test Title" />);
 
-        expect(screen.getByText('email')).toBeInTheDocument();
+        expect(screen.getByText('Email')).toBeInTheDocument();
     });
 
     it('renders facebook share button', () => {
         renderWithRouter(<PageSharer url="/test" subject="Test Subject" title="Test Title" />);
 
-        expect(screen.getByText('facebook')).toBeInTheDocument();
+        expect(screen.getByText('Facebook')).toBeInTheDocument();
     });
 
     it('renders VK share button', () => {
         renderWithRouter(<PageSharer url="/test" subject="Test Subject" title="Test Title" />);
 
-        expect(screen.getByText('vk')).toBeInTheDocument();
+        expect(screen.getByText('VK')).toBeInTheDocument();
     });
 
     it('renders copy link input', () => {
         renderWithRouter(<PageSharer url="/test" subject="Test Subject" title="Test Title" />);
 
-        expect(screen.getByText('copy_link')).toBeInTheDocument();
+        expect(screen.getByText('Or copy the link below to share')).toBeInTheDocument();
     });
 
     it('shows cancel button', () => {
         renderWithRouter(<PageSharer url="/test" subject="Test Subject" title="Test Title" />);
 
-        expect(screen.getByText('cancel_btn')).toBeInTheDocument();
+        expect(screen.getByText('Cancel')).toBeInTheDocument();
     });
 });
