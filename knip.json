@@ -27,12 +27,8 @@
         "tests/**/*.ts"
       ],
       "ignoreDependencies": [
-        "caniuse-lite",
-        "core-js",
         "@eslint/js",
-        "clsx",
-        "eslint-plugin-import",
-        "vite-plugin-compression"
+        "clsx"
       ],
       "paths": {
         "/src/*": ["src/*"]

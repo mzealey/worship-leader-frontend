@@ -153,7 +153,8 @@ export default defineConfig(({ command, mode }) => {
             });
 
             // Pre-build compressed versions of the files for faster serving from the server
-            // Works fine, but probably no need with apache, only on nginx
+            // TODO: Works fine, but probably no need with apache, only on nginx
+            // Needs vite-plugin-compression
             /*
             config.plugins.push(
                 viteCompression({ verbose: false }),
