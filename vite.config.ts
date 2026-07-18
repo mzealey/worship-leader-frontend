@@ -174,23 +174,18 @@ export default defineConfig(({ command, mode }) => {
 
         config.plugins.push(
             // Additional public directory on a per-build basis to allow eg public-www specifically for the www build
-            DynamicPublicDirectory(
-                [
-                    {
-                        input: `public/all/**`,
-                        output: '',
-                        watch: is_watch,
-                    },
-                    {
-                        input: `public/${build_type}/**`,
-                        output: '',
-                        watch: is_watch,
-                    },
-                ],
+            DynamicPublicDirectory([
                 {
-                    followSymbolicLinks: true,
+                    input: `public/all/**`,
+                    output: '',
+                    watch: is_watch,
                 },
-            ),
+                {
+                    input: `public/${build_type}/**`,
+                    output: '',
+                    watch: is_watch,
+                },
+            ]),
 
             createHtmlPlugin({ pages: html_pages }),
         );

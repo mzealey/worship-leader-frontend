@@ -1,5 +1,11 @@
 import { expect, test } from '@playwright/test';
 
+declare global {
+    interface Window {
+        TEST_DB_API: any;
+    }
+}
+
 /**
  * Database Integration Tests
  *
@@ -45,7 +51,7 @@ async function initializeDatabase(page, dbType: 'online' | 'offline') {
             if (type === 'offline') {
                 const { save_db_chosen_langs } = await import('/src/db/common');
                 // Include multiple languages for comprehensive testing
-                save_db_chosen_langs(['en', 'tr', 'ru']);
+                save_db_chosen_langs(['en', 'tr', 'ru'] as any);
 
                 // Trigger population and wait for it to complete
                 // Pass false for in_background to ensure it completes
@@ -85,7 +91,7 @@ for (const { name, type } of dbTypes) {
             // Initialize the database once for all tests
             await initializeDatabase(page, type);
 
-            const results = await page.evaluate(async () => {
+            const results: any = await page.evaluate(async () => {
                 const db = window.TEST_DB_API;
                 const testResults: Record<string, unknown> = {};
 
@@ -275,9 +281,8 @@ test.describe('Database Parity Tests', () => {
                 songxml_start: '<verse><chord>Dm</chord>Иисус, за Кровь Тво<chord>C</chord>ю,<br />Я Тебя благодар<chord>Bb</chord>ю',
             },
         ];
-
         const testSongIds = expectedSongs.map((s) => s.id);
-        const results = [];
+        const results: { type: string; songs: any[] }[] = [];
 
         for (const dbType of ['online', 'offline'] as const) {
             await initializeDatabase(page, dbType);
@@ -286,7 +291,8 @@ test.describe('Database Parity Tests', () => {
                 const db = window.TEST_DB_API;
                 await db.db_populated;
 
-                const songs = [];
+                const songs: any[] = [];
+
                 for (const id of songIds) {
                     const song = await db.get_song(id, true);
                     if (song) {
@@ -353,7 +359,7 @@ test.describe('Database Parity Tests', () => {
         ];
 
         const testSongIds = expectedSongs.map((s) => s.id);
-        const results = [];
+        const results: { type: string; songs: any[] }[] = [];
 
         for (const dbType of ['online', 'offline'] as const) {
             await initializeDatabase(page, dbType);
@@ -363,7 +369,7 @@ test.describe('Database Parity Tests', () => {
                 await db.db_populated;
 
                 // Get songs with songxml - need to call get_song individually with ajax_fallback=true
-                const songs = [];
+                const songs: any[] = [];
                 for (const id of songIds) {
                     const song = await db.get_song(id, true);
                     if (song) {

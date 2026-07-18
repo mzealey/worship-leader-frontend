@@ -34,7 +34,7 @@ test.describe('SQLite WASM Database', () => {
             const result = await page.evaluate(async () => {
                 try {
                     const { try_load_sqlite_wasm } = await import('/src/db/offline-sqlite-wasm');
-                    const worker = await try_load_sqlite_wasm();
+                    const worker: any = await try_load_sqlite_wasm();
                     return { success: !!worker, error: null };
                 } catch (error) {
                     return { success: false, error: String(error) };
@@ -50,7 +50,7 @@ test.describe('SQLite WASM Database', () => {
         test('should execute simple queries', async ({ page }) => {
             const result = await page.evaluate(async () => {
                 const { try_load_sqlite_wasm } = await import('/src/db/offline-sqlite-wasm');
-                const worker = await try_load_sqlite_wasm();
+                const worker: any = await try_load_sqlite_wasm();
 
                 // Create a test table
                 await worker.exec('CREATE TABLE IF NOT EXISTS test_table (id INTEGER PRIMARY KEY, value TEXT)');
@@ -73,7 +73,7 @@ test.describe('SQLite WASM Database', () => {
         test('should handle multiple inserts', async ({ page }) => {
             const result = await page.evaluate(async () => {
                 const { try_load_sqlite_wasm } = await import('/src/db/offline-sqlite-wasm');
-                const worker = await try_load_sqlite_wasm();
+                const worker: any = await try_load_sqlite_wasm();
 
                 await worker.exec('CREATE TABLE IF NOT EXISTS test_multi (id INTEGER, name TEXT)');
 
@@ -95,11 +95,11 @@ test.describe('SQLite WASM Database', () => {
         test('should support bulk_exec for performance', async ({ page }) => {
             const result = await page.evaluate(async () => {
                 const { try_load_sqlite_wasm } = await import('/src/db/offline-sqlite-wasm');
-                const worker = await try_load_sqlite_wasm();
+                const worker: any = await try_load_sqlite_wasm();
 
                 await worker.exec('CREATE TABLE IF NOT EXISTS bulk_test (id INTEGER, value TEXT)');
 
-                const binds = [];
+                const binds: any[] = [];
                 for (let i = 0; i < 50; i++) {
                     binds.push([i, `value_${i}`]);
                 }
@@ -122,7 +122,7 @@ test.describe('SQLite WASM Database', () => {
         test('should handle transactions', async ({ page }) => {
             const result = await page.evaluate(async () => {
                 const { try_load_sqlite_wasm } = await import('/src/db/offline-sqlite-wasm');
-                const worker = await try_load_sqlite_wasm();
+                const worker: any = await try_load_sqlite_wasm();
 
                 await worker.exec('CREATE TABLE IF NOT EXISTS txn_test (id INTEGER, value TEXT)');
 
@@ -153,7 +153,7 @@ test.describe('SQLite WASM Database', () => {
         test('should support WITHOUT ROWID tables', async ({ page }) => {
             const result = await page.evaluate(async () => {
                 const { try_load_sqlite_wasm } = await import('/src/db/offline-sqlite-wasm');
-                const worker = await try_load_sqlite_wasm();
+                const worker: any = await try_load_sqlite_wasm();
 
                 try {
                     await worker.exec(`
@@ -180,7 +180,7 @@ test.describe('SQLite WASM Database', () => {
         test('should handle LIKE queries efficiently', async ({ page }) => {
             const result = await page.evaluate(async () => {
                 const { try_load_sqlite_wasm } = await import('/src/db/offline-sqlite-wasm');
-                const worker = await try_load_sqlite_wasm();
+                const worker: any = await try_load_sqlite_wasm();
 
                 await worker.exec('CREATE TABLE IF NOT EXISTS like_test (id INTEGER, title TEXT)');
 
@@ -206,7 +206,7 @@ test.describe('SQLite WASM Database', () => {
         test('should handle JSON data storage', async ({ page }) => {
             const result = await page.evaluate(async () => {
                 const { try_load_sqlite_wasm } = await import('/src/db/offline-sqlite-wasm');
-                const worker = await try_load_sqlite_wasm();
+                const worker: any = await try_load_sqlite_wasm();
 
                 await worker.exec('CREATE TABLE IF NOT EXISTS json_test (id INTEGER, data TEXT)');
 
@@ -225,7 +225,7 @@ test.describe('SQLite WASM Database', () => {
         test('should handle NULL values correctly', async ({ page }) => {
             const result = await page.evaluate(async () => {
                 const { try_load_sqlite_wasm } = await import('/src/db/offline-sqlite-wasm');
-                const worker = await try_load_sqlite_wasm();
+                const worker: any = await try_load_sqlite_wasm();
 
                 await worker.exec('CREATE TABLE IF NOT EXISTS null_test (id INTEGER, value TEXT)');
 
@@ -245,7 +245,7 @@ test.describe('SQLite WASM Database', () => {
         test('should handle special characters', async ({ page }) => {
             const result = await page.evaluate(async () => {
                 const { try_load_sqlite_wasm } = await import('/src/db/offline-sqlite-wasm');
-                const worker = await try_load_sqlite_wasm();
+                const worker: any = await try_load_sqlite_wasm();
 
                 await worker.exec('CREATE TABLE IF NOT EXISTS char_test (text TEXT)');
 
@@ -264,7 +264,7 @@ test.describe('SQLite WASM Database', () => {
         test('should perform JOIN operations', async ({ page }) => {
             const result = await page.evaluate(async () => {
                 const { try_load_sqlite_wasm } = await import('/src/db/offline-sqlite-wasm');
-                const worker = await try_load_sqlite_wasm();
+                const worker: any = await try_load_sqlite_wasm();
 
                 await worker.exec('CREATE TABLE IF NOT EXISTS join_a (id INTEGER, name TEXT)');
                 await worker.exec('CREATE TABLE IF NOT EXISTS join_b (id INTEGER, aid INTEGER, value TEXT)');
@@ -297,7 +297,7 @@ test.describe('SQLite WASM Database', () => {
         test('should perform aggregate queries', async ({ page }) => {
             const result = await page.evaluate(async () => {
                 const { try_load_sqlite_wasm } = await import('/src/db/offline-sqlite-wasm');
-                const worker = await try_load_sqlite_wasm();
+                const worker: any = await try_load_sqlite_wasm();
 
                 await worker.exec('CREATE TABLE IF NOT EXISTS agg_test (category TEXT, value INTEGER)');
 
@@ -327,7 +327,7 @@ test.describe('SQLite WASM Database', () => {
         test('should handle UPSERT with ON CONFLICT', async ({ page }) => {
             const result = await page.evaluate(async () => {
                 const { try_load_sqlite_wasm } = await import('/src/db/offline-sqlite-wasm');
-                const worker = await try_load_sqlite_wasm();
+                const worker: any = await try_load_sqlite_wasm();
 
                 await worker.exec('CREATE TABLE IF NOT EXISTS upsert_test (id INTEGER PRIMARY KEY, value TEXT)');
 
@@ -355,7 +355,7 @@ test.describe('SQLite WASM Database', () => {
         test('should handle large text fields', async ({ page }) => {
             const result = await page.evaluate(async () => {
                 const { try_load_sqlite_wasm } = await import('/src/db/offline-sqlite-wasm');
-                const worker = await try_load_sqlite_wasm();
+                const worker: any = await try_load_sqlite_wasm();
 
                 await worker.exec('CREATE TABLE IF NOT EXISTS large_test (id INTEGER, content TEXT)');
 
@@ -375,7 +375,7 @@ test.describe('SQLite WASM Database', () => {
         test('should create and use indexes', async ({ page }) => {
             const result = await page.evaluate(async () => {
                 const { try_load_sqlite_wasm } = await import('/src/db/offline-sqlite-wasm');
-                const worker = await try_load_sqlite_wasm();
+                const worker: any = await try_load_sqlite_wasm();
 
                 await worker.exec('CREATE TABLE IF NOT EXISTS idx_test (id INTEGER, category TEXT, value INTEGER)');
                 await worker.exec('CREATE INDEX IF NOT EXISTS idx_category ON idx_test(category)');
@@ -403,7 +403,7 @@ test.describe('SQLite WASM Database', () => {
         test('should handle ORDER BY with multiple columns', async ({ page }) => {
             const result = await page.evaluate(async () => {
                 const { try_load_sqlite_wasm } = await import('/src/db/offline-sqlite-wasm');
-                const worker = await try_load_sqlite_wasm();
+                const worker: any = await try_load_sqlite_wasm();
 
                 await worker.exec('CREATE TABLE IF NOT EXISTS order_test (category TEXT, priority INTEGER, name TEXT)');
 
@@ -429,7 +429,7 @@ test.describe('SQLite WASM Database', () => {
         test('should handle DISTINCT queries', async ({ page }) => {
             const result = await page.evaluate(async () => {
                 const { try_load_sqlite_wasm } = await import('/src/db/offline-sqlite-wasm');
-                const worker = await try_load_sqlite_wasm();
+                const worker: any = await try_load_sqlite_wasm();
 
                 await worker.exec('CREATE TABLE IF NOT EXISTS distinct_test (category TEXT, value INTEGER)');
 
@@ -455,11 +455,11 @@ test.describe('SQLite WASM Database', () => {
         test('should handle LIMIT and OFFSET', async ({ page }) => {
             const result = await page.evaluate(async () => {
                 const { try_load_sqlite_wasm } = await import('/src/db/offline-sqlite-wasm');
-                const worker = await try_load_sqlite_wasm();
+                const worker: any = await try_load_sqlite_wasm();
 
                 await worker.exec('CREATE TABLE IF NOT EXISTS pagination_test (id INTEGER, value TEXT)');
 
-                const binds = [];
+                const binds: any[] = [];
                 for (let i = 1; i <= 20; i++) {
                     binds.push([i, `Item ${i}`]);
                 }
@@ -478,7 +478,7 @@ test.describe('SQLite WASM Database', () => {
         test('should handle subqueries', async ({ page }) => {
             const result = await page.evaluate(async () => {
                 const { try_load_sqlite_wasm } = await import('/src/db/offline-sqlite-wasm');
-                const worker = await try_load_sqlite_wasm();
+                const worker: any = await try_load_sqlite_wasm();
 
                 await worker.exec('CREATE TABLE IF NOT EXISTS subquery_test (id INTEGER, value INTEGER)');
 
@@ -507,7 +507,7 @@ test.describe('SQLite WASM Database', () => {
         test('should handle CASE expressions', async ({ page }) => {
             const result = await page.evaluate(async () => {
                 const { try_load_sqlite_wasm } = await import('/src/db/offline-sqlite-wasm');
-                const worker = await try_load_sqlite_wasm();
+                const worker: any = await try_load_sqlite_wasm();
 
                 await worker.exec('CREATE TABLE IF NOT EXISTS case_test (id INTEGER, score INTEGER)');
 
@@ -542,11 +542,11 @@ test.describe('SQLite WASM Database', () => {
         test('should efficiently insert 1000 records using bulk_exec', async ({ page }) => {
             const result = await page.evaluate(async () => {
                 const { try_load_sqlite_wasm } = await import('/src/db/offline-sqlite-wasm');
-                const worker = await try_load_sqlite_wasm();
+                const worker: any = await try_load_sqlite_wasm();
 
                 await worker.exec('CREATE TABLE IF NOT EXISTS perf_test (id INTEGER, title TEXT, content TEXT)');
 
-                const binds = [];
+                const binds: any[] = [];
                 for (let i = 0; i < 1000; i++) {
                     binds.push([i, `Title ${i}`, `Content for item ${i}`]);
                 }
@@ -578,7 +578,7 @@ test.describe('SQLite WASM Database', () => {
         test('should handle complex queries on large datasets', async ({ page }) => {
             const result = await page.evaluate(async () => {
                 const { try_load_sqlite_wasm } = await import('/src/db/offline-sqlite-wasm');
-                const worker = await try_load_sqlite_wasm();
+                const worker: any = await try_load_sqlite_wasm();
 
                 await worker.exec(`
                     CREATE TABLE IF NOT EXISTS complex_test (
@@ -593,7 +593,7 @@ test.describe('SQLite WASM Database', () => {
                 await worker.exec('CREATE INDEX IF NOT EXISTS idx_lang ON complex_test(lang)');
                 await worker.exec('CREATE INDEX IF NOT EXISTS idx_rating ON complex_test(rating)');
 
-                const binds = [];
+                const binds: any[] = [];
                 const langs = ['en', 'ru', 'fr', 'es', 'de'];
                 const categories = ['hymn', 'worship', 'contemporary'];
                 for (let i = 0; i < 500; i++) {
@@ -628,7 +628,7 @@ test.describe('SQLite WASM Database', () => {
         test('should load a simulated Russian language database efficiently', async ({ page }) => {
             const result = await page.evaluate(async () => {
                 const { try_load_sqlite_wasm } = await import('/src/db/offline-sqlite-wasm');
-                const worker = await try_load_sqlite_wasm();
+                const worker: any = await try_load_sqlite_wasm();
 
                 // Create schema similar to the actual database
                 await worker.exec(`
@@ -665,7 +665,7 @@ test.describe('SQLite WASM Database', () => {
                 await worker.exec('CREATE INDEX IF NOT EXISTS title_idx ON songs_ru(sort_title)');
 
                 // Simulate loading ~2000 Russian songs (approximate size of Russian database)
-                const binds = [];
+                const binds: any[] = [];
                 const sampleXml = '<song><verse>Слава Богу за всё</verse><verse>Он так любит нас</verse></song>';
                 const sampleInfo = JSON.stringify([{ type: 'composer', value: 'Unknown' }]);
                 const sampleFiles = JSON.stringify([{ type: 'mp3', url: '/songs/123.mp3' }]);
@@ -748,11 +748,11 @@ test.describe('SQLite WASM Database', () => {
         test('should handle concurrent operations efficiently', async ({ page }) => {
             const result = await page.evaluate(async () => {
                 const { try_load_sqlite_wasm } = await import('/src/db/offline-sqlite-wasm');
-                const worker = await try_load_sqlite_wasm();
+                const worker: any = await try_load_sqlite_wasm();
 
                 await worker.exec('CREATE TABLE IF NOT EXISTS concurrent_test (id INTEGER, value TEXT)');
 
-                const binds = [];
+                const binds: any[] = [];
                 for (let i = 0; i < 100; i++) {
                     binds.push([i, `Value ${i}`]);
                 }
@@ -760,7 +760,7 @@ test.describe('SQLite WASM Database', () => {
 
                 // Fire off multiple read queries concurrently
                 const start = Date.now();
-                const promises = [];
+                const promises: any[] = [];
                 for (let i = 0; i < 20; i++) {
                     promises.push(worker.exec('SELECT * FROM concurrent_test WHERE id = ?', [i * 5]));
                 }
