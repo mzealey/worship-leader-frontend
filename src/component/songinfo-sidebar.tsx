@@ -631,11 +631,13 @@ export const SongInfoSide = ({
 
             <SongInfoSection song={song} on_filter_change={on_filter_change} />
 
-            <SidebarHeader section="tags" title="tag_str" count={song.tags.length} noPrint>
-                <TagsSection tags={song.tags} on_filter_change={on_filter_change} />
-            </SidebarHeader>
+            {song.tags.length > 0 && (
+                <SidebarHeader section="tags" title="tag_str" count={song.tags.length} noPrint>
+                    <TagsSection tags={song.tags} on_filter_change={on_filter_change} />
+                </SidebarHeader>
+            )}
 
-            <AlbumSection song={song} on_filter_change={on_filter_change} />
+            {(song.albums || []).length > 0 && <AlbumSection song={song} on_filter_change={on_filter_change} />}
 
             {sections['mp3-words'].length + sections['mp3-instrumentals'].length > 0 && <div ref={(e: HTMLDivElement) => update_item_refs('music', e)} />}
 
@@ -651,14 +653,20 @@ export const SongInfoSide = ({
                 </SidebarHeader>
             )}
 
-            {sections['videos'].length > 0 && <div ref={(e: HTMLDivElement) => update_item_refs('videos', e)} />}
-            <SidebarHeader section="videos" noPrint oneLine count={sections.videos.length} icon={Icon.Video}>
-                <VideoSection items={sections.videos} />
-            </SidebarHeader>
+            {sections['videos'].length > 0 && (
+                <>
+                    <div ref={(e: HTMLDivElement) => update_item_refs('videos', e)} />
+                    <SidebarHeader section="videos" noPrint oneLine count={sections.videos.length} icon={Icon.Video}>
+                        <VideoSection items={sections.videos} />
+                    </SidebarHeader>
+                </>
+            )}
 
-            <SidebarHeader noPrint section="sheet-music" title="sheet_music" count={sections['sheet-music'].length} oneLine>
-                <SheetMusicSection items={sections['sheet-music']} />
-            </SidebarHeader>
+            {sections['sheet-music'].length > 0 && (
+                <SidebarHeader noPrint section="sheet-music" title="sheet_music" count={sections['sheet-music'].length} oneLine>
+                    <SheetMusicSection items={sections['sheet-music']} />
+                </SidebarHeader>
+            )}
 
             <RatingSection song={song} />
         </Box>
