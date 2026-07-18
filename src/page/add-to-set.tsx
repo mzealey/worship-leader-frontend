@@ -1,7 +1,7 @@
 import { Button, Dialog, DialogActions, DialogContent, List, ListItem, ListItemButton, ListItemSecondaryAction, ListItemText } from '@mui/material';
 import { useEffect, useState } from 'react';
-import { Alert } from '../component/alert';
 import { AutofocusTextField, DialogTitleWithClose } from '../component/basic';
+import { send_ui_notification } from '../component/notify';
 import { song_feedback } from '../feedback';
 import { useTranslation } from '../langpack';
 import { SET_DB, on_set_db_update } from '../set-db';
@@ -66,7 +66,6 @@ export const DialogAddToSet = ({ song_id, transpose, onClose }: DialogAddToSetPr
     const { t } = useTranslation();
     const { closed, handleClose } = useDialog(onClose);
     const [setName, setSetName] = useState('');
-    const [duplicate, setDuplicate] = useState(false);
 
     const addSongToSet = (set_id: number) => {
         song_feedback('set_add', song_id);
@@ -101,9 +100,7 @@ export const DialogAddToSet = ({ song_id, transpose, onClose }: DialogAddToSetPr
                 </Button>
             </DialogActions>
 
-            <AddToSetList add_to_set={(set_id) => addSongToSet(set_id).then(handleClose, () => setDuplicate(true))} />
-
-            {duplicate ? <Alert message={t('already_in_set')} onClose={() => setDuplicate(false)} /> : null}
+            <AddToSetList add_to_set={(set_id) => addSongToSet(set_id).then(handleClose, () => send_ui_notification({ message_code: 'already_in_set' }))} />
         </Dialog>
     );
 };

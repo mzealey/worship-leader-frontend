@@ -144,6 +144,7 @@ export const PageSharer = ({ url: propUrl, subject, title, file, onClose }: Page
             () => send_ui_notification({ message_code: 'copy-success' }),
             () => send_ui_notification({ message_code: 'copy-error' }),
         );
+        closeWithShare();
     };
 
     // mailto doesn't seem to like uri-encoded stuff in kmail but tbird etc work ok

@@ -10,6 +10,9 @@ let mockSET_DB: {
     add_song_to_set: ReturnType<typeof vi.fn>;
     get_set_list: ReturnType<typeof vi.fn>;
 };
+let mockNotify: {
+    send_ui_notification: ReturnType<typeof vi.fn>;
+};
 
 describe('DialogAddToSet', () => {
     beforeEach(async () => {
@@ -24,6 +27,9 @@ describe('DialogAddToSet', () => {
                 { id: 2, name: 'Read Only', ro: 1 },
             ]),
         };
+        mockNotify = {
+            send_ui_notification: vi.fn(),
+        };
 
         vi.doMock('../../src/langpack', createLangpackMock);
         vi.doMock('../../src/set-db', () => ({
@@ -33,6 +39,7 @@ describe('DialogAddToSet', () => {
         vi.doMock('../../src/feedback', () => ({
             song_feedback: vi.fn(),
         }));
+        vi.doMock('../../src/component/notify', () => mockNotify);
 
         const mod = await import('../../src/page/add-to-set');
         DialogAddToSet = mod.DialogAddToSet;
@@ -95,7 +102,7 @@ describe('DialogAddToSet', () => {
         });
     });
 
-    it('shows duplicate alert when addSongToSet fails', async () => {
+    it('shows duplicate notification when addSongToSet fails', async () => {
         const user = userEvent.setup();
         mockSET_DB.add_song_to_set.mockRejectedValue(new Error('duplicate'));
 
@@ -104,8 +111,9 @@ describe('DialogAddToSet', () => {
         const mySetBtn = await screen.findByText('My Set');
         await user.click(mySetBtn);
 
-        await screen.findByText("This song is already in this set. Can't add a second time.");
-        expect(screen.getByText("This song is already in this set. Can't add a second time.")).toBeInTheDocument();
+        await vi.waitFor(() => {
+            expect(mockNotify.send_ui_notification).toHaveBeenCalledWith({ message_code: 'already_in_set' });
+        });
     });
 
     it('passes transpose key and capo when provided', async () => {
