@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { DialogTitleWithClose } from '../component/basic';
 import * as Icon from '../component/icons';
 import { LockScreen } from '../component/lock-screen';
+import { send_ui_notification } from '../component/notify';
 import { BUILD_TYPE, SHARE_DOMAIN } from '../globals';
 import { useTranslation } from '../langpack';
 import { useDialog } from '../use-dialog';
@@ -138,6 +139,13 @@ export const PageSharer = ({ url: propUrl, subject, title, file, onClose }: Page
 
     const urlAndMsg = `${displaySubject}: ${displayUrl}`;
 
+    const handleCopyLink = () => {
+        navigator.clipboard.writeText(displayUrl).then(
+            () => send_ui_notification({ message_code: 'copy-success' }),
+            () => send_ui_notification({ message_code: 'copy-error' }),
+        );
+    };
+
     // mailto doesn't seem to like uri-encoded stuff in kmail but tbird etc work ok
 
     // alternative facebook url needs an app id
@@ -154,6 +162,32 @@ export const PageSharer = ({ url: propUrl, subject, title, file, onClose }: Page
                         <ListItemButton
                             nativeButton={false}
                             component="a"
+                            target="_blank"
+                            onClick={closeWithShare}
+                            rel="noopener noreferrer"
+                            data-action="share/whatsapp/share"
+                            href={'https://wa.me/?' + generate_search_params({ text: urlAndMsg })}
+                        >
+                            <ListItemIcon>
+                                <Icon.ShareWhatsApp />
+                            </ListItemIcon>
+                            <ListItemText primary={t('whatsapp')} />
+                        </ListItemButton>
+                    </ListItem>
+
+                    <ListItem disablePadding>
+                        <ListItemButton nativeButton={false} onClick={handleCopyLink}>
+                            <ListItemIcon>
+                                <Icon.Copy />
+                            </ListItemIcon>
+                            <ListItemText primary="Copy Link" secondary={displayUrl} />
+                        </ListItemButton>
+                    </ListItem>
+
+                    <ListItem disablePadding>
+                        <ListItemButton
+                            nativeButton={false}
+                            component="a"
                             onClick={closeWithShare}
                             href={'mailto:?' + generate_search_params({ subject: displaySubject, body: displayUrl })}
                         >
@@ -163,25 +197,6 @@ export const PageSharer = ({ url: propUrl, subject, title, file, onClose }: Page
                             <ListItemText primary={t('email')} />
                         </ListItemButton>
                     </ListItem>
-
-                    {is_mobile_browser() && (
-                        <ListItem disablePadding>
-                            <ListItemButton
-                                nativeButton={false}
-                                component="a"
-                                target="_blank"
-                                onClick={closeWithShare}
-                                rel="noopener noreferrer"
-                                data-action="share/whatsapp/share"
-                                href={'whatsapp://send?' + generate_search_params({ text: urlAndMsg })}
-                            >
-                                <ListItemIcon>
-                                    <Icon.ShareWhatsApp />
-                                </ListItemIcon>
-                                <ListItemText primary={t('whatsapp')} />
-                            </ListItemButton>
-                        </ListItem>
-                    )}
 
                     <ListItem disablePadding>
                         <ListItemButton
@@ -214,6 +229,7 @@ export const PageSharer = ({ url: propUrl, subject, title, file, onClose }: Page
                             </ListItemButton>
                         </ListItem>
                     )}
+
                     <ListItem disablePadding>
                         <ListItemButton
                             nativeButton={false}
@@ -230,9 +246,6 @@ export const PageSharer = ({ url: propUrl, subject, title, file, onClose }: Page
                         </ListItemButton>
                     </ListItem>
                 </List>
-
-                <label htmlFor="share-link">{t('copy_link')}</label>
-                <input readOnly id="share-link" onClick={(e) => (e.target as HTMLInputElement).select()} value={displayUrl} />
             </DialogContent>
             <DialogActions>
                 <Button onClick={closeNoShare}>{t('cancel_btn')}</Button>

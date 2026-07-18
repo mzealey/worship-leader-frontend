@@ -53,10 +53,10 @@ describe('PageSharer', () => {
         expect(screen.getByText('VK')).toBeInTheDocument();
     });
 
-    it('renders copy link input', () => {
+    it('renders copy link option', () => {
         renderWithRouter(<PageSharer url="/test" subject="Test Subject" title="Test Title" />);
 
-        expect(screen.getByText('Or copy the link below to share')).toBeInTheDocument();
+        expect(screen.getByText('Copy Link')).toBeInTheDocument();
     });
 
     it('shows cancel button', () => {

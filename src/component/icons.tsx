@@ -54,10 +54,13 @@ export const Present = _genMDIIcon(_Present);
 export const Menu = _genMDIIcon(_Menu);
 
 // Shares
-import { mdiFacebook as _ShareFacebook, mdiFacebook as _ShareVK, mdiWhatsapp as _ShareWhatsApp } from '@mdi/js';
+import { mdiFacebook as _ShareFacebook, mdiWhatsapp as _ShareWhatsApp } from '@mdi/js';
 export const ShareWhatsApp = _genMDIIcon(_ShareWhatsApp);
 export const ShareFacebook = _genMDIIcon(_ShareFacebook);
-export const ShareVK = _genMDIIcon(_ShareVK);
+export const ShareVK = _genMDIIcon(
+    'M503.95 704.03h39.27c0 0 11.85-1.31 17.92-7.83 5.57-6 5.39-17.25 5.39-17.25s-.76-52.69 23.69-60.45c24.11-7.65 55.07 50.92 87.88 73.45 24.81 17.04 43.66 13.31 43.66 13.31h87.74c0 0 45.89-2.83 24.13-38.92-1.78-2.95-12.68-26.69-65.24-75.48-55.02-51.06-47.64-42.8 18.63-131.13 40.36-53.79 56.49-86.63 51.45-100.69-4.81-13.4-34.49-9.86-34.49-9.86h-98.79c0 0-7.33-1-12.76 2.25-5.31 3.18-8.72 10.6-8.72 10.6s-15.64 41.62-36.49 77.02c-43.99 74.7-61.58 78.65-68.77 74-16.73-10.81-12.55-43.42-12.55-66.59 0-72.39 10.98-102.57-21.38-110.38-10.74-2.6-18.65-4.31-46.11-4.59-35.25-.36-65.08.11-81.97 8.38-11.24 5.51-19.91 17.77-14.63 18.48 6.53.87 21.32 3.99 29.16 14.65 10.12 13.78 9.76 44.7 9.76 44.7s5.82 85.22-13.58 95.8c-13.32 7.26-31.58-7.56-70.8-75.33-20.09-34.71-35.27-73.08-35.27-73.08s-2.92-7.17-8.14-11.01c-6.33-4.65-15.17-6.12-15.17-6.12h-93.88c0 0-14.09.39-19.27 6.52-4.6 5.46-.37 16.72-.37 16.72s73.49 171.94 156.71 258.59c76.32 79.46 162.96 74.24 162.96 74.24',
+    { viewBox: '0 0 1024 1024' },
+);
 
 // Symbols
 import { mdiMicrophone as _SymbolHasMP3, mdiMusicClefTreble as _SymbolHasSheet } from '@mdi/js';
