@@ -111,6 +111,9 @@ function generate_theme(base_palette: Palette) {
             },
             MuiDialog: {
                 styleOverrides: {
+                    paper: {
+                        minWidth: '50vw',
+                    },
                     paperFullWidth: {
                         // make fullWidth really full on small screens
                         '@media (max-width: 500px)': {

@@ -180,7 +180,7 @@ export const PageSharer = ({ url: propUrl, subject, title, file, onClose }: Page
                             <ListItemIcon>
                                 <Icon.Copy />
                             </ListItemIcon>
-                            <ListItemText primary="Copy Link" secondary={displayUrl} />
+                            <ListItemText primary="Copy Link" />
                         </ListItemButton>
                     </ListItem>
 

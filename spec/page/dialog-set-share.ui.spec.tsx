@@ -24,10 +24,6 @@ describe('PageSetShare', () => {
             generate_set_share_link: vi.fn().mockReturnValue('#page-set-list?new_set=Test%20Set'),
         }));
 
-        vi.doMock('../../src/page/sharer', () => ({
-            PageSharer: ({ url }: { url: string }) => <div data-testid="sharer">{url}</div>,
-        }));
-
         const mod = await import('../../src/page/dialog-set-share');
         PageSetShare = mod.PageSetShare;
     });
@@ -46,23 +42,25 @@ describe('PageSetShare', () => {
         expect(screen.getByText('Cancel')).toBeInTheDocument();
     });
 
-    it('shows sharer when live share button clicked', async () => {
+    it('calls onShare when live share button clicked', async () => {
         const usr = userEvent.setup();
+        const onShare = vi.fn();
 
-        renderWithRouter(<PageSetShare set={mockSet} />);
+        renderWithRouter(<PageSetShare set={mockSet} onShare={onShare} />);
 
         await usr.click(screen.getByText('Share Live Set'));
 
-        expect(screen.getByTestId('sharer')).toBeInTheDocument();
+        expect(onShare).toHaveBeenCalledWith('#page-set-list?new_set=Test%20Set');
     });
 
-    it('shows sharer when normal share button clicked', async () => {
+    it('calls onShare when normal share button clicked', async () => {
         const usr = userEvent.setup();
+        const onShare = vi.fn();
 
-        renderWithRouter(<PageSetShare set={mockSet} />);
+        renderWithRouter(<PageSetShare set={mockSet} onShare={onShare} />);
 
         await usr.click(screen.getByText('Share Copy'));
 
-        expect(screen.getByTestId('sharer')).toBeInTheDocument();
+        expect(onShare).toHaveBeenCalledWith('#page-set-list?new_set=Test%20Set');
     });
 });

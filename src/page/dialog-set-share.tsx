@@ -1,24 +1,24 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText } from '@mui/material';
-import { useState } from 'react';
 import { DialogTitleWithClose } from '../component/basic';
 import { useTranslation } from '../langpack';
 import { generate_set_share_link, type ShareableSet } from '../set-utils';
 import { useDialog } from '../use-dialog';
-import { PageSharer } from './sharer';
 
 interface PageSetShareProps {
     set: ShareableSet;
     onClose?: () => void;
+    onShare?: (url: string) => void;
 }
 
 export const PageSetShare = (props: PageSetShareProps) => {
-    const { set, onClose } = props;
+    const { set, onClose, onShare } = props;
     const { t } = useTranslation();
     const { closed, handleClose } = useDialog(onClose);
-    const [shareLink, setShareLink] = useState<string | undefined>(undefined);
 
     const doShare = (live_share: boolean) => {
-        setShareLink(generate_set_share_link(set, live_share));
+        const link = generate_set_share_link(set, live_share);
+        onShare?.(link);
+        onClose?.();
     };
 
     return (
@@ -27,7 +27,6 @@ export const PageSetShare = (props: PageSetShareProps) => {
             <DialogContent>
                 <DialogContentText>{t('share_set_title')}</DialogContentText>
             </DialogContent>
-            {shareLink ? <PageSharer url={shareLink} title={t('share_title')} subject={t('share_set_subject')} onClose={handleClose} /> : null}
             <DialogActions>
                 <Button onClick={handleClose}>{t('cancel_btn')}</Button>
                 <Button color="primary" onClick={() => doShare(true)}>
