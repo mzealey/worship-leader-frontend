@@ -1,7 +1,8 @@
 {
   "include": [
     "tests/**/*.ts",
-    "*.ts"
+    "*.ts",
+    "src/**/*.d.ts"
   ],
   "compilerOptions": {
     "lib": [
@@ -27,7 +28,7 @@
       "~/*": [
         "./src/*"
       ],
-      "/*": [
+      "/src/*": [
         "./src/*"
       ],
       "./*": [

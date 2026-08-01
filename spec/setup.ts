@@ -1,15 +1,25 @@
-// Vitest setup file - runs before all tests
-import jQuery from 'jquery';
+import '@testing-library/jest-dom';
+import { beforeEach, vi } from 'vitest';
 
-// Handle both ES module and CommonJS imports
-const $ = typeof jQuery === 'function' ? jQuery : (jQuery as any).default;
-
-// Set jQuery as a global function
-// Don't call jQuery(window) - just use the jQuery function directly
-// The jsdom environment is already available, jQuery will find it automatically
-(window as any).$ = $;
-(window as any).jQuery = $;
-(global as any).$ = $;
-(global as any).jQuery = $;
-(globalThis as any).$ = $;
-(globalThis as any).jQuery = $;
+beforeEach(() => {
+    vi.stubGlobal(
+        'WebSocket',
+        class MockWebSocket {
+            static CONNECTING = 0;
+            static OPEN = 1;
+            static CLOSING = 2;
+            static CLOSED = 3;
+            readyState = MockWebSocket.CLOSED;
+            onopen: ((..._args: any[]) => void) | null = null;
+            onclose: ((..._args: any[]) => void) | null = null;
+            onmessage: ((..._args: any[]) => void) | null = null;
+            onerror: ((..._args: any[]) => void) | null = null;
+            send = vi.fn();
+            close = vi.fn();
+            addEventListener = vi.fn();
+            removeEventListener = vi.fn();
+            dispatchEvent = vi.fn();
+        },
+    );
+    vi.restoreAllMocks();
+});

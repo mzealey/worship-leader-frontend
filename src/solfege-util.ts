@@ -1,8 +1,8 @@
 import { get_translation } from './langpack';
-import { is_set } from './settings';
+import { getSetting } from './settings-store';
 
 export function maybe_convert_solfege(val: string): string {
-    if (!is_set('setting-use-solfege')) return val;
+    if (!getSetting('use-solfege')) return val;
 
     return val.replace(/\b[A-GH]/g, (match) => {
         // Russian

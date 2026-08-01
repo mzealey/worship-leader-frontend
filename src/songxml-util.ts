@@ -246,22 +246,19 @@ function _fixup_chord_rendering(elem: HTMLElement | null): void {
     if (zero_chord_position_count > chords.length / 3) setTimeout(() => _fixup_chord_rendering(elem), 20);
     else {
         elem.classList.add('rendered');
+        elem.classList.remove('in-progress');
     }
 }
 
 // Add spacers into the html to ensure chords do not overlap. May need to call
 // _fixup_chord_rendering periodically to only do the rendering after browser
 // has rendered the page initially.
-export function format_html_chords(elem: { 0: HTMLElement } | HTMLElement | null): void {
-    if (!elem) return;
+export function format_html_chords(elem: HTMLElement | null): void {
+    if (!elem || elem.classList.contains('in-progress')) return;
 
-    // Handle jQuery objects (which have a numeric index 0)
-    const htmlElement = '0' in elem ? elem[0] : elem;
-
-    if (!htmlElement) return;
-
-    htmlElement.classList.remove('rendered'); // only add the invisible large background to chord fingerings after spacing has been done correctly.
-    setTimeout(() => _fixup_chord_rendering(htmlElement), 10);
+    elem.classList.remove('rendered'); // only add the invisible large background to chord fingerings after spacing has been done correctly.
+    elem.classList.add('in-progress');
+    setTimeout(() => _fixup_chord_rendering(elem), 10);
 }
 
 // Try to prevent mid-word breaks when there are chords using a zero-width join
@@ -331,7 +328,7 @@ export function split_songxml_chords(songxml: string): string {
             .replace(/\u202D/g, '') // Hopefully no zwj's in here yet.
             .replace(/^\s+|\s+$/g, '') // kill spacing
             .split(/\s+/)
-            .map((chord) => `${start}${chord}${end}`)
+            .map((chord: string) => `${start}${chord}${end}`)
             .join('');
     });
 }

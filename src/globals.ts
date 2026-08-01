@@ -29,19 +29,15 @@ export function match_media_watcher(
     query: string,
     callback: (mql: MediaQueryList & { unsubscribe?: () => void }) => void,
 ): (MediaQueryList & { unsubscribe?: () => void }) | undefined {
-    if (!window.matchMedia) return undefined; // ie9 etc
+    if (!window.matchMedia) return undefined;
 
     query = query.replace(/^@media( ?)/m, ''); // allow both @media and non- prefixed
     const mql = window.matchMedia(query) as MediaQueryList & { unsubscribe?: () => void };
     callback(mql);
 
-    if (!mql.addListener)
-        // flag old browsers as not being set up properly
-        return undefined;
-
     const listener = (_ev: MediaQueryListEvent) => callback(mql);
-    mql.addListener(listener);
-    mql.unsubscribe = () => mql.removeListener(listener);
+    mql.addEventListener('change', listener);
+    mql.unsubscribe = () => mql.removeEventListener('change', listener);
     return mql;
 }
 
@@ -51,6 +47,8 @@ let CLIENT_TYPE = 'www';
 export const BUILD_TYPE = import.meta.env.VITE_BUILD_TYPE!;
 export const DEBUG = import.meta.env.VITE_DEBUG!;
 export const APP_VERSION = import.meta.env.VITE_APP_VERSION!;
+export const BUILD_DATE = import.meta.env.VITE_BUILD_DATE!;
+export const GIT_SHA = import.meta.env.VITE_GIT_SHA!;
 
 if ((BUILD_TYPE == 'chrome' || BUILD_TYPE == 'edge') && window.location.protocol == 'chrome-extension:') CLIENT_TYPE = 'chr';
 

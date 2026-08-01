@@ -5,7 +5,7 @@ type KeyPair = [string, string];
 // Generate a lookup hash for the mapping table. It is not stored
 // in a simple lookup table format so that our dump scripts can
 // properly check for bad mappings.
-export const COMPRESSED_KEY_MAP: Record<string, string> = {},
+const COMPRESSED_KEY_MAP: Record<string, string> = {},
     DECOMPRESSED_KEY_MAP: Record<string, string> = {};
 for (let i = 0; i < _COMPRESSED_KEY_MAP.length; i++) {
     const [compressed, decompressed] = _COMPRESSED_KEY_MAP[i] as KeyPair;

@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { DUMP_VERSION, get_client_type, get_uuid, is_firsttime, random_int } from '../src/globals';
+import { DUMP_VERSION, get_client_type, get_uuid, is_firsttime, match_media_watcher, random_int } from '../src/globals';
 
 // Mock dependencies
 vi.mock('../src/splash-util.es5', () => ({
@@ -130,6 +130,69 @@ describe('globals utility functions', function () {
         it('is a number', function () {
             expect(typeof DUMP_VERSION).toBe('number');
             expect(DUMP_VERSION).toBeGreaterThan(0);
+        });
+    });
+
+    describe('match_media_watcher', function () {
+        let mockMatchMedia: ReturnType<typeof vi.fn>;
+        let mockMediaQueryList: {
+            matches: boolean;
+            addEventListener: ReturnType<typeof vi.fn>;
+            removeEventListener: ReturnType<typeof vi.fn>;
+        };
+
+        beforeEach(() => {
+            mockMediaQueryList = {
+                matches: false,
+                addEventListener: vi.fn(),
+                removeEventListener: vi.fn(),
+            };
+            mockMatchMedia = vi.fn().mockReturnValue(mockMediaQueryList);
+            window.matchMedia = mockMatchMedia as unknown as typeof window.matchMedia;
+        });
+
+        it('returns undefined when matchMedia not available', function () {
+            delete (window as any).matchMedia;
+
+            const result = match_media_watcher('screen', () => {});
+            expect(result).toBeUndefined();
+        });
+
+        it('calls callback immediately with media query list', function () {
+            const callback = vi.fn();
+
+            match_media_watcher('(min-width: 600px)', callback);
+
+            expect(callback).toHaveBeenCalledWith(mockMediaQueryList);
+        });
+
+        it('strips @media prefix from query', function () {
+            const callback = vi.fn();
+
+            match_media_watcher('@media (min-width: 600px)', callback);
+
+            expect(mockMatchMedia).toHaveBeenCalledWith('(min-width: 600px)');
+        });
+
+        it('registers change listener', function () {
+            match_media_watcher('(min-width: 600px)', () => {});
+
+            expect(mockMediaQueryList.addEventListener).toHaveBeenCalledWith('change', expect.any(Function));
+        });
+
+        it('returns object with unsubscribe method', function () {
+            const result = match_media_watcher('(min-width: 600px)', () => {});
+
+            expect(result).toBe(mockMediaQueryList);
+            expect(typeof result?.unsubscribe).toBe('function');
+        });
+
+        it('unsubscribe removes the event listener', function () {
+            const result = match_media_watcher('(min-width: 600px)', () => {});
+
+            result?.unsubscribe?.();
+
+            expect(mockMediaQueryList.removeEventListener).toHaveBeenCalledWith('change', expect.any(Function));
         });
     });
 });

@@ -131,18 +131,16 @@ describe('Chord', () => {
             vi.restoreAllMocks();
         });
 
-        it('returns an image element', () => {
+        it('returns a canvas element', () => {
             const chord = new Chord('G', '320003');
-            const img = chord.getDiagram(1);
-            expect(img).toBeInstanceOf(HTMLImageElement);
-            expect((img as HTMLImageElement).src).toContain('data:image/png;base64');
+            const canvas = chord.getDiagram(1);
+            expect(canvas).toBeInstanceOf(HTMLCanvasElement);
         });
 
         it('handles scale parameter', () => {
             const chord = new Chord('G', '320003');
-            // Just ensuring it doesn't throw
-            const img = chord.getDiagram(3);
-            expect(img).toBeTruthy();
+            const canvas = chord.getDiagram(3);
+            expect(canvas).toBeTruthy();
         });
     });
 
@@ -188,6 +186,41 @@ describe('Chord', () => {
             const info = spy.mock.calls[0][0];
             expect(info.width).toBeGreaterThan(0);
             expect(info.height).toBeGreaterThan(0);
+        });
+
+        it('handles barre chord with startFret > 1', () => {
+            const chord = new Chord('F', '133211', 'T34211');
+            const canvas = chord.getDiagram(3);
+            expect(canvas).toBeTruthy();
+        });
+
+        it('handles chord with muted strings', () => {
+            const chord = new Chord('Bm', 'x24432');
+            const canvas = chord.getDiagram(2);
+            expect(canvas).toBeTruthy();
+        });
+
+        it('handles high fret chords', () => {
+            const chord = new Chord('A', '577655');
+            const canvas = chord.getDiagram(2);
+            expect(canvas).toBeTruthy();
+        });
+
+        it('handles ukulele chord with different scale', () => {
+            const chord = new Chord('C', '0003');
+            const canvas = chord.getDiagram(1);
+            expect(canvas).toBeTruthy();
+        });
+
+        it('handles maximum scale', () => {
+            const chord = new Chord('G', '320003');
+            const canvas = chord.getDiagram(10);
+            expect(canvas).toBeTruthy();
+        });
+
+        it('toString returns Chord', () => {
+            const chord = new Chord('C', 'x32010');
+            expect(chord.toString()).toBe('Chord');
         });
     });
 });

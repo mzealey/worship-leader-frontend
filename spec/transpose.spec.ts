@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { Transpose } from '../src/transpose';
 
 describe('common function', function () {
@@ -50,6 +50,30 @@ describe('common function', function () {
         it('With unusual key', function () {
             expect(t.getNewChord('G#', 2, t.getKeyByName('Gb'))).toBe('Bb');
             expect(t.getNewChord('G#', 2, t.getKeyByName('Gb'), true)).toBe('Bb');
+        });
+
+        it('handles empty string', function () {
+            expect(t.getNewChord('', 2)).toBe('');
+        });
+
+        it('returns same chord when delta is 0', function () {
+            expect(t.getNewChord('A', 0)).toBe('A');
+            expect(t.getNewChord('Cmaj7', 0)).toBe('Cmaj7');
+        });
+
+        it('handles invalid chords gracefully', function () {
+            const spy = vi.spyOn(console, 'log').mockImplementation(() => {});
+            const result = t.getNewChord('invalid-chord', 2);
+            expect(typeof result).toBe('string');
+            spy.mockRestore();
+        });
+
+        it('handles compound chord with space and tab', function () {
+            expect(t.getNewChord('C D', 1)).toBe('C# D#');
+        });
+
+        it('handles chord with parentheses and slashes', function () {
+            expect(t.getNewChord('C/G', 2)).toBe('D/A');
         });
     });
 

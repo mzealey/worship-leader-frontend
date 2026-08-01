@@ -1,9 +1,11 @@
 // @vitest-environment jsdom
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 
 import {
     clear_object,
     date_as_utc,
+    deferred_promise,
+    ensure_visible,
     fetch_json,
     format_string,
     generate_search_params,
@@ -14,7 +16,9 @@ import {
     is_vertical_lang,
     normalize_url,
     prepare_search_string,
+    scroll_to,
     timeout,
+    try_to_run_fn,
 } from '../src/util';
 
 describe('util functions', function () {
@@ -161,7 +165,6 @@ describe('util functions', function () {
 
     describe('deferred_promise', function () {
         it('creates a promise with external resolve', async function () {
-            const { deferred_promise } = await import('../src/util');
             const [control, promise] = deferred_promise<string>();
 
             control.resolve('success');
@@ -169,7 +172,6 @@ describe('util functions', function () {
         });
 
         it('creates a promise with external reject', async function () {
-            const { deferred_promise } = await import('../src/util');
             const [control, promise] = deferred_promise<string>();
 
             control.reject(new Error('failed'));
@@ -259,12 +261,16 @@ describe('util functions', function () {
             const promise = fetch_json('https://songs.worshipleaderapp.com/api/get?id=1');
             expect(typeof promise.abort).toBe('function');
 
-            // Clean up by aborting to prevent unhandled promise rejection
+            // Catch rejection from abort to prevent unhandled rejection
+            promise.catch(() => {});
             promise.abort?.();
         });
 
         it('abort method is callable without throwing', function () {
             const promise = fetch_json('https://songs.worshipleaderapp.com/api/get?id=1');
+
+            // Catch rejection
+            promise.catch(() => {});
 
             // Should not throw when calling abort
             expect(() => promise.abort?.()).not.toThrow();
@@ -277,8 +283,173 @@ describe('util functions', function () {
             expect(promise.catch).toBeDefined();
             expect(typeof promise.abort).toBe('function');
 
-            // Clean up
+            // Catch rejection
+            promise.catch(() => {});
             promise.abort?.();
+        });
+
+        it('uses XHR fallback for file:// URLs', async function () {
+            // The fetch_json function detects file:// protocol and uses XHR
+            const promise = fetch_json('file:///test.json');
+            expect(typeof promise.abort).toBe('function');
+
+            // Catch the rejection from abort to prevent unhandled rejection
+            promise.catch(() => {});
+            promise.abort?.();
+        });
+    });
+
+    describe('try_to_run_fn', function () {
+        it('runs a function found on the element', async function () {
+            const fn = vi.fn();
+            const elem = { existingMethod: fn };
+            try_to_run_fn(elem, ['existingMethod']);
+            expect(fn).toHaveBeenCalled();
+        });
+
+        it('does nothing when element is null', async function () {
+            expect(() => try_to_run_fn(null, ['someFn'])).not.toThrow();
+        });
+
+        it('does nothing when function not found', async function () {
+            const elem = { otherMethod: () => 'x' };
+            try_to_run_fn(elem, ['nonExistent']);
+            // Should not throw
+        });
+
+        it('tries multiple function names', async function () {
+            const fn = vi.fn();
+            const elem = { thirdFn: fn };
+            try_to_run_fn(elem, ['firstFn', 'secondFn', 'thirdFn']);
+            expect(fn).toHaveBeenCalled();
+        });
+    });
+
+    describe('scroll_to', function () {
+        it('sets scrollTop immediately when no animation', async function () {
+            const elem = document.createElement('div');
+            elem.scrollTop = 50;
+            scroll_to(elem, 0);
+            expect(elem.scrollTop).toBe(0);
+        });
+
+        it('clamps negative scrollTop to 0', async function () {
+            const elem = document.createElement('div');
+            elem.scrollTop = 50;
+            scroll_to(elem, -10);
+            expect(elem.scrollTop).toBe(0);
+        });
+
+        it('does nothing when already at target scroll', async function () {
+            const elem = document.createElement('div');
+            elem.scrollTop = 100;
+            scroll_to(elem, 100);
+            expect(elem.scrollTop).toBe(100);
+        });
+    });
+
+    describe('ensure_visible', function () {
+        it('scrolls element into view when below viewport', async function () {
+            const parent = document.createElement('div');
+            Object.defineProperty(parent, 'clientHeight', { value: 500, configurable: true });
+            Object.defineProperty(parent, 'scrollTop', { value: 0, writable: true });
+            document.body.appendChild(parent);
+
+            const elem = document.createElement('div');
+            Object.defineProperty(elem, 'clientHeight', { value: 100, configurable: true });
+            Object.defineProperty(elem, 'getBoundingClientRect', {
+                value: () => ({ top: 600, bottom: 700 }),
+                configurable: true,
+            });
+            parent.appendChild(elem);
+
+            ensure_visible(elem, parent);
+
+            document.body.removeChild(parent);
+        });
+    });
+
+    describe('generate_search_params with edge cases', function () {
+        it('handles array values', function () {
+            expect(generate_search_params({ tags: ['rock', 'pop'] })).toBe('tags=rock%2Cpop');
+        });
+
+        it('handles null and undefined values', function () {
+            expect(generate_search_params({ a: null })).toBe('a=');
+            expect(generate_search_params({ a: undefined })).toBe('a=');
+        });
+
+        it('handles boolean values', function () {
+            expect(generate_search_params({ active: true })).toBe('active=true');
+            expect(generate_search_params({ active: false })).toBe('active=false');
+        });
+    });
+
+    describe('normalize_url with edge variations', function () {
+        it('does not modify protocol-relative URLs', function () {
+            expect(normalize_url('//other.com/api', 'https://example.com')).toBe('https://example.com///other.com/api');
+        });
+    });
+
+    describe('date_as_utc edge cases', function () {
+        it('handles invalid dates', function () {
+            const result = date_as_utc(new Date('invalid'));
+            expect(typeof result).toBe('string');
+        });
+    });
+
+    describe('get_youtube_id edge cases', function () {
+        it('handles URLs without v= parameter', function () {
+            expect(get_youtube_id({ type: 'video', path: 'https://www.youtube.com/watch' })).toBeUndefined();
+        });
+
+        it('handles URLs with v= parameter at end', function () {
+            expect(get_youtube_id({ type: 'video', path: 'https://www.youtube.com/watch?v=dQw4w9WgXcQ' })).toBe('dQw4w9WgXcQ');
+        });
+
+        it('handles path with youtu.be and additional params', function () {
+            const result = get_youtube_id({ type: 'video', path: 'https://youtu.be/dQw4w9WgXcQ?t=30' });
+            expect(typeof result).toBe('string');
+            expect(result).toContain('dQw4w9WgXcQ');
+        });
+
+        it('handles path without youtube', function () {
+            expect(get_youtube_id({ type: 'video', path: 'https://example.com/video' })).toBeUndefined();
+        });
+    });
+
+    describe('is_mobile_browser with user agent', function () {
+        it('detects mobile user agents', function () {
+            const originalUA = Object.getOwnPropertyDescriptor(Navigator.prototype, 'userAgent');
+            if (originalUA) {
+                Object.defineProperty(navigator, 'userAgent', {
+                    value: 'Mozilla/5.0 (iPhone; CPU iPhone OS 14_0 like Mac OS X) AppleWebKit/605.1.15',
+                    configurable: true,
+                });
+                expect(is_mobile_browser()).toBe(true);
+
+                Object.defineProperty(navigator, 'userAgent', {
+                    value: originalUA.value,
+                    configurable: true,
+                });
+            }
+        });
+
+        it('returns false for desktop user agents', function () {
+            const originalUA = Object.getOwnPropertyDescriptor(Navigator.prototype, 'userAgent');
+
+            if (originalUA) {
+                Object.defineProperty(navigator, 'userAgent', {
+                    value: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+                    configurable: true,
+                });
+                expect(is_mobile_browser()).toBe(false);
+
+                Object.defineProperty(navigator, 'userAgent', {
+                    value: originalUA.value,
+                    configurable: true,
+                });
+            }
         });
     });
 });

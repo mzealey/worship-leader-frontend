@@ -1,5 +1,4 @@
 // Base class for Song data type
-export type JQueryPage = any;
 
 export type SongSource = {
     id: number;

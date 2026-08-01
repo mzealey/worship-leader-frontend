@@ -1,0 +1,18 @@
+{
+    "include": ["*.ts", "src/types/vite-plugin-eslint.d.ts"],
+    "compilerOptions": {
+        "lib": ["ES2022"],
+        "isolatedModules": true,
+        "esModuleInterop": true,
+        "noImplicitAny": true,
+        "moduleResolution": "Bundler",
+        "types": ["node"],
+        "skipLibCheck": true,
+        "resolveJsonModule": true,
+        "target": "ES2022",
+        "module": "ESNext",
+        "strict": true,
+        "noEmit": true,
+        "forceConsistentCasingInFileNames": true
+    }
+}

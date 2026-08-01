@@ -1,0 +1,72 @@
+import { screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { createLangpackMock } from '../helpers/mocks/langpack';
+import { renderWithRouter } from '../helpers/render';
+
+let PageCopyTextarea: typeof import('../../src/page/copy').PageCopyTextarea;
+
+describe('PageCopyTextarea', () => {
+    const mockSong = {
+        id: 1,
+        title: 'Test Song',
+        songxml: '<songxml>content</songxml>',
+    } as any;
+
+    beforeEach(async () => {
+        vi.resetModules();
+        vi.clearAllMocks();
+
+        vi.doMock('../../src/langpack', createLangpackMock);
+        vi.doMock('../../src/use-dialog', () => ({
+            useDialog: (onClose?: () => void) => ({
+                closed: false,
+                handleClose: () => onClose?.(),
+            }),
+        }));
+        vi.doMock('../../src/songxml-util', () => ({
+            convert_to_pre: vi.fn().mockReturnValue('<pre>converted content</pre>'),
+        }));
+
+        vi.doMock('../../src/page/edit', () => ({
+            EditTypeChooser: ({ onChange }: { onChange: (t: string) => void }) => (
+                <select data-testid="type-chooser" onChange={(e) => onChange(e.target.value)}>
+                    <option value="chords">Chords</option>
+                    <option value="opensong">OpenSong</option>
+                </select>
+            ),
+        }));
+
+        const mod = await import('../../src/page/copy');
+        PageCopyTextarea = mod.PageCopyTextarea;
+    });
+
+    it('renders copy dialog', () => {
+        renderWithRouter(<PageCopyTextarea song={mockSong} />);
+
+        expect(screen.getByText('Copy Song')).toBeInTheDocument();
+    });
+
+    it('renders cancel button', () => {
+        renderWithRouter(<PageCopyTextarea song={mockSong} />);
+
+        expect(screen.getByText('Cancel')).toBeInTheDocument();
+    });
+
+    it('renders type chooser dropdown', () => {
+        renderWithRouter(<PageCopyTextarea song={mockSong} />);
+
+        expect(screen.getByTestId('type-chooser')).toBeInTheDocument();
+    });
+
+    it('calls onClose when cancel clicked', async () => {
+        const usr = userEvent.setup();
+        const onClose = vi.fn();
+
+        renderWithRouter(<PageCopyTextarea song={mockSong} onClose={onClose} />);
+
+        await usr.click(screen.getByText('Cancel'));
+
+        expect(onClose).toHaveBeenCalled();
+    });
+});

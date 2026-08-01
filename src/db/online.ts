@@ -1,9 +1,9 @@
 import type { DBRequestedItems, DBSearchRunResult } from '../db-search';
 import { API_HOST, DB_PATH, DUMP_VERSION } from '../globals';
 import { get_browser_languages } from '../langdetect.es5';
-import { app_lang } from '../langpack';
+import { useAppLang } from '../langpack';
 import { persistentStorage } from '../persistent-storage.es5';
-import { Song, SongShortData, SongSource } from '../song';
+import type { Song, SongShortData, SongSource } from '../song';
 import { fetch_json, generate_search_params, type AbortablePromise } from '../util';
 import { CommonDB, get_db_chosen_langs, type DBFilters, type _SearchMetaResult } from './common';
 
@@ -52,8 +52,9 @@ export class OnlineDB extends CommonDB<BaseQuery> {
     // Get some language params for api calls to better help with returning
     // stuff to app that is useful for the user
     _get_lang_details(): { ui_lang: string; browser_langs: string } {
+        const { appLang } = useAppLang.getState();
         return {
-            ui_lang: app_lang(),
+            ui_lang: appLang!,
             browser_langs: get_browser_languages().join(','),
         };
     }
@@ -134,11 +135,6 @@ export class OnlineDB extends CommonDB<BaseQuery> {
 
         // Abort any pending search before starting a new one
         if (this.search_query) this.search_query.abort();
-
-        /* TODO
-        if( is_set('setting-show-key-in-list') )
-            query.list_songkey = 1;
-            */
 
         // Save the query promise so we can abort it above
         this.search_query = fetch_json<{ data: SongShortData | SongShortData[]; total?: number }>(

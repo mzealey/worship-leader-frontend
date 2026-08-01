@@ -182,4 +182,33 @@ describe('unidecode', () => {
         // Should NOT fetch again
         expect(util.fetch_json).not.toHaveBeenCalledWith('unidecode/data/x05.json');
     });
+
+    it('handles characters with codepoints above 0xffff', async () => {
+        // U+1F600 is '😀' (grinning face) - surrogate pair in UTF-16
+        // x1f table: U+1F00..U+1FFF
+        const result = await unidecode('\u{1F600}');
+        expect(typeof result).toBe('string');
+    });
+
+    it('handles 4-byte UTF-8 characters', async () => {
+        // U+10000 is a 4-byte UTF-8 character
+        const result = await unidecode('\uD800\uDC00');
+        expect(typeof result).toBe('string');
+    });
+
+    it('handles null/undefined input gracefully', async () => {
+        const result = await unidecode(null as any);
+        expect(result).toBe('');
+    });
+
+    it('skips normalization when normalize is not available', async () => {
+        const origNormalize = String.prototype.normalize;
+        delete (String.prototype as any).normalize;
+
+        // H0 is empty string equivalent for unidecode
+        const result = await unidecode('a');
+        expect(result).toBe('a');
+
+        String.prototype.normalize = origNormalize;
+    });
 });

@@ -1,5 +1,5 @@
-import { spinner } from './component/spinner';
 import { BUILD_TYPE, DB_PATH } from './globals';
+import type { DBLangCode } from './lang-types';
 import { get_app_languages } from './langdetect.es5';
 import { persistentStorage } from './persistent-storage.es5';
 import { fetch_json } from './util';
@@ -7,14 +7,14 @@ import { fetch_json } from './util';
 // Start by trying to load the song language language pack from persistent storage, otherwise the remote server
 
 // Holds song_language => { name: { ui_language => name, ... }, count: <db_total> }
-let _song_language_translations: Record<string, SongLanguage> | undefined;
-export function song_language_translations(): Record<string, SongLanguage> | undefined {
+let _song_language_translations: Record<DBLangCode, SongLanguage> | undefined;
+export function song_language_translations(): Record<DBLangCode, SongLanguage> | undefined {
     return _song_language_translations;
 }
 
 // Timestamp and promise of the last request to load the list of song languages
 let _song_languages_last_load: number | undefined;
-let _song_languages_last_promise: Promise<Record<string, SongLanguage>> | undefined;
+let _song_languages_last_promise: Promise<Record<DBLangCode, SongLanguage>> | undefined;
 
 interface SongLanguage {
     // TODO: Add the other fields
@@ -24,7 +24,7 @@ interface SongLanguage {
 
 // Return a list of song languages available on the server, with their
 // translations.
-export function refresh_song_languages(with_spinner = false): Promise<Record<string, SongLanguage>> {
+export function refresh_song_languages(): Promise<Record<DBLangCode, SongLanguage>> {
     // Don't continually hit the server, but refetch when the app has been
     // restarted if requested via this method
     if (_song_languages_last_load && _song_languages_last_load - Date.now() < 3600 * 1000 && _song_languages_last_promise) return _song_languages_last_promise;
@@ -37,12 +37,9 @@ export function refresh_song_languages(with_spinner = false): Promise<Record<str
         if (elem) _song_languages_last_promise = Promise.resolve(JSON.parse(elem.innerHTML));
     }
 
-    if (!_song_languages_last_promise) {
-        _song_languages_last_promise = fetch_json(`${DB_PATH}.index.json`, { cache: 'no-store' });
-        if (with_spinner) _song_languages_last_promise = spinner(_song_languages_last_promise);
-    }
+    if (!_song_languages_last_promise) _song_languages_last_promise = fetch_json(`${DB_PATH}.index.json`, { cache: 'no-store' });
 
-    _song_languages_last_promise = _song_languages_last_promise.then((song_languages: Record<string, SongLanguage>) => {
+    _song_languages_last_promise = _song_languages_last_promise.then((song_languages: Record<DBLangCode, SongLanguage>) => {
         _song_language_translations = song_languages;
         _song_languages_last_load = Date.now();
         persistentStorage.setObj('song-languages', song_languages);
@@ -54,11 +51,11 @@ export function refresh_song_languages(with_spinner = false): Promise<Record<str
 // Just try to load the song language translations from the current cache on
 // startup. If we want to refresh the song database etc then we call
 // refresh_song_languages() above
-export function load_song_languages(no_wait: true): Record<string, SongLanguage> | undefined;
-export function load_song_languages(no_wait?: false): Promise<Record<string, SongLanguage>> | undefined;
-export function load_song_languages(no_wait?: boolean): Record<string, SongLanguage> | Promise<Record<string, SongLanguage>> | undefined {
+export function load_song_languages(no_wait: true): Record<DBLangCode, SongLanguage> | undefined;
+export function load_song_languages(no_wait?: false): Promise<Record<DBLangCode, SongLanguage>> | undefined;
+export function load_song_languages(no_wait?: boolean): Record<DBLangCode, SongLanguage> | Promise<Record<DBLangCode, SongLanguage>> | undefined {
     if (!_song_language_translations) {
-        const trans = persistentStorage.getObj('song-languages') as Record<string, SongLanguage> | undefined;
+        const trans = persistentStorage.getObj('song-languages') as Record<DBLangCode, SongLanguage> | undefined;
         if (trans) _song_language_translations = trans;
     }
 
@@ -69,7 +66,25 @@ export function load_song_languages(no_wait?: boolean): Record<string, SongLangu
 
 // Return a default list of potential DB languages for this user based on their
 // language settings. Instant return, no promises allowed.
-export function get_default_db_languages(): string[] {
-    const db_languages = load_song_languages(true) || { en: { count: 1 } };
-    return get_app_languages().filter((lang) => !!db_languages[lang]);
+
+/**
+ * Return a default list of **database language codes** for the current
+ * user based on their browser/UI language preferences, filtered to only
+ * include languages that actually have song data available on the server.
+ *
+ * This function returns only base 2-character codes (e.g., `"en"`,
+ * `"tr"`) — it never returns locale codes like `"en-GB"`. It is safe
+ * to pass the result directly to {@link save_db_chosen_langs}.
+ *
+ * The function is synchronous and returns immediately (no promises),
+ * falling back to `{ en: ... }` if the song language index has not been
+ * loaded yet.
+ *
+ * @see {@link get_browser_languages} for raw browser language detection
+ *      (may include locale codes — not suitable for DB selection).
+ * @see {@link save_db_chosen_langs} where these codes are persisted.
+ */
+export function get_default_db_languages(): DBLangCode[] {
+    const db_languages = load_song_languages(true) || ({ en: { count: 1 } } as Record<DBLangCode, SongLanguage>);
+    return get_app_languages().filter((lang) => !!db_languages[lang as unknown as DBLangCode]) as unknown as DBLangCode[];
 }

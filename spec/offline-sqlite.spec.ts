@@ -3,6 +3,7 @@ import * as fs from 'fs/promises';
 import * as path from 'path';
 import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { OfflineSQLiteDB, type BindParams, type ExecFunction } from '../src/db/offline-sqlite';
+import type { DBLangCode } from '../src/lang-types';
 import { persistentStorage } from '../src/persistent-storage.es5';
 import type { Song } from '../src/song';
 
@@ -221,11 +222,11 @@ describe('OfflineSQLiteDB', () => {
         });
 
         it('remove_languages removes songs for a language', async () => {
-            await testDB.add_languages(['en']);
+            await testDB.add_languages(['en'] as DBLangCode[]);
             const beforeCount = await testDB.single_query<{ count: number }>('SELECT COUNT(*) as count FROM songs');
             expect(beforeCount[0].count).toBe(EN_SONG_COUNT);
 
-            await testDB.remove_languages(['en']);
+            await testDB.remove_languages(['en'] as DBLangCode[]);
             const afterCount = await testDB.single_query<{ count: number }>('SELECT COUNT(*) as count FROM songs');
             expect(afterCount[0].count).toBe(0);
         });
@@ -249,7 +250,7 @@ describe('OfflineSQLiteDB', () => {
 
             testDB = new TestSQLiteDB();
             await testDB._recreate_db();
-            await testDB.add_languages(['dbmeta', 'en']);
+            await testDB.add_languages(['dbmeta', 'en'] as DBLangCode[]);
         });
 
         it('get_song returns full song details with sources and tags', async () => {
@@ -628,7 +629,7 @@ describe('OfflineSQLiteDB', () => {
 
             testDB = new TestSQLiteDB();
             await testDB._recreate_db();
-            await testDB.add_languages(['dbmeta', 'en']);
+            await testDB.add_languages(['dbmeta', 'en'] as DBLangCode[]);
         });
 
         it('filtering by album_id', async () => {

@@ -1,6 +1,8 @@
 // @vitest-environment jsdom
 import { beforeEach, describe, expect, it, vi, type Mock } from 'vitest';
 import { OnlineDB } from '../src/db/online';
+import { persistentStorage as persistentStorage_mock } from '../src/persistent-storage.es5';
+import { fetch_json as fetch_json_mock } from '../src/util';
 
 // Mock dependencies
 vi.mock('../src/globals', () => ({
@@ -14,7 +16,9 @@ vi.mock('../src/langdetect.es5', () => ({
 }));
 
 vi.mock('../src/langpack', () => ({
-    app_lang: () => 'en',
+    useAppLang: {
+        getState: vi.fn(() => ({ appLang: 'en' })),
+    },
 }));
 
 vi.mock('../src/util', () => ({
@@ -56,11 +60,9 @@ describe('OnlineDB', function () {
     let setObjMock: Mock;
 
     beforeEach(async function () {
-        const util = await import('../src/util');
-        const storage = await import('../src/persistent-storage.es5');
-        fetch_json = util.fetch_json as Mock<typeof import('../src/util').fetch_json>;
-        getObjMock = storage.persistentStorage.getObj as Mock;
-        setObjMock = storage.persistentStorage.setObj as Mock;
+        fetch_json = fetch_json_mock as Mock<typeof import('../src/util').fetch_json>;
+        getObjMock = persistentStorage_mock.getObj as Mock;
+        setObjMock = persistentStorage_mock.setObj as Mock;
         db = new OnlineDB(null as any);
         vi.clearAllMocks();
     });

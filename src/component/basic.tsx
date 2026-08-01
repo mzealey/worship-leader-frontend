@@ -1,0 +1,88 @@
+import { Button, Checkbox, Container, DialogTitle, IconButton, TextField } from '@mui/material';
+import { memo } from 'react';
+import * as Icon from './icons';
+
+export interface ImageButtonProps extends Omit<React.ComponentProps<typeof Button>, 'component'> {
+    icon: React.ComponentType<{ className?: string }>;
+    size?: 'small' | 'medium' | 'large';
+    children: React.ReactNode;
+    iconColor?: string;
+    component?: React.ElementType;
+    to?: string; // For react-router Link
+    [key: string]: unknown; // Allow any additional props for polymorphic components
+}
+
+export const ImageButton = memo(function ({ icon: Icon, size = 'small', children, iconColor, ...props }: ImageButtonProps) {
+    return (
+        <Button
+            size={size}
+            nativeButton={props.component ? false : undefined}
+            sx={(theme) => ({
+                minHeight: theme.mixins.toolbar.height,
+                '& .icon': {
+                    color: iconColor || theme.palette.primary.main,
+                },
+            })}
+            {...props}
+        >
+            <Icon className="icon" />
+            <span className="text">{children}</span>
+        </Button>
+    );
+});
+
+// autoFocus only works for first mount
+export function AutofocusTextField(props: React.ComponentProps<typeof TextField>) {
+    return (
+        <TextField
+            inputRef={(e: HTMLInputElement | null) => {
+                if (e) setTimeout(() => e.focus());
+            }}
+            {...props}
+        />
+    );
+}
+
+export function DialogTitleWithClose({ handleClose, children }: { handleClose?: () => void; children: React.ReactNode }) {
+    return (
+        <DialogTitle sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', pb: 2 }}>
+            <span>{children}</span>
+            {handleClose ? (
+                <IconButton color="inherit" onClick={handleClose} aria-label="close" size="small" sx={{ ml: 2 }}>
+                    <Icon.Close />
+                </IconButton>
+            ) : null}
+        </DialogTitle>
+    );
+}
+
+export function DropDownIcon({ icon: SelectedIcon = Icon.ExpandLess, collapsed }: { icon?: React.ElementType; collapsed: boolean }) {
+    return <SelectedIcon style={{ transition: 'transform 500ms linear', transform: `rotateX(${collapsed ? 180 : 0}deg)` }} />;
+}
+
+// Checkbox component for usage in a dense list
+export function ListCheckbox(props: React.ComponentProps<typeof Checkbox>) {
+    return (
+        <Checkbox
+            edge="start"
+            disableRipple
+            tabIndex={-1}
+            color="primary"
+            sx={{
+                padding: '3px 9px', // shrink it a bit as size="small" doesn't work
+                '&:hover': {
+                    backgroundColor: 'transparent',
+                },
+            }}
+            {...props}
+        />
+    );
+}
+
+export function ThinPage({ children }: { children: React.ReactNode }) {
+    return (
+        <Container maxWidth="sm" sx={{ px: 1 }}>
+            {children}
+        </Container>
+    );
+}

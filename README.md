@@ -1,9 +1,6 @@
 This is the source code of the frontend app for [Worship Leader](https://worshipleaderapp.com).
 
-It's written in Typescript (AI ported from javascript, for the most part) and the main branch uses very legacy JQuery
-Mobile. See History below for how the project got to this state.
-
-The in-progress https://github.com/mzealey/worship-leader-frontend/pull/1 is a rewrite to use React and Material UI.
+It uses Typescript, modern React and Material UI.
 
 From this code-base we produce builds supporting:
 - Web (including very old web browsers)
@@ -63,6 +60,10 @@ The following basic commands are available (see package.json for more):
     yarn test:unit:watch # Run the unit tests in watch mode
     yarn build:test     # Do a test build of everything into build/
 
+## Upgrading dependencies
+
+    yarn upgrade-interactive --latest
+
 # History
 
 See https://worshipleaderapp.com/en/story-worship-leader for some details of the general project. The history of the
@@ -80,9 +81,24 @@ write tests and proper documentation.
 - Static files can be placed in `public/all` for all builds, or `public/<build type>` directories to be copied over.
 - You can change copyright restriction settings by typing nocopyright / forcecopyright in the search box
 
-## Custom font
+## Custom fonts
 
-For the musical notes etc we use a custom font. See https://github.com/pettarin/glyphIgo/issues/9 for details
+### misc-symbols (DejaVu Sans subset)
 
-    python glyphIgo.py subset -f ~/Downloads/dejavu-fonts-ttf-2.36/ttf/DejaVuSans.ttf -r 0x2600-0x2700 -o out.woff
-    python glyphIgo.py subset -f fontawesome-webfont.ttf -r 0xf0f0-0xf100 -o stave.eot
+The `misc-symbols` font is a subset of DejaVu Sans used to render musical flat (♭, U+266D) and sharp
+(♯, U+266F) symbols in chord names displayed inline with lyrics. It is declared in
+`src/sass/app-fonts.scss` with `unicode-range: U+266D-266F` and applied to `.chord` elements so that
+browsers only use it for these glyphs.
+
+To rebuild (requires [fonttools](https://github.com/fonttools/fonttools) — `pip install fonttools`):
+
+    pyftsubset /path/to/DejaVuSans.ttf --unicodes=266D,266F --output-file=misc-symbols.ttf
+    pyftsubset /path/to/DejaVuSans.ttf --unicodes=266D,266F --output-file=misc-symbols.woff2 --flavor=woff2
+
+The `fonts/rebuild.sh` script converts any `.ttf` files in the directory to `.woff` and `.woff2`.
+
+### Language fonts
+
+Additional fonts (`Almas`, `UKIJ Tuz`, `Mongolian White`) provide proper rendering for
+Arabic-script and Mongolian-script song languages. These are declared in `src/sass/language-fonts.scss`
+and applied via `[lang]` CSS selectors.

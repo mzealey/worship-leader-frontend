@@ -1,5 +1,6 @@
 // @vitest-environment jsdom
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import * as cordovaUtils from '../src/cordova-utils';
 
 describe('cordova-utils module', function () {
     beforeEach(() => {
@@ -12,15 +13,12 @@ describe('cordova-utils module', function () {
     });
 
     it('exports statusbar function', async function () {
-        const module = await import('../src/cordova-utils');
-        expect(typeof module.statusbar).toBe('function');
+        expect(typeof cordovaUtils.statusbar).toBe('function');
     });
 
     it('statusbar function can be called without throwing', async function () {
-        const module = await import('../src/cordova-utils');
-
         expect(() => {
-            module.statusbar('hide');
+            cordovaUtils.statusbar('hide');
         }).not.toThrow();
     });
 });

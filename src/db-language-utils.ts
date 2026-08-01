@@ -2,12 +2,13 @@ import { DB_AVAILABLE } from './db';
 import { get_db_chosen_langs } from './db/common';
 import { send_error_report } from './error-catcher';
 import { API_HOST, get_client_type, get_uuid, is_firsttime } from './globals';
+import type { DBLangCode } from './lang-types';
 import { get_default_db_languages, refresh_song_languages } from './song-languages';
 import { unidecode } from './unidecode';
 import { fetch_json, generate_search_params } from './util';
 
 export interface DbLangEntry {
-    code: string;
+    code: DBLangCode;
     position: 'top' | 'bottom';
     selected: boolean;
     count: number;
@@ -31,7 +32,7 @@ export async function getDbLangs({
         const ret: DbLangEntry[] = [];
         for (const [code, info] of Object.entries(available_langs)) {
             ret.push({
-                code,
+                code: code as DBLangCode,
                 position: 'bottom',
                 selected: false,
                 count: info.count,
@@ -41,7 +42,7 @@ export async function getDbLangs({
         return ret;
     }
 
-    const defaults: Set<string> = new Set(get_default_db_languages());
+    const defaults: Set<DBLangCode> = new Set(get_default_db_languages());
 
     // Additional languages that should be near the top as they are typical in
     // this country (gotten from the server based on our IP address)
@@ -72,7 +73,7 @@ export async function getDbLangs({
     ]);
 
     // The current (or default) database languages to load as an array
-    const loaded_langs: string[] = get_db_chosen_langs(Array.from(defaults));
+    const loaded_langs = get_db_chosen_langs(Array.from(defaults));
 
     // Combine all the promises together to generate the page with the data
     // they have fetched.

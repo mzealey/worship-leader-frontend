@@ -1,16 +1,5 @@
 .presenter-view {
-    display: none;
-
     position: relative;
-
-    button {
-        display: inline-block;
-        float: left;
-    }
-    #present-blank {
-        float: right;
-    }
-    padding-bottom: 36px;
 
     // As mobile safari always expands iframe to full height, we want to do the
     // same and scroll with the container rather than the iframe itself.
@@ -36,53 +25,12 @@
             overflow-y: scroll;
             cursor: ns-resize;
         }
-        #present-left,
-        #present-right {
-            display: none;
-        }
     }
     &.vertical-lang {
         .iframe-container {
             overflow-x: scroll;
             overflow-y: hidden;
             cursor: ew-resize;
-        }
-        #present-up,
-        #present-down {
-            display: none;
-        }
-    }
-}
-
-#refresh-cast {
-    display: none;
-}
-@media only screen {
-    html.cast-active {
-        .presenter-view {
-            display: block;
-        }
-        #present-btn {
-            @include ui-btn-active();
-        }
-    }
-
-    html.cast-supported {
-        #refresh-cast {
-            display: block;
-        }
-    }
-
-    html.cast-available {
-        #refresh-cast {
-            display: none;
-        }
-
-        // Notify when 2nd screen is available
-        #present-btn {
-            &:after {
-                background-color: #005599;
-            }
         }
     }
 }

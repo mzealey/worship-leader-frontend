@@ -1,7 +1,8 @@
-import { FavouriteDB } from '~/favourite-db';
+import type { FavouriteDB } from '~/favourite-db';
 import { BUILD_TYPE } from '../globals';
-import { RejectReason } from '../util';
-import { BindParams, ExecFunction, OfflineSQLiteDB, SQLiteValue } from './offline-sqlite';
+import type { RejectReason } from '../util';
+import type { BindParams, ExecFunction, SQLiteValue } from './offline-sqlite';
+import { OfflineSQLiteDB } from './offline-sqlite';
 
 interface WebSQLResultSet {
     rows: {
