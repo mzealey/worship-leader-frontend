@@ -24,7 +24,7 @@ import * as dbModule from '../db';
 import { may_support_offline, switch_db_api } from '../db-init';
 import { get_presentation, useCast } from '../dual-present';
 import { eventSocket } from '../event-socket';
-import { APP_VERSION, BUILD_TYPE, get_client_type, get_uuid } from '../globals';
+import { APP_VERSION, BUILD_DATE, BUILD_TYPE, get_client_type, get_uuid, GIT_SHA } from '../globals';
 import { useTranslation } from '../langpack';
 import { get_meta_db_update_ts } from '../meta-db';
 import { persistentStorage } from '../persistent-storage.es5';
@@ -70,6 +70,8 @@ const SettingsPageVersion = () => {
         code: get_uuid(),
         client: get_client_type(),
         version: APP_VERSION,
+        build_date: BUILD_DATE,
+        git_sha: GIT_SHA,
         build: BUILD_TYPE,
         current_ts: date_as_utc(new Date()),
         meta_ts: date_as_utc(new Date(get_meta_db_update_ts() ?? 0)),

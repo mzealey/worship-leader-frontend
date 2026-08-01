@@ -5,6 +5,8 @@ export function createGlobalsMock(overrides: Record<string, unknown> = {}) {
         BUILD_TYPE: 'www',
         DEBUG: false,
         APP_VERSION: '1.0.0',
+        BUILD_DATE: '2026-01-01T00:00:00.000Z',
+        GIT_SHA: 'abc1234',
         SHARE_DOMAIN: '',
         API_HOST: '',
         EVENT_SOCKET_HOST: '',

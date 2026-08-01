@@ -5,6 +5,7 @@
 import { viteCommonjs } from '@originjs/vite-plugin-commonjs';
 import legacy from '@vitejs/plugin-legacy';
 import react from '@vitejs/plugin-react';
+import { execSync } from 'child_process';
 import { copyFileSync } from 'fs';
 import { defineConfig, type PluginOption, type UserConfig } from 'vite';
 import { DynamicPublicDirectory } from 'vite-multiple-assets';
@@ -47,6 +48,12 @@ export default defineConfig(({ command, mode }) => {
     process.env.VITE_BUILD_TYPE = build_type;
     process.env.VITE_DEBUG = String(!is_production);
     process.env.VITE_APP_VERSION = is_production ? package_conf.version : 'debug';
+    process.env.VITE_BUILD_DATE = new Date().toISOString();
+    try {
+        process.env.VITE_GIT_SHA = execSync('git rev-parse --short HEAD', { encoding: 'utf-8' }).trim();
+    } catch {
+        process.env.VITE_GIT_SHA = 'unknown';
+    }
     //process.env.VITE_API_HOST = is_production ? 'https://songs.worshipleaderapp.com' : process.env.VITE_API_HOST;
 
     const config: AppConfig = {

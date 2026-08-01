@@ -47,6 +47,8 @@ let CLIENT_TYPE = 'www';
 export const BUILD_TYPE = import.meta.env.VITE_BUILD_TYPE!;
 export const DEBUG = import.meta.env.VITE_DEBUG!;
 export const APP_VERSION = import.meta.env.VITE_APP_VERSION!;
+export const BUILD_DATE = import.meta.env.VITE_BUILD_DATE!;
+export const GIT_SHA = import.meta.env.VITE_GIT_SHA!;
 
 if ((BUILD_TYPE == 'chrome' || BUILD_TYPE == 'edge') && window.location.protocol == 'chrome-extension:') CLIENT_TYPE = 'chr';
 

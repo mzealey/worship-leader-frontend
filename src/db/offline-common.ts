@@ -114,6 +114,9 @@ export abstract class OfflineDBCommon<PreparedQuery> extends CommonDB<PreparedQu
             promises.push(this.remove_languages(to_remove));
 
         await Promise.all(promises);
+
+        this._invalidate_queries();
+        on_db_languages_update.next();
     }
 
     async remove_languages(langs: DBLangCode[]): Promise<void> {
@@ -224,10 +227,6 @@ export abstract class OfflineDBCommon<PreparedQuery> extends CommonDB<PreparedQu
         if (download_errors / to_download > 0.3) throw 'Too many langpacks failed to download';
 
         console.log(`database initialized as version ${this.DB_VERSION} in ${Date.now() - start_ts}ms`);
-
-        // Refresh the search boxes and anything else if needed
-        this._invalidate_queries();
-        on_db_languages_update.next();
     }
 
     async _populate(
@@ -261,7 +260,12 @@ export abstract class OfflineDBCommon<PreparedQuery> extends CommonDB<PreparedQu
             langs = langs.filter((lang) => ts - (last_update_lang[lang] || 0) > this.MAX_DB_AGE);
         }
 
-        if (langs.length) await this.add_languages(langs, in_background, progress_tracker);
+        if (langs.length) {
+            await this.add_languages(langs, in_background, progress_tracker);
+
+            this._invalidate_queries();
+            on_db_languages_update.next();
+        }
     }
 
     // Update a song from the server, or even potentially a new one if add_song is called with ajax_fallback set
