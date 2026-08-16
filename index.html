@@ -54,10 +54,10 @@
         <meta property="og:type" content="music.song" />
         <meta property="og:title" content="[% song.title | html %]" />
         <meta property="og:description" content="[% song.songxml.to_lyrics | html %]" />
-        <meta vite-ignore property="og:image" content="https://songs.worshipleaderapp.com/splashscreens/[% short_locale %].jpg" />
+        <meta vite-ignore property="og:image" content="https://songs.worshipleaderapp.com/splashscreens/[% short_locale | html %].jpg" />
 
         <!-- TODO: generate these from the database -->
-        <meta property="og:locale" content="[% locale %]" />
+        <meta property="og:locale" content="[% locale | html %]" />
         <meta property="og:site_name" content="[% langpack.item('worship-leader') %]" />
         <meta property="og:locale:alternate" content="tr_TR" />
         <meta property="og:locale:alternate" content="en_GB" />
