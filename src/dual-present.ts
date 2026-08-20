@@ -58,7 +58,7 @@ interface PresentationRequest {
 interface PresentationSession extends EventTarget {
     state: string;
     onstatechange: ((this: PresentationSession, ev: Event) => any) | null;
-    onmessage: ((this: PresentationSession, ev: MessageEvent) => any) | null;
+    onmessage: ((this: PresentationSession, msg: string) => any) | null;
     close(): void;
     terminate(): void;
     send(data: string): void;
@@ -215,7 +215,7 @@ class PresentationCordova extends PresentationCommon {
         const c = (this._connection = (
             navigator as unknown as { presentation: { requestSession: (url: string) => PresentationSession } }
         ).presentation.requestSession('presentor.html') as PresentationSession);
-        c.onmessage = (msg: MessageEvent) => this.handle_message(msg.data);
+        c.onmessage = (msg: string) => this.handle_message(msg);
         c.onstatechange = () => {
             if (c.state == 'connected') this.handle_connect();
             else if (c.state == 'disconnected') this.handle_close();
@@ -265,7 +265,7 @@ class PresentationWindow extends PresentationCommon {
 let presentation: PresentationCommon | undefined;
 
 // TODO: Convert to async fn?
-export function setup_presentation() {
+export function setup_presentation(on_ready?: () => void) {
     if (!DEBUG_SINGLE_SCREEN && !presentation && window.PresentationRequest) {
         let request;
         try {
@@ -288,13 +288,19 @@ export function setup_presentation() {
 
     if (!presentation && is_cordova()) {
         document.addEventListener('deviceready', () => {
-            if (navigator.presentation) presentation = new PresentationCordova();
+            if (navigator.presentation) {
+                presentation = new PresentationCordova();
+                on_ready?.();
+            }
         });
+        return;
     }
 
     // Option to do presentation in an external window in other browsers that
     // don't support PresentationRequest
     if (!presentation && !is_cordova()) presentation = new PresentationWindow();
+
+    on_ready?.();
 }
 
 export const get_presentation = () => presentation;

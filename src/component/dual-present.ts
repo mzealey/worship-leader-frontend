@@ -118,80 +118,80 @@ function scroll_delta(deltaX: number, deltaY: number) {
 }
 
 export function init_casting() {
-    setup_presentation();
+    setup_presentation(setup_cast_ui);
+}
 
-    if (get_presentation()) {
-        //$('.presenter-view').show();
+function setup_cast_ui() {
+    //$('.presenter-view').show();
 
-        // Setup for jquery stuff
-        $('html').addClass('cast-supported');
+    // Setup for jquery stuff
+    $('html').addClass('cast-supported');
 
-        $('#present-up').click(() => scroll_delta(0, -200));
-        $('#present-down').click(() => scroll_delta(0, 200));
-        $('#present-left').click(() => scroll_delta(-200, 0));
-        $('#present-right').click(() => scroll_delta(200, 0));
-        $('#present-blank').click(() => toggle_blanked());
+    $('#present-up').click(() => scroll_delta(0, -200));
+    $('#present-down').click(() => scroll_delta(0, 200));
+    $('#present-left').click(() => scroll_delta(-200, 0));
+    $('#present-right').click(() => scroll_delta(200, 0));
+    $('#present-blank').click(() => toggle_blanked());
 
-        $('#present-in').click(() => zoom(1));
-        $('#present-out').click(() => zoom(-1));
+    $('#present-in').click(() => zoom(1));
+    $('#present-out').click(() => zoom(-1));
 
-        // Listen for iframe events
-        window.addEventListener('message', (event) => {
-            const iframe = $('.presenter-view iframe')[0] as HTMLIFrameElement;
-            if (!iframe || event.source !== iframe.contentWindow) return;
+    // Listen for iframe events
+    window.addEventListener('message', (event) => {
+        const iframe = $('.presenter-view iframe')[0] as HTMLIFrameElement;
+        if (!iframe || event.source !== iframe.contentWindow) return;
 
-            let data;
-            try {
-                data = JSON.parse(event.data);
-            } catch (e) {
-                return; // sometimes get other messages coming in
-            }
-            console.log('iframe msg', data);
-            if ('height' in data || 'width' in data) {
-                const is_vertical = $('.presenter-view').is('.vertical-lang');
-                $(iframe).css(is_vertical ? { width: data.width } : { height: data.height });
-                update_presentation_view_size();
-            } else get_presentation()!.send_msg(data);
-        });
+        let data;
+        try {
+            data = JSON.parse(event.data);
+        } catch (e) {
+            return; // sometimes get other messages coming in
+        }
+        console.log('iframe msg', data);
+        if ('height' in data || 'width' in data) {
+            const is_vertical = $('.presenter-view').is('.vertical-lang');
+            $(iframe).css(is_vertical ? { width: data.width } : { height: data.height });
+            update_presentation_view_size();
+        } else get_presentation()!.send_msg(data);
+    });
 
-        // As safari makes all iframes 100% we will do this on all platforms and
-        // then capture any click events (by setting iframe pointer-events to none)
-        // in order to allow scroll by dragging the iframe or wheeling over it.
-        const iframe_container = $('.presenter-view .iframe-container');
+    // As safari makes all iframes 100% we will do this on all platforms and
+    // then capture any click events (by setting iframe pointer-events to none)
+    // in order to allow scroll by dragging the iframe or wheeling over it.
+    const iframe_container = $('.presenter-view .iframe-container');
 
-        let cur_pos;
-        iframe_container.on('scroll', send_scroll_event);
-        iframe_container.on('mousedown', (e) => (cur_pos = { x: e.clientX, y: e.clientY }));
+    let cur_pos;
+    iframe_container.on('scroll', send_scroll_event);
+    iframe_container.on('mousedown', (e) => (cur_pos = { x: e.clientX, y: e.clientY }));
 
-        // Do these two on body so that they stop even if mouse overscrolls the area
-        $('body').on('mouseup', () => (cur_pos = null));
-        $('body').on('mousemove', (e) => {
-            if (!cur_pos) return;
+    // Do these two on body so that they stop even if mouse overscrolls the area
+    $('body').on('mouseup', () => (cur_pos = null));
+    $('body').on('mousemove', (e) => {
+        if (!cur_pos) return;
 
-            iframe_container[0].scrollLeft -= e.clientX - cur_pos.x;
-            iframe_container[0].scrollTop -= e.clientY - cur_pos.y;
-            cur_pos.x = e.clientX;
-            cur_pos.y = e.clientY;
-            send_scroll_event();
-        });
+        iframe_container[0].scrollLeft -= e.clientX - cur_pos.x;
+        iframe_container[0].scrollTop -= e.clientY - cur_pos.y;
+        cur_pos.x = e.clientX;
+        cur_pos.y = e.clientY;
+        send_scroll_event();
+    });
 
-        setTimeout(() => set_presentation_size(1200, 800), 1000);
+    setTimeout(() => set_presentation_size(1200, 800), 1000);
 
-        get_presentation()!.subject.subscribe((state) => {
-            if (state.cast_available !== undefined) {
-                $('html').toggleClass('cast-available', state.cast_available);
-            }
-            if (state.cast_active !== undefined) {
-                $('html').toggleClass('cast-active', state.cast_active);
-            }
-            if (state.songxml_request) {
-                send_dual_present_song();
-            }
-            if (state.cast_size) {
-                set_presentation_size(state.cast_size.width, state.cast_size.height);
-            }
-        });
-    }
+    get_presentation()!.subject.subscribe((state) => {
+        if (state.cast_available !== undefined) {
+            $('html').toggleClass('cast-available', state.cast_available);
+        }
+        if (state.cast_active !== undefined) {
+            $('html').toggleClass('cast-active', state.cast_active);
+        }
+        if (state.songxml_request) {
+            send_dual_present_song();
+        }
+        if (state.cast_size) {
+            set_presentation_size(state.cast_size.width, state.cast_size.height);
+        }
+    });
 }
 
 const ZOOM_MAX = 5;

@@ -107,17 +107,18 @@ class CastCordova extends CastCommon {
         super();
 
         navigator.presentation.onpresent = (e: any) => {
-            this.connections = [e.session];
-            e.session.onstatechange = function (this: any): void {
-                if (this.state == 'disconnected') {
+            const session = e.session;
+            this.connections = [session];
+            session.onstatechange = () => {
+                if (session.state == 'disconnected') {
                     this.connections = [];
                     set_html('');
                 }
             };
-            e.session.onmessage = (msg: string) => this.handle_message(msg);
+            session.onmessage = (msg: string) => this.handle_message(msg);
             // Send the update out-of-band as it appears if we send it straight
             // off it doesnt get through.
-            setTimeout(() => this.send_update(e.session));
+            setTimeout(() => this.send_update(session));
         };
     }
 
