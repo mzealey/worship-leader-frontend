@@ -60,7 +60,7 @@
   },
   "devDependencies": {
     "@originjs/vite-plugin-commonjs": "^1.0.3",
-    "@playwright/test": "^1.56.0",
+    "@playwright/test": "^1.62.1",
     "@types/better-sqlite3": "^7.6.13",
     "@types/jquery": "^3.5.33",
     "@types/jsdom": "^27.0.0",
