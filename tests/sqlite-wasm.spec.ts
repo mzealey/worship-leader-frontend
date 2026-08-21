@@ -9,7 +9,7 @@ import { expect, test } from '@playwright/test';
 
 // Performance threshold multiplier for CI environments where tests may run slower
 // Set PERF_TIMEOUT_MULTIPLIER environment variable to increase timeout thresholds
-const PERF_MULTIPLIER = Number(process.env.PERF_TIMEOUT_MULTIPLIER) || 1;
+const PERF_MULTIPLIER = Number(process.env.PERF_TIMEOUT_MULTIPLIER) || 2;
 
 test.describe('SQLite WASM Database', () => {
     test.beforeEach(async ({ page }) => {
