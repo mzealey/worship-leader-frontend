@@ -374,20 +374,23 @@ export async function remove_file(file_entry: DownloadedFileDetails): Promise<vo
         );
     }
 
+    const entry = await get_file(file_entry);
+
     if (file_entry.download_id && is_cordova() && 'BackgroundTransfer' in window) {
-        // cordova plugin. This removes the download from the DownloadManager
-        // and deletes the file as well, so there is nothing left to remove.
+        // cordova plugin. Removes the download from the DownloadManager, which
+        // normally deletes the file as well but not reliably (eg on
+        // re-downloads), so we still remove the file directly below.
         const downloader = new BackgroundTransfer.BackgroundDownloader();
         downloader.removeDownload(file_entry.download_id);
-        return;
     }
 
-    const entry = await get_file(file_entry);
     const fileEntry = entry as FileEntry;
-    return new Promise<void>((resolve, reject) =>
+    return new Promise<void>((resolve) =>
         fileEntry.remove(
             () => resolve(),
-            (err) => reject(['delete failed', err]),
+            // The file may already have been deleted by removeDownload above,
+            // which is fine - it is gone either way.
+            () => resolve(),
         ),
     );
 }
