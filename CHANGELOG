@@ -1,3 +1,8 @@
+10.1.9 - 21/08/2026
+- Fix background downloading
+- Make the database work faster
+- Support newer android phones
+
 10.0.0 - 10/10/2025
 - Fix non-latin language search
 
