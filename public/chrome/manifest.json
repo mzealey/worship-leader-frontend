@@ -1,6 +1,6 @@
 {
     "name": "__MSG_extName__",
-    "version": "10.1.8",
+    "version": "10.1.9",
     "default_locale": "en",
     "permissions": [
         "unlimitedStorage",
