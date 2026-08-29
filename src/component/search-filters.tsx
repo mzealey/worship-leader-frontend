@@ -229,11 +229,13 @@ export function SearchFilters(props: SearchFiltersProps) {
                     {t('untranslated_song')} <Icon.SymbolOriginal />
                 </TristateCheckbox>
             </FilterGridItem>
-            <FilterGridItem thin={thin}>
-                <TristateCheckbox state={filters.favourite} onChange={(state?: 0 | 1) => updateFilter({ favourite: state })}>
-                    {t('favourite-filter')} <Icon.SymbolFavourite />
-                </TristateCheckbox>
-            </FilterGridItem>
+            {db_type == 'offline' && (
+                <FilterGridItem thin={thin}>
+                    <TristateCheckbox state={filters.favourite} onChange={(state?: 0 | 1) => updateFilter({ favourite: state })}>
+                        {t('favourite-filter')} <Icon.SymbolFavourite />
+                    </TristateCheckbox>
+                </FilterGridItem>
+            )}
         </Grid>
     );
 }
